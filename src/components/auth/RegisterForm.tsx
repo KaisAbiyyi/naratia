@@ -91,8 +91,8 @@ export function RegisterForm() {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-6">
-      <div className="text-center space-y-2">
+    <div className="w-full max-w-md mx-auto flex flex-col gap-6">
+      <div className="text-center flex flex-col gap-2">
         <h1 className="text-3xl font-bold">Join Naratia</h1>
         <p className="text-muted-foreground">
           Create collaborative stories with our community
@@ -105,9 +105,9 @@ export function RegisterForm() {
         </Alert>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="username">Username</Label>
             <div className="relative">
               <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -124,7 +124,7 @@ export function RegisterForm() {
             )}
           </div>
 
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="displayName">Display Name</Label>
             <Input
               id="displayName"
@@ -138,7 +138,7 @@ export function RegisterForm() {
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <Label htmlFor="email">Email</Label>
           <div className="relative">
             <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -156,7 +156,7 @@ export function RegisterForm() {
           )}
         </div>
 
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <Label htmlFor="password">Password</Label>
           <div className="relative">
             <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -187,7 +187,7 @@ export function RegisterForm() {
           )}
         </div>
 
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <Label htmlFor="confirmPassword">Confirm Password</Label>
           <div className="relative">
             <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -218,7 +218,7 @@ export function RegisterForm() {
           )}
         </div>
 
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <Label htmlFor="contentTierPreference">Content Preference</Label>
           <Select
             value={contentTierPreference}
@@ -233,7 +233,7 @@ export function RegisterForm() {
             <SelectContent>
               {CONTENT_TIER_OPTIONS.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
-                  <div className="space-y-1">
+                  <div className="gap-1">
                     <div className="font-medium">{option.label}</div>
                     <div className="text-sm text-muted-foreground">{option.description}</div>
                   </div>

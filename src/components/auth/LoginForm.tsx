@@ -55,8 +55,8 @@ export function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-6">
-      <div className="text-center space-y-2">
+    <div className="w-full max-w-md mx-auto flex flex-col gap-6">
+      <div className="text-center flex flex-col gap-2">
         <h1 className="text-3xl font-bold">Welcome back</h1>
         <p className="text-muted-foreground">
           Sign in to continue your storytelling journey
@@ -69,8 +69,8 @@ export function LoginForm() {
         </Alert>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="space-y-2">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           <Label htmlFor="email">Email</Label>
           <div className="relative">
             <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -88,7 +88,7 @@ export function LoginForm() {
           )}
         </div>
 
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <Label htmlFor="password">Password</Label>
           <div className="relative">
             <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
