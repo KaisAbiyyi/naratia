@@ -49,15 +49,15 @@ Development organized by major feature branches with clear task dependencies and
 
 ### Tasks
 
-- [ ] **DEV-011**: Implement Supabase Auth configuration 🟢 **MVP**
-- [ ] **DEV-012**: Create login/register forms with React Hook Form + Zod 🟢 **MVP**
-- [ ] **DEV-013**: Build authentication context and hooks 🟢 **MVP**
-- [ ] **DEV-014**: Implement Row Level Security policies 🟢 **MVP**
+- [x] **DEV-011**: Implement Supabase Auth configuration 🟢 **MVP**
+- [x] **DEV-012**: Create login/register forms with React Hook Form + Zod 🟢 **MVP**
+- [x] **DEV-013**: Build authentication context and hooks 🟢 **MVP**
+- [x] **DEV-014**: Implement Row Level Security policies 🟢 **MVP**
 - [ ] **DEV-015**: Create user profile management UI 🟡 **POST-MVP**
-- [ ] **DEV-016**: Add age verification for content filtering 🟢 **MVP**
-- [ ] **DEV-017**: Implement OAuth Google integration 🟢 **MVP**
+- [x] **DEV-016**: Add age verification for content filtering 🟢 **MVP**
+- [x] **DEV-017**: Implement OAuth Google integration 🟢 **MVP**
 - [ ] **DEV-018**: Build user preferences and settings 🟡 **POST-MVP**
-- [ ] **DEV-019**: Add logout functionality and session management 🟢 **MVP**
+- [x] **DEV-019**: Add logout functionality and session management 🟢 **MVP**
 - [ ] **DEV-020**: Implement anti-multi-account measures (IP tracking) 🟡 **POST-MVP**
 
 ### Dependencies

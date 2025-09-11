@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { QueryProvider } from "@/lib/providers/query-provider";
+import { AppProviders } from "@/components/providers/AppProviders";
 import { PageErrorBoundary } from "@/components/ui/error-boundary";
 
 const geistSans = Geist({
@@ -67,9 +67,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <PageErrorBoundary>
-          <QueryProvider>
+          <AppProviders>
             {children}
-          </QueryProvider>
+          </AppProviders>
         </PageErrorBoundary>
       </body>
     </html>
