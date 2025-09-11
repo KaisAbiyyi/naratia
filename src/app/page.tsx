@@ -1,4 +1,72 @@
+import { Metadata } from 'next'
 import Image from "next/image";
+
+export const metadata: Metadata = {
+  title: 'Naratia - Collaborative Storytelling Platform',
+  description: 'Join thousands of storytellers on Naratia, the ultimate collaborative writing platform. Create, vote, and contribute to amazing stories with writers from around the world. Experience the future of interactive storytelling.',
+  keywords: [
+    'collaborative storytelling',
+    'interactive fiction',
+    'creative writing',
+    'story writing',
+    'community writing',
+    'naratia',
+    'collaborative fiction',
+    'voting stories',
+    'write together',
+    'storytelling platform'
+  ],
+  authors: [{ name: 'Naratia Team' }],
+  creator: 'Naratia',
+  publisher: 'Naratia',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL('https://naratia.com'),
+  openGraph: {
+    title: 'Naratia - Collaborative Storytelling Platform',
+    description: 'Join thousands of storytellers on Naratia, the ultimate collaborative writing platform. Create, vote, and contribute to amazing stories with writers from around the world.',
+    url: 'https://naratia.com',
+    siteName: 'Naratia',
+    locale: 'en_US',
+    type: 'website',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Naratia - Collaborative Storytelling Platform',
+      }
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Naratia - Collaborative Storytelling Platform',
+    description: 'Join thousands of storytellers on Naratia, the ultimate collaborative writing platform. Create, vote, and contribute to amazing stories.',
+    images: ['/og-image.jpg'],
+    creator: '@naratia'
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-verification-code',
+  },
+  alternates: {
+    canonical: 'https://naratia.com',
+  },
+  category: 'Entertainment',
+}
 
 export default function Home() {
   return (
