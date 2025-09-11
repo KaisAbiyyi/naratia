@@ -12,7 +12,32 @@
 - Check the development plan (`docs/plan.md`) for task organization
 - Study the technical architecture (`docs/tech.md`) for implementation guidelines
 
-### 2. Post-Completion Code Review
+### 2. Task Management and Progress Tracking
+- **ALWAYS** maintain a checklist for everything outlined in `docs/plan.md`
+- Cross-reference completed tasks against the development plan
+- Mark tasks as completed only when they fully meet the plan requirements
+- Update progress tracking tools (TodoWrite) to reflect plan.md task status
+
+### 3. Package Management Rules
+- **ALWAYS** use `bun` for package installation and management
+- **NEVER** use `npm install` - use `bun add [package-name]` instead
+- **NEVER** use `npm remove` - use `bun remove [package-name]` instead
+- For development dependencies: `bun add -d [package-name]`
+- For global packages: `bun add -g [package-name]`
+
+### 4. Technology Stack Management
+- **MANDATORY**: When changing any technology in the stack, update `docs/tech.md` immediately
+- Technology changes must be reflected in both implementation and documentation
+- Ensure all team members are aware of tech stack changes through proper documentation
+- Validate that new technology choices align with project requirements in `docs/prd.md`
+
+### 5. Project Structure Compliance
+- **STRICTLY FOLLOW**: The folder and file structure blueprint defined in `docs/tech.md`
+- **DO NOT** deviate from the established src/ directory structure
+- All new files and folders must conform to the architecture outlined in tech.md
+- Maintain consistency with the SOLID principles structure defined in the blueprint
+
+### 6. Post-Completion Code Review
 After completing any user prompt and finishing all related tasks:
 
 #### SOLID Principle Review
@@ -26,17 +51,17 @@ Review all new/modified code to ensure SOLID compliance.
 
 #### Build and Test Process
 1. **Build**: Always run the build command to ensure no compilation errors
-2. **Development Server**: Start the dev server (`npm run dev` or equivalent)
+2. **Development Server**: Start the dev server (`bun run dev` or equivalent)
 3. **Automated Review**: Use available MCP tools (Playwright) to review the implementation
 4. **User Flow Testing**: Follow actual user workflows to validate functionality
 
-### 3. Technology Learning
+### 7. Technology Learning
 When uncertain about any tech stack usage:
 - **ALWAYS** use Context7 MCP to learn and understand the proper implementation
 - Research best practices and patterns for the specific technology
 - Apply learned patterns consistently throughout the project
 
-### 4. UI Development Rules
+### 8. UI Development Rules
 
 #### Layout Preferences
 - **ALWAYS** use `flex flex-col` with `gap-*` classes
@@ -55,15 +80,18 @@ When uncertain about any tech stack usage:
 3. Import and use the installed component
 4. Customize through composition, not modification
 
-### 5. Development Quality Assurance
+### 9. Development Quality Assurance
 
 #### Before Marking Tasks Complete
 - [ ] Code follows SOLID principles
-- [ ] Build completes successfully
-- [ ] Development server runs without errors
+- [ ] Build completes successfully (`bun run build`)
+- [ ] Development server runs without errors (`bun run dev`)
 - [ ] MCP Playwright review completed (when applicable)
 - [ ] UI follows established patterns (flex, gap, shadcn components)
 - [ ] All functionality tested through user workflows
+- [ ] Task completion verified against `docs/plan.md` requirements
+- [ ] Project structure adheres to `docs/tech.md` blueprint
+- [ ] All packages installed using `bun add` commands
 
 #### Error Resolution
 - If MCP Context7 is available, use it to research solutions
