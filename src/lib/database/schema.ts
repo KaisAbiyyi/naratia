@@ -2,7 +2,7 @@ import { pgTable, uuid, varchar, text, boolean, timestamp, integer, decimal, pgE
 import { relations } from 'drizzle-orm'
 
 // Enums based on the database schema
-export const contentTier = pgEnum('content_tier', ['all_ages', 'mature', 'explicit'])
+export const contentTier = pgEnum('content_tier', ['general', 'teen', 'mature', 'adult'])
 export const storyStatus = pgEnum('story_status', ['active', 'completed', 'length_limited', 'abandoned'])
 export const contributionStatus = pgEnum('contribution_status', ['pending', 'selected', 'rejected', 'flagged'])
 export const voteType = pgEnum('vote_type', ['paragraph', 'ending', 'flag'])
@@ -16,8 +16,8 @@ export const users = pgTable('users', {
   username: varchar('username', { length: 50 }).notNull().unique(),
   displayName: varchar('display_name', { length: 100 }),
   avatarUrl: text('avatar_url'),
-  ageVerified: boolean('age_verified').default(false),
-  contentPreference: contentTier('content_preference').default('all_ages'),
+  birthDate: date('birth_date'),
+  contentPreference: contentTier('content_preference').default('general'),
   
   // Gamification fields
   totalXp: integer('total_xp').default(0),
@@ -56,7 +56,7 @@ export const genres = pgTable('genres', {
   colorHex: varchar('color_hex', { length: 7 }),
   iconName: varchar('icon_name', { length: 50 }),
   isActive: boolean('is_active').default(true),
-  minContentTier: contentTier('min_content_tier').default('all_ages'),
+  minContentTier: contentTier('min_content_tier').default('general'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 })
@@ -68,7 +68,7 @@ export const stories = pgTable('stories', {
   description: text('description'),
   creatorId: uuid('creator_id').references(() => users.id, { onDelete: 'set null' }),
   status: storyStatus('status').default('active'),
-  contentTier: contentTier('content_tier').default('all_ages'),
+  contentTier: contentTier('content_tier').default('general'),
   
   // Voting configuration
   votingDurationHours: integer('voting_duration_hours').default(48),

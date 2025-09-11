@@ -6,19 +6,19 @@ import { useAuth } from '@/contexts/AuthContext'
 
 interface AuthGuardOptions {
   requireAuth?: boolean
-  requireVerifiedAge?: boolean
+  requireBirthDate?: boolean
   redirectTo?: string
   redirectUnauthenticated?: string
 }
 
 export function useAuthGuard({
   requireAuth = true,
-  requireVerifiedAge = false,
+  requireBirthDate = false,
   redirectTo = '/auth/login',
   redirectUnauthenticated = '/auth/login',
 }: AuthGuardOptions = {}) {
   const { user, profile, loading } = useAuth()
-  const [showAgeVerification, setShowAgeVerification] = useState(false)
+  const [showBirthDateModal, setShowBirthDateModal] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -30,10 +30,10 @@ export function useAuthGuard({
       return
     }
 
-    // Check age verification requirement
-    if (requireVerifiedAge && user && profile) {
-      if (!profile.age_verified) {
-        setShowAgeVerification(true)
+    // Check birth date requirement
+    if (requireBirthDate && user && profile) {
+      if (!profile.birth_date) {
+        setShowBirthDateModal(true)
         return
       }
     }
@@ -44,10 +44,10 @@ export function useAuthGuard({
       return
     }
 
-  }, [user, profile, loading, requireAuth, requireVerifiedAge, redirectTo, redirectUnauthenticated, router])
+  }, [user, profile, loading, requireAuth, requireBirthDate, redirectTo, redirectUnauthenticated, router])
 
-  const closeAgeVerification = () => {
-    setShowAgeVerification(false)
+  const closeBirthDateModal = () => {
+    setShowBirthDateModal(false)
   }
 
   return {
@@ -55,8 +55,8 @@ export function useAuthGuard({
     profile,
     loading,
     isAuthenticated: !!user,
-    isAgeVerified: profile?.age_verified || false,
-    showAgeVerification,
-    closeAgeVerification,
+    hasBirthDate: !!profile?.birth_date,
+    showBirthDateModal,
+    closeBirthDateModal,
   }
 }

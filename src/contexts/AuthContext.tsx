@@ -107,8 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       id: data.user.id,
       username: userData.username,
       display_name: userData.display_name,
-      age_verified: userData.age_verified || false,
-      content_tier_preference: (userData.content_tier_preference || 'general') as 'general' | 'teen' | 'mature' | 'adult',
+      birth_date: userData.birth_date,
       email: data.user.email,
     }
 

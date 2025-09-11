@@ -33,11 +33,20 @@ export const registerSchema = z.object({
     .min(1, 'Display name is required')
     .min(2, 'Display name must be at least 2 characters')
     .max(50, 'Display name must not exceed 50 characters'),
-  ageVerified: z
-    .boolean()
-    .refine(val => val === true, 'You must verify that you are 13 or older'),
-  contentTierPreference: z
-    .enum(['general', 'teen', 'mature', 'adult']),
+  birthDate: z
+    .string()
+    .min(1, 'Birth date is required')
+    .refine((dateString) => {
+      const birthDate = new Date(dateString)
+      const today = new Date()
+      const age = today.getFullYear() - birthDate.getFullYear()
+      const monthDiff = today.getMonth() - birthDate.getMonth()
+      
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        return age - 1 >= 13
+      }
+      return age >= 13
+    }, 'You must be at least 13 years old to register'),
 }).refine(data => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],

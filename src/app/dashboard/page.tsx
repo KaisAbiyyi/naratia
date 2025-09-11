@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuthGuard } from '@/hooks/useAuthGuard'
-import { AgeVerificationModal } from '@/components/auth/AgeVerificationModal'
+import { BirthDateModal } from '@/components/auth/BirthDateModal'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -11,11 +11,11 @@ import { LogOut, User, BookOpen, Vote, Trophy, Settings } from 'lucide-react'
 export default function DashboardPage() {
   const { 
     loading, 
-    showAgeVerification, 
-    closeAgeVerification 
+    showBirthDateModal, 
+    closeBirthDateModal 
   } = useAuthGuard({
     requireAuth: true,
-    requireVerifiedAge: false, // We'll handle this with modal
+    requireBirthDate: true, // Show modal if birth date is missing
   })
 
   const { user, profile, signOut } = useAuth()
@@ -86,10 +86,10 @@ export default function DashboardPage() {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       {profile?.display_name || profile?.username || 'User'}
-                      {profile?.age_verified ? (
+                      {profile?.birth_date ? (
                         <Badge variant="secondary">Verified</Badge>
                       ) : (
-                        <Badge variant="destructive">Unverified</Badge>
+                        <Badge variant="destructive">Birth Date Required</Badge>
                       )}
                     </CardTitle>
                     <CardDescription>
@@ -241,10 +241,10 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Age Verification Modal */}
-      <AgeVerificationModal
-        isOpen={showAgeVerification}
-        onClose={closeAgeVerification}
+      {/* Birth Date Modal */}
+      <BirthDateModal
+        isOpen={showBirthDateModal}
+        onClose={closeBirthDateModal}
       />
     </>
   )

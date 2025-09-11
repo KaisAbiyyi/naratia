@@ -37,8 +37,7 @@ export default function AuthCallbackPage() {
               display_name: data.session.user.user_metadata?.full_name || 
                            data.session.user.user_metadata?.name,
               avatar_url: data.session.user.user_metadata?.avatar_url,
-              age_verified: false,
-              content_tier_preference: 'general' as const,
+              birth_date: null, // OAuth users will need to set this in profile
             }
 
             await supabase.from('users').insert([userData])

@@ -7,19 +7,11 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2, Mail, Lock, User, Chrome, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { registerSchema, type RegisterFormData } from '@/lib/validations/auth'
 
-const CONTENT_TIER_OPTIONS = [
-  { value: 'general', label: 'General (All Ages)', description: 'Family-friendly content' },
-  { value: 'teen', label: 'Teen (13+)', description: 'Mild language and themes' },
-  { value: 'mature', label: 'Mature (17+)', description: 'Strong language and adult themes' },
-  { value: 'adult', label: 'Adult (18+)', description: 'Explicit content' },
-] as const
 
 export function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false)
@@ -33,8 +25,6 @@ export function RegisterForm() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setValue,
-    watch,
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -43,13 +33,10 @@ export function RegisterForm() {
       confirmPassword: '',
       username: '',
       displayName: '',
-      contentTierPreference: 'general',
-      ageVerified: false,
+      birthDate: '',
     },
   })
 
-  const contentTierPreference = watch('contentTierPreference')
-  const ageVerified = watch('ageVerified')
 
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true)
@@ -58,8 +45,7 @@ export function RegisterForm() {
     const userData = {
       username: data.username,
       display_name: data.displayName,
-      age_verified: data.ageVerified,
-      content_tier_preference: data.contentTierPreference,
+      birth_date: data.birthDate,
     }
 
     const { error: authError } = await signUpWithEmail(
@@ -219,50 +205,20 @@ export function RegisterForm() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <Label htmlFor="contentTierPreference">Content Preference</Label>
-          <Select
-            value={contentTierPreference}
-            onValueChange={(value: typeof contentTierPreference) =>
-              setValue('contentTierPreference', value)
-            }
-            disabled={isLoading}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select content preference" />
-            </SelectTrigger>
-            <SelectContent>
-              {CONTENT_TIER_OPTIONS.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  <div className="gap-1">
-                    <div className="font-medium">{option.label}</div>
-                    <div className="text-sm text-muted-foreground">{option.description}</div>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {errors.contentTierPreference && (
-            <p className="text-sm text-destructive">{errors.contentTierPreference.message}</p>
-          )}
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="ageVerified"
-            checked={ageVerified}
-            onCheckedChange={(checked: boolean) => setValue('ageVerified', checked)}
+          <Label htmlFor="birthDate">Date of Birth</Label>
+          <Input
+            id="birthDate"
+            type="date"
+            {...register('birthDate')}
             disabled={isLoading}
           />
-          <Label
-            htmlFor="ageVerified"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            I confirm that I am 13 years of age or older
-          </Label>
+          {errors.birthDate && (
+            <p className="text-sm text-destructive">{errors.birthDate.message}</p>
+          )}
+          <p className="text-xs text-muted-foreground">
+            You must be at least 13 years old to register
+          </p>
         </div>
-        {errors.ageVerified && (
-          <p className="text-sm text-destructive">{errors.ageVerified.message}</p>
-        )}
 
         <Button
           type="submit"

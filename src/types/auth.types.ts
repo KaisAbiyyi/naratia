@@ -3,7 +3,7 @@ export interface UserProfile {
   username: string | null
   display_name: string | null
   email: string | null
-  age_verified: boolean
+  birth_date: string | null
   bio: string | null
   avatar_url: string | null
   total_xp: number
@@ -35,8 +35,7 @@ export interface RegisterFormData {
   confirmPassword: string
   username: string
   displayName: string
-  ageVerified: boolean
-  contentTierPreference: 'general' | 'teen' | 'mature' | 'adult'
+  birthDate: string
 }
 
 export interface AuthError {

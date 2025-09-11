@@ -15,7 +15,7 @@ export interface Database {
           username: string | null
           display_name: string | null
           email: string | null
-          age_verified: boolean
+          birth_date: string | null
           bio: string | null
           avatar_url: string | null
           total_xp: number
@@ -40,7 +40,7 @@ export interface Database {
           username?: string | null
           display_name?: string | null
           email?: string | null
-          age_verified?: boolean
+          birth_date?: string | null
           bio?: string | null
           avatar_url?: string | null
           total_xp?: number
@@ -65,7 +65,7 @@ export interface Database {
           username?: string | null
           display_name?: string | null
           email?: string | null
-          age_verified?: boolean
+          birth_date?: string | null
           bio?: string | null
           avatar_url?: string | null
           total_xp?: number
