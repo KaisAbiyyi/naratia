@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Image from "next/image";
+import { OAuthHandler } from '@/components/auth/OAuthHandler'
 
 export const metadata: Metadata = {
   title: 'Naratia - Collaborative Storytelling Platform',
@@ -70,8 +71,10 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+    <>
+      <OAuthHandler />
+      <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
+        <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
         <Image
           className="dark:invert"
           src="/next.svg"
@@ -166,6 +169,7 @@ export default function Home() {
           Go to nextjs.org →
         </a>
       </footer>
-    </div>
+      </div>
+    </>
   );
 }

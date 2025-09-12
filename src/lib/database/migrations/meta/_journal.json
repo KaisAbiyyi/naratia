@@ -15,6 +15,13 @@
       "when": 1757608470193,
       "tag": "0001_sharp_mordo",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1757608809488,
+      "tag": "0002_greedy_marvex",
+      "breakpoints": true
     }
   ]
 }

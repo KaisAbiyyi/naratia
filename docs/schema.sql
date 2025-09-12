@@ -14,8 +14,9 @@ CREATE TYPE achievement_type AS ENUM ('reading', 'voting', 'writing', 'completio
 CREATE TYPE notification_type AS ENUM ('vote_needed', 'story_update', 'streak_warning', 'achievement', 'system');
 
 -- Users table (Clean - only essential data)
+-- Note: id should match auth.users.id (Supabase auth table)
 CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     email VARCHAR(255) UNIQUE NOT NULL,
     username VARCHAR(50) UNIQUE NOT NULL,
     display_name VARCHAR(100),

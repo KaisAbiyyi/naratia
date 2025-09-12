@@ -1,18 +1,23 @@
-// Authentication Service following Single Responsibility Principle
-import { supabase } from '@/lib/supabase/client'
-import type { LoginForm, RegisterForm, User } from '@/types'
+// services/auth/auth.service.ts
 
+import type { LoginForm, RegisterForm, User } from '@/types'
+import type { SupabaseClient, User as SupabaseUser, AuthError } from '@supabase/supabase-js'
+import { createClient } from '@/lib/supabase/client'
+
+// Interface diperbarui untuk menggunakan AuthError, bukan 'any'
 export interface AuthService {
-  signUp(credentials: RegisterForm): Promise<{ user: User | null; error: any }>
-  signIn(credentials: LoginForm): Promise<{ user: User | null; error: any }>
-  signOut(): Promise<{ error: any }>
-  getCurrentUser(): Promise<{ user: User | null; error: any }>
-  signInWithGoogle(): Promise<{ user: User | null; error: any }>
+  signUp(credentials: RegisterForm): Promise<{ user: User | null; error: AuthError | null }>
+  signIn(credentials: LoginForm): Promise<{ user: User | null; error: AuthError | null }>
+  signOut(): Promise<{ error: AuthError | null }>
+  getCurrentUser(): Promise<{ user: User | null; error: AuthError | null }>
+  signInWithGoogle(): Promise<{ user: User | null; error: AuthError | null }>
 }
 
-class SupabaseAuthService implements AuthService {
+export class SupabaseAuthService implements AuthService {
+  constructor(private supabase: SupabaseClient) {}
+
   async signUp(credentials: RegisterForm) {
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await this.supabase.auth.signUp({
       email: credentials.email,
       password: credentials.password,
       options: {
@@ -30,7 +35,7 @@ class SupabaseAuthService implements AuthService {
   }
 
   async signIn(credentials: LoginForm) {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await this.supabase.auth.signInWithPassword({
       email: credentials.email,
       password: credentials.password,
     })
@@ -42,12 +47,12 @@ class SupabaseAuthService implements AuthService {
   }
 
   async signOut() {
-    const { error } = await supabase.auth.signOut()
+    const { error } = await this.supabase.auth.signOut()
     return { error }
   }
 
   async getCurrentUser() {
-    const { data, error } = await supabase.auth.getUser()
+    const { data, error } = await this.supabase.auth.getUser()
     return {
       user: data.user ? this.mapSupabaseUser(data.user) : null,
       error,
@@ -55,23 +60,22 @@ class SupabaseAuthService implements AuthService {
   }
 
   async signInWithGoogle() {
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    const { error } = await this.supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/`,
       },
     })
-
-    return {
-      user: null, // OAuth doesn't return user immediately, handled by callback
-      error,
-    }
+    
+    // OAuth doesn't return user immediately, only after redirect
+    return { user: null, error }
   }
 
-  private mapSupabaseUser(supabaseUser: any): User {
+  // Fungsi ini dilengkapi untuk memenuhi semua properti dari tipe 'User'
+  private mapSupabaseUser(supabaseUser: SupabaseUser): User {
     return {
       id: supabaseUser.id,
-      email: supabaseUser.email,
+      email: supabaseUser.email!,
       username: supabaseUser.user_metadata?.username || '',
       displayName: supabaseUser.user_metadata?.display_name,
       avatarUrl: supabaseUser.user_metadata?.avatar_url,
@@ -88,4 +92,5 @@ class SupabaseAuthService implements AuthService {
   }
 }
 
-export const authService = new SupabaseAuthService()
+// Export instance
+export const authService = new SupabaseAuthService(createClient())

@@ -8,20 +8,14 @@ export interface UserProfile {
   avatar_url: string | null
   total_xp: number
   current_level: number
-  stories_created: number
-  contributions_made: number
-  votes_cast: number
-  content_tier_preference: 'general' | 'teen' | 'mature' | 'adult'
-  reading_streak_current: number
-  reading_streak_best: number
-  writing_streak_current: number
-  writing_streak_best: number
-  voting_streak_current: number
-  voting_streak_best: number
+  content_preference: 'general' | 'teen' | 'mature' | 'adult'
+  reading_streak: number
+  voting_streak: number
+  writing_streak: number
+  perfect_days_count: number
   last_activity_date: string | null
-  account_created_at: string
-  is_active: boolean
-  preferred_genres: string[]
+  created_at: string
+  updated_at: string
 }
 
 export interface LoginFormData {
@@ -35,7 +29,6 @@ export interface RegisterFormData {
   confirmPassword: string
   username: string
   displayName: string
-  birthDate: string
 }
 
 export interface AuthError {

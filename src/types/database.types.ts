@@ -23,7 +23,7 @@ export interface Database {
           stories_created: number
           contributions_made: number
           votes_cast: number
-          content_tier_preference: 'general' | 'teen' | 'mature' | 'adult'
+          content_preference: 'general' | 'teen' | 'mature' | 'adult'
           reading_streak_current: number
           reading_streak_best: number
           writing_streak_current: number

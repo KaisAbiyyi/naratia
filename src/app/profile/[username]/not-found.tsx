@@ -45,8 +45,8 @@ export default function ProfileNotFound() {
               </Link>
             </Button>
             <Button asChild variant="outline" className="flex-1">
-              <Link href="/dashboard">
-                Dashboard
+              <Link href="/login">
+                Sign In
               </Link>
             </Button>
           </div>

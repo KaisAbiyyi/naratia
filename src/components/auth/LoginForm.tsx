@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
@@ -13,9 +13,10 @@ import { useAuth } from '@/contexts/AuthContext'
 import { loginSchema, type LoginFormData } from '@/lib/validations/auth'
 
 export function LoginForm() {
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const { signInWithEmail, signInWithGoogle } = useAuth()
+  
+  // 1. Ambil semua state yang dibutuhkan dari AuthContext
+  const { signInWithEmail, signInWithGoogle, user, profile } = useAuth()
   const router = useRouter()
 
   const {
@@ -26,38 +27,53 @@ export function LoginForm() {
     resolver: zodResolver(loginSchema),
   })
 
-  const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true)
-    setError(null)
+  // 2. useEffect untuk menangani redirect secara reaktif
+  useEffect(() => {
+    // Jika ada user dan profile (artinya login berhasil dan data lengkap),
+    // maka lakukan redirect.
+    if (user && profile) {
+      if (profile.birth_date) {
+        // User sudah melengkapi data, arahkan ke home
+        console.log('User profile complete, redirecting to /');
+        router.push('/')
+      } else {
+        // User belum melengkapi tanggal lahir, arahkan ke halaman profil
+        console.log('User profile incomplete, redirecting to profile page');
+        router.push(`/profile/${profile.username}`)
+      }
+    }
+  }, [user, profile, router])
 
+
+  // 3. onSubmit sekarang jauh lebih sederhana
+  const onSubmit = async (data: LoginFormData) => {
+    setError(null)
     const { error: authError } = await signInWithEmail(data.email, data.password)
 
     if (authError) {
       setError(authError.message)
-    } else {
-      router.push('/dashboard')
     }
-
-    setIsLoading(false)
+    // Jika berhasil, useEffect di atas akan menangani redirect secara otomatis.
+    // Tombol akan tetap dalam kondisi 'loading' sampai redirect terjadi.
   }
 
   const handleGoogleSignIn = async () => {
-    setIsLoading(true)
     setError(null)
-
     const { error: authError } = await signInWithGoogle()
 
     if (authError) {
       setError(authError.message)
-      setIsLoading(false)
     }
-    // Don't set loading to false here as we're redirecting
+    // Sama seperti di atas, useEffect akan menangani redirect setelah callback
   }
+
+  // isLoading sekarang hanya bergantung pada isSubmitting dari react-hook-form
+  const isLoading = isSubmitting;
 
   return (
     <div className="w-full max-w-md mx-auto flex flex-col gap-6">
       <div className="text-center flex flex-col gap-2">
-        <h1 className="text-3xl font-bold">Welcome back</h1>
+        <h1 className="text-3xl font-bold">Welcome Back</h1>
         <p className="text-muted-foreground">
           Sign in to continue your storytelling journey
         </p>
@@ -109,7 +125,7 @@ export function LoginForm() {
         <Button
           type="submit"
           className="w-full"
-          disabled={isLoading || isSubmitting}
+          disabled={isLoading}
         >
           {isLoading ? (
             <>
@@ -144,9 +160,9 @@ export function LoginForm() {
       </Button>
 
       <p className="text-center text-sm text-muted-foreground">
-        Don&apos;t have an account?{' '}
-        <Button variant="link" className="p-0" onClick={() => router.push('/auth/register')}>
-          Sign up
+        Don't have an account?{' '}
+        <Button variant="link" className="p-0" onClick={() => router.push('/register')}>
+          Sign Up
         </Button>
       </p>
     </div>

@@ -33,7 +33,6 @@ export function RegisterForm() {
       confirmPassword: '',
       username: '',
       displayName: '',
-      birthDate: '',
     },
   })
 
@@ -45,7 +44,6 @@ export function RegisterForm() {
     const userData = {
       username: data.username,
       display_name: data.displayName,
-      birth_date: data.birthDate,
     }
 
     const { error: authError } = await signUpWithEmail(
@@ -204,21 +202,6 @@ export function RegisterForm() {
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="birthDate">Date of Birth</Label>
-          <Input
-            id="birthDate"
-            type="date"
-            {...register('birthDate')}
-            disabled={isLoading}
-          />
-          {errors.birthDate && (
-            <p className="text-sm text-destructive">{errors.birthDate.message}</p>
-          )}
-          <p className="text-xs text-muted-foreground">
-            You must be at least 13 years old to register
-          </p>
-        </div>
 
         <Button
           type="submit"
@@ -259,7 +242,7 @@ export function RegisterForm() {
 
       <p className="text-center text-sm text-muted-foreground">
         Already have an account?{' '}
-        <Button variant="link" className="p-0" onClick={() => router.push('/auth/login')}>
+        <Button variant="link" className="p-0" onClick={() => router.push('/login')}>
           Sign in
         </Button>
       </p>
