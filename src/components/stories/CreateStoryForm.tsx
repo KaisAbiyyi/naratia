@@ -33,13 +33,9 @@ interface CreateStoryFormProps {
     iconName?: string
     minContentTier: string
   }>
-  currentUser: {
-    id: string
-    email?: string
-  }
 }
 
-export function CreateStoryForm({ genres, currentUser }: CreateStoryFormProps) {
+export function CreateStoryForm({ genres }: CreateStoryFormProps) {
   const router = useRouter()
   const [selectedGenres, setSelectedGenres] = useState<string[]>([])
   const createStoryMutation = useCreateStory()

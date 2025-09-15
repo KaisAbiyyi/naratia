@@ -1,26 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/database/connection'
-import { genres } from '@/lib/database/schema'
-import { eq, asc } from 'drizzle-orm'
+import { createClient } from '@/lib/supabase/server'
 
 // GET /api/genres - List all active genres
 export async function GET(request: NextRequest) {
   try {
-    const genreList = await db
-      .select({
-        id: genres.id,
-        name: genres.name,
-        description: genres.description,
-        colorHex: genres.colorHex,
-        iconName: genres.iconName,
-        minContentTier: genres.minContentTier
-      })
-      .from(genres)
-      .where(eq(genres.isActive, true))
-      .orderBy(asc(genres.name))
+    const supabase = await createClient()
+    
+    const { data: genreList, error } = await supabase
+      .from('genres')
+      .select('id, name, description, color_hex, icon_name, min_content_tier')
+      .eq('is_active', true)
+      .order('name', { ascending: true })
+
+    if (error) {
+      throw error
+    }
 
     return NextResponse.json({
-      data: genreList,
+      data: genreList || [],
       success: true
     })
 

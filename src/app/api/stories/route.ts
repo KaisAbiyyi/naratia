@@ -1,76 +1,71 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/database/connection'
-import { stories, storyGenres, genres, users } from '@/lib/database/schema'
-import { eq, and, ilike, desc, asc, inArray } from 'drizzle-orm'
 import { createClient } from '@/lib/supabase/server'
 
-// GET /api/stories - List stories with filtering and pagination
+// GET /api/stories - List stories with filtering and pagination  
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '10')
-    const genre = searchParams.get('genre')
-    const status = searchParams.get('status')
-    const contentTier = searchParams.get('contentTier')
-    const search = searchParams.get('search')
     const sortBy = searchParams.get('sortBy') || 'created_at'
     const sortOrder = searchParams.get('sortOrder') || 'desc'
 
     const offset = (page - 1) * limit
 
-    // For now, simplified query - will be enhanced later
-    const result = await db
-      .select({
-        id: stories.id,
-        title: stories.title,
-        description: stories.description,
-        creatorId: stories.creatorId,
-        status: stories.status,
-        contentTier: stories.contentTier,
-        votingDurationHours: stories.votingDurationHours,
-        minVotesRequired: stories.minVotesRequired,
-        maxPendingContributions: stories.maxPendingContributions,
-        isPrivate: stories.isPrivate,
-        isFeatured: stories.isFeatured,
-        createdAt: stories.createdAt,
-        updatedAt: stories.updatedAt,
-        creator: {
-          id: users.id,
-          username: users.username,
-          displayName: users.displayName,
-          avatarUrl: users.avatarUrl
-        }
-      })
-      .from(stories)
-      .leftJoin(users, eq(stories.creatorId, users.id))
-      .orderBy(desc(stories.createdAt))
-      .limit(limit)
-      .offset(offset)
+    const supabase = await createClient()
 
-    const total = result.length
-    const totalPages = Math.ceil(total / limit)
+    // Get stories (simplified for now)
+    const { data: stories, error } = await supabase
+      .from('stories')
+      .select(`
+        id,
+        title,
+        description,
+        creator_id,
+        status,
+        content_tier,
+        created_at,
+        updated_at
+      `)
+      .order(sortBy, { ascending: sortOrder === 'asc' })
+      .range(offset, offset + limit - 1)
+
+    if (error) {
+      throw error
+    }
+
+    // Transform data for compatibility
+    const transformedStories = (stories || []).map(story => ({
+      id: story.id,
+      title: story.title,
+      description: story.description,
+      creatorId: story.creator_id,
+      status: story.status,
+      contentTier: story.content_tier,
+      createdAt: story.created_at,
+      updatedAt: story.updated_at,
+      creator: null // TODO: Add creator info when needed
+    }))
 
     return NextResponse.json({
-      data: result,
+      data: transformedStories,
       pagination: {
         page,
         limit,
-        total,
-        totalPages
-      }
+        total: transformedStories.length,
+        totalPages: Math.ceil(transformedStories.length / limit)
+      },
+      success: true
     })
 
   } catch (error) {
     console.error('Failed to fetch stories:', error)
     
-    // Return empty array when database is not available
-    // This allows UI to show empty state instead of infinite loading
     return NextResponse.json({
       data: [],
       pagination: {
         page: 1,
-        limit: 12,
+        limit: 10,
         total: 0,
         totalPages: 0
       },
@@ -104,50 +99,40 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create story in transaction
-    const result = await db.transaction(async (tx) => {
-      // Insert story
-      const [newStory] = await tx
-        .insert(stories)
-        .values({
-          title,
-          description,
-          creatorId: user.id,
-          contentTier: contentTier || 'general',
-        })
-        .returning()
+    // Create story
+    const { data: newStory, error: storyError } = await supabase
+      .from('stories')
+      .insert({
+        title,
+        description,
+        creator_id: user.id,
+        content_tier: contentTier || 'general',
+        status: 'active'
+      })
+      .select()
+      .single()
 
-      // Insert genre associations
-      if (genreIds.length > 0) {
-        await tx
-          .insert(storyGenres)
-          .values(
-            genreIds.map((genreId: string, index: number) => ({
-              storyId: newStory.id,
-              genreId,
-              displayOrder: index + 1
-            }))
-          )
-      }
+    if (storyError) {
+      throw storyError
+    }
 
-      // Insert opening paragraph as first contribution
-      await tx
-        .insert(stories) // This should be storyContributions, but table doesn't exist yet
-        // Will be implemented when contributions system is ready
-
-      return newStory
-    })
+    // TODO: Insert genre associations when story_genres table is ready
+    // TODO: Insert opening paragraph when story_contributions table is ready
 
     return NextResponse.json({
-      data: result,
+      data: newStory,
       success: true,
       message: 'Story created successfully'
-    }, { status: 201 })
+    })
 
   } catch (error) {
     console.error('Failed to create story:', error)
+    
     return NextResponse.json(
-      { error: 'Failed to create story' },
+      { 
+        error: 'Failed to create story',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     )
   }
