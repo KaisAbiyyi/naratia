@@ -97,7 +97,32 @@ export default async function CreateStoryPage() {
       .where(eq(genres.isActive, true))
       .orderBy(asc(genres.name))
 
-    const availableGenres = genresData.map(g => ({
+  let availableGenres: Array<{
+    id: string
+    name: string
+    description?: string
+    colorHex?: string
+    iconName?: string
+    minContentTier: string
+  }> = []
+
+  try {
+    // Fetch available genres on server with error handling
+    console.log('Fetching genres from database...')
+    const genresData = await db
+      .select({
+        id: genres.id,
+        name: genres.name,
+        description: genres.description,
+        colorHex: genres.colorHex,
+        iconName: genres.iconName,
+        minContentTier: genres.minContentTier
+      })
+      .from(genres)
+      .where(eq(genres.isActive, true))
+      .orderBy(asc(genres.name))
+
+    availableGenres = genresData.map(g => ({
       id: g.id,
       name: g.name,
       description: g.description || undefined,
@@ -106,31 +131,47 @@ export default async function CreateStoryPage() {
       minContentTier: g.minContentTier || 'general'
     }))
 
-    return (
-      <div className="min-h-screen bg-background">
-        {/* Header */}
-        <div className="border-b">
-          <div className="container mx-auto px-4 py-6">
-            <div className="max-w-2xl">
-              <h1 className="text-3xl font-bold tracking-tight">
-                Create New Story
-              </h1>
-              <p className="text-muted-foreground mt-2">
-                Start a collaborative adventure that others can join and help shape
-              </p>
-            </div>
+    console.log('Successfully fetched genres:', availableGenres.length)
+
+  } catch (error) {
+    console.error('Error loading genres from database:', error)
+    
+    // Fallback: provide some default genres if database is not available
+    availableGenres = [
+      { id: 'temp-1', name: 'Fantasy', minContentTier: 'general' },
+      { id: 'temp-2', name: 'Science Fiction', minContentTier: 'general' },
+      { id: 'temp-3', name: 'Mystery', minContentTier: 'general' },
+      { id: 'temp-4', name: 'Romance', minContentTier: 'teen' },
+      { id: 'temp-5', name: 'Adventure', minContentTier: 'general' },
+    ]
+    console.log('Using fallback genres due to database error')
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="border-b">
+        <div className="container mx-auto px-4 py-6">
+          <div className="max-w-2xl">
+            <h1 className="text-3xl font-bold tracking-tight">
+              Create New Story
+            </h1>
+            <p className="text-muted-foreground mt-2">
+              Start a collaborative adventure that others can join and help shape
+            </p>
           </div>
         </div>
+      </div>
 
-        {/* Form Content */}
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-card rounded-lg border p-6">
-              <CreateStoryForm 
-                genres={availableGenres}
-                currentUser={user}
-              />
-            </div>
+      {/* Form Content */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-card rounded-lg border p-6">
+            <CreateStoryForm 
+              genres={availableGenres}
+              currentUser={user}
+            />
+          </div>
 
             {/* Guidelines */}
             <div className="mt-8 bg-muted/50 rounded-lg p-6">
@@ -142,7 +183,7 @@ export default async function CreateStoryPage() {
                 </div>
                 <div className="flex gap-3">
                   <span className="text-primary">•</span>
-                  <span>Choose appropriate genres and content tier for your story's theme</span>
+                  <span>Choose appropriate genres and content tier for your story&apos;s theme</span>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-primary">•</span>

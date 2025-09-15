@@ -39,18 +39,32 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [session, setSession] = useState<Session | null>(null)
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isProfileFetching, setIsProfileFetching] = useState(false)
+  const [lastProcessedUserId, setLastProcessedUserId] = useState<string | null>(null)
 
-  // Enhanced fetchProfile with email-based check and creation
+  // Enhanced fetchProfile with timeout and better error handling
   const fetchProfile = useCallback(async (userId: string, userEmail?: string): Promise<UserProfile | null> => {
     console.log('🔍 Fetching profile for user:', userId, 'email:', userEmail)
     
+    // Prevent concurrent fetches
+    if (isProfileFetching) {
+      console.log('🔄 Profile fetch already in progress, skipping...')
+      return profile
+    }
+    
+    setIsProfileFetching(true)
+    
     try {
-      // Step 1: Try to find profile by userId first
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', userId)
-        .single()
+      // Reduced timeout from 5 seconds to 2 seconds for better UX
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('Profile fetch timeout after 2 seconds')), 2000)
+      })
+
+      // Step 1: Try to find profile by userId first with timeout
+      const { data, error } = await Promise.race([
+        supabase.from('users').select('*').eq('id', userId).single(),
+        timeoutPromise
+      ])
 
       if (data) {
         console.log('✅ Profile found by userId:', data)
@@ -128,9 +142,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
       return null
     } catch (err) {
       console.error('❌ Unexpected error in fetchProfile:', err)
+      
+      // If it's a timeout or database connection error, return null
+      // This will allow the app to continue functioning without profile data
+      if (err instanceof Error && err.message.includes('timeout')) {
+        console.log('⏱️ Profile fetch timed out - continuing without profile data')
+      }
       return null
+    } finally {
+      setIsProfileFetching(false)
     }
-  }, [supabase])
+  }, [supabase, isProfileFetching, profile])
 
   // 2. Sederhanakan useEffect, cukup andalkan onAuthStateChange
   useEffect(() => {
@@ -139,9 +161,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
         console.log(`🔔 Auth event: ${event}`, { hasSession: !!session, userId: session?.user?.id })
         
         if (session?.user) {
+          // Skip if we already processed this user recently and have profile
+          if (lastProcessedUserId === session.user.id && profile && !isProfileFetching) {
+            console.log('⏭️ Skipping duplicate profile fetch for same user')
+            setSession(session)
+            setUser(session.user)
+            setLoading(false)
+            return
+          }
+          
           // Event: INITIAL_SESSION, SIGNED_IN, TOKEN_REFRESHED
           setSession(session)
           setUser(session.user)
+          setLastProcessedUserId(session.user.id)
           
           // ALWAYS check and create profile for any login method
           console.log(`👤 Checking/creating profile for user: ${session.user.id}`)
@@ -153,6 +185,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
           setSession(null)
           setUser(null)
           setProfile(null)
+          setLastProcessedUserId(null)
+          setIsProfileFetching(false)
         }
         
         // Pengecekan awal selesai, loading bisa di-set ke false
@@ -164,7 +198,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return () => {
       subscription.unsubscribe()
     }
-  }, [supabase, fetchProfile])
+  }, [supabase, fetchProfile, lastProcessedUserId, profile, isProfileFetching])
 
 
   // --- Fungsi-fungsi otentikasi ---

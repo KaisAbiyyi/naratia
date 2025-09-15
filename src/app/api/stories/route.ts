@@ -63,10 +63,20 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Failed to fetch stories:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch stories' },
-      { status: 500 }
-    )
+    
+    // Return empty array when database is not available
+    // This allows UI to show empty state instead of infinite loading
+    return NextResponse.json({
+      data: [],
+      pagination: {
+        page: 1,
+        limit: 12,
+        total: 0,
+        totalPages: 0
+      },
+      success: false,
+      message: 'Database temporarily unavailable - showing empty state'
+    })
   }
 }
 

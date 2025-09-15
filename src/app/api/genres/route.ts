@@ -26,10 +26,14 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Failed to fetch genres:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch genres' },
-      { status: 500 }
-    )
+    
+    // Return empty array when database is not available
+    // This allows UI to show empty state instead of infinite loading
+    return NextResponse.json({
+      data: [],
+      success: false,
+      message: 'Database temporarily unavailable - showing empty state'
+    })
   }
 }
 

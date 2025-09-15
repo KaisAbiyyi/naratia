@@ -23,9 +23,10 @@ interface StoryCardProps {
       colorHex?: string
     }>
   }
+  feedStyle?: boolean
 }
 
-export function StoryCard({ story }: StoryCardProps) {
+export function StoryCard({ story, feedStyle = false }: StoryCardProps) {
   const creatorName = story.creator?.displayName || story.creator?.username || 'Anonymous'
   const statusColor = {
     active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
@@ -41,6 +42,82 @@ export function StoryCard({ story }: StoryCardProps) {
     adult: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
   }[story.contentTier] || 'bg-gray-100 text-gray-800'
 
+  if (feedStyle) {
+    // Social media feed style layout
+    return (
+      <div className="bg-card rounded-lg border p-6 hover:shadow-sm transition-all duration-200">
+        {/* Post Header - Creator Info */}
+        <div className="flex items-center gap-3 mb-4">
+          <Avatar className="w-10 h-10">
+            <AvatarImage src={story.creator?.avatarUrl} />
+            <AvatarFallback>
+              <UserIcon className="w-5 h-5" />
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="font-medium text-sm truncate">{creatorName}</span>
+              <span className="text-muted-foreground text-xs">•</span>
+              <span className="text-muted-foreground text-xs">
+                {new Date(story.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 mt-1">
+              <Badge variant="secondary" className={`${statusColor} text-xs`}>
+                {story.status.replace('_', ' ')}
+              </Badge>
+              <Badge className={`${contentTierColor} text-xs`}>
+                {story.contentTier}
+              </Badge>
+            </div>
+          </div>
+        </div>
+
+        {/* Post Content */}
+        <Link href={`/stories/${story.id}`} className="block group">
+          <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-2">
+            {story.title}
+          </h3>
+          {story.description && (
+            <p className="text-muted-foreground text-sm line-clamp-3 mb-3">
+              {story.description}
+            </p>
+          )}
+
+          {/* Genres */}
+          {story.genres && story.genres.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {story.genres.slice(0, 4).map((genre, index) => (
+                <Badge 
+                  key={index} 
+                  variant="outline" 
+                  className="text-xs"
+                  style={genre.colorHex ? { borderColor: genre.colorHex, color: genre.colorHex } : {}}
+                >
+                  {genre.name}
+                </Badge>
+              ))}
+              {story.genres.length > 4 && (
+                <Badge variant="outline" className="text-xs">
+                  +{story.genres.length - 4}
+                </Badge>
+              )}
+            </div>
+          )}
+        </Link>
+
+        {/* Engagement Actions - placeholder for future */}
+        <div className="flex items-center gap-4 pt-3 border-t">
+          <div className="flex items-center gap-1 text-muted-foreground text-sm">
+            <BookOpenIcon className="w-4 h-4" />
+            <span>Read Story</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Default card grid layout
   return (
     <Link href={`/stories/${story.id}`}>
       <div className="group bg-card rounded-lg border hover:shadow-md transition-all duration-200 overflow-hidden">

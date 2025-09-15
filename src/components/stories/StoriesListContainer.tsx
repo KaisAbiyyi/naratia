@@ -7,18 +7,39 @@ import { Button } from '@/components/ui/button'
 import { StoryCard } from './StoryCard'
 import { LoaderIcon } from 'lucide-react'
 
-export function StoriesListContainer() {
+interface StoriesListContainerProps {
+  tab?: string
+  showFilters?: boolean
+  feedStyle?: boolean
+}
+
+export function StoriesListContainer({ 
+  tab = 'for-you', 
+  showFilters = true, 
+  feedStyle = false 
+}: StoriesListContainerProps = {}) {
   const searchParams = useSearchParams()
   
   // Convert search params to query parameters
+  // In feed style, use tab-based sorting instead of search params
+  const getSortByFromTab = (tabName: string) => {
+    switch (tabName) {
+      case 'new': return 'created_at'
+      case 'trending': return 'updated_at' // Will implement trending logic later
+      case 'following': return 'created_at' // Will implement following logic later  
+      case 'for-you':
+      default: return 'created_at'
+    }
+  }
+
   const params = {
-    genre: searchParams.get('genre') || undefined,
-    status: searchParams.get('status') || undefined,
-    contentTier: searchParams.get('contentTier') || undefined,
-    search: searchParams.get('search') || undefined,
-    sortBy: (searchParams.get('sortBy') || 'created_at') as 'created_at' | 'updated_at' | 'title',
+    genre: feedStyle ? undefined : (searchParams.get('genre') || undefined),
+    status: feedStyle ? undefined : (searchParams.get('status') || undefined),
+    contentTier: feedStyle ? undefined : (searchParams.get('contentTier') || undefined),
+    search: feedStyle ? undefined : (searchParams.get('search') || undefined),
+    sortBy: feedStyle ? getSortByFromTab(tab) : (searchParams.get('sortBy') || 'created_at') as 'created_at' | 'updated_at' | 'title',
     sortOrder: 'desc' as const,
-    limit: 12
+    limit: feedStyle ? 8 : 12
   }
 
   const {
@@ -74,9 +95,12 @@ export function StoriesListContainer() {
   return (
     <div className="space-y-8">
       {/* Stories Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className={feedStyle 
+        ? "flex flex-col gap-4" 
+        : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      }>
         {stories.map((story) => (
-          <StoryCard key={story.id} story={story} />
+          <StoryCard key={story.id} story={story} feedStyle={feedStyle} />
         ))}
       </div>
 
