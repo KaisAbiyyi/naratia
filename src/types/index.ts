@@ -6,7 +6,7 @@ export interface User {
   displayName?: string
   avatarUrl?: string
   ageVerified: boolean
-  contentPreference: 'all_ages' | 'mature' | 'explicit'
+  contentPreference: 'general' | 'teen' | 'mature' | 'adult'
   totalXp: number
   currentLevel: number
   readingStreak: number
@@ -22,7 +22,7 @@ export interface Story {
   description?: string
   creatorId: string
   status: 'active' | 'completed' | 'length_limited' | 'abandoned'
-  contentTier: 'all_ages' | 'mature' | 'explicit'
+  contentTier: 'general' | 'teen' | 'mature' | 'adult'
   votingDurationHours: number
   minVotesRequired: number
   maxPendingContributions: number
@@ -66,7 +66,7 @@ export interface Genre {
   colorHex?: string
   iconName?: string
   isActive: boolean
-  minContentTier: 'all_ages' | 'mature' | 'explicit'
+  minContentTier: 'general' | 'teen' | 'mature' | 'adult'
 }
 
 export interface UserAchievement {
@@ -119,7 +119,7 @@ export interface StoryCreateForm {
   title: string
   description?: string
   genreIds: string[]
-  contentTier: 'all_ages' | 'mature' | 'explicit'
+  contentTier: 'general' | 'teen' | 'mature' | 'adult'
   openingParagraph: string
 }
 

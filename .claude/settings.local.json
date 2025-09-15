@@ -6,7 +6,9 @@
       "Bash(bun run:*)",
       "mcp__playwright__browser_navigate",
       "mcp__playwright__browser_wait_for",
-      "mcp__playwright__browser_click"
+      "mcp__playwright__browser_click",
+      "Bash(git checkout:*)",
+      "Bash(bunx shadcn@latest add:*)"
     ],
     "deny": [],
     "ask": []

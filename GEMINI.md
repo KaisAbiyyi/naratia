@@ -36,8 +36,16 @@
 
 ### Recent Changes Management
 - **ALWAYS** update `recent_changes.md` after completing any task
-- Keep only last 5 changes in chronological order (newest first)
+- **File Structure**: Keep ALL changes in chronological order, but maintain "Last 5 changes" section at top
+- **Reading Rule**: ONLY read the top 5 recent changes by default, read more only when specifically needed or instructed
 - Include: date, task summary, files modified
+
+### Test Credentials
+**For Playwright testing and development:**
+- **Email**: kaisabiyyi23@if.unjani.ac.id
+- **Password**: Kais1234!
+- **Username**: kaisabiyyi
+- Always use these credentials for authentication testing
 
 ---
 

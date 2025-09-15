@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import Image from "next/image";
+import Link from 'next/link'
 import { OAuthHandler } from '@/components/auth/OAuthHandler'
 
 export const metadata: Metadata = {
@@ -73,102 +73,132 @@ export default function Home() {
   return (
     <>
       <OAuthHandler />
-      <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-        <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+      <div className="min-h-screen bg-background">
+        {/* Hero Section */}
+        <section className="py-12 lg:py-20 bg-gradient-to-b from-primary/5 to-background">
+          <div className="container mx-auto px-4 text-center">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+              Welcome to <span className="text-primary">Naratia</span>
+            </h1>
+            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Join thousands of writers in creating collaborative stories. Vote on directions, contribute paragraphs, and experience interactive fiction like never before.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/stories"
+                className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+              >
+                Browse Stories
+              </Link>
+              <Link
+                href="/stories/create"
+                className="inline-flex items-center justify-center rounded-md border border-input bg-background px-8 py-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
+              >
+                Start Writing
+              </Link>
+            </div>
+          </div>
+        </section>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        {/* Featured Stories Preview */}
+        <section className="py-12">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold tracking-tight mb-4">
+                Discover Amazing Stories
+              </h2>
+              <p className="text-muted-foreground">
+                Explore collaborative fiction created by our community
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {/* Placeholder story cards */}
+              <div className="bg-card rounded-lg border p-6">
+                <h3 className="font-semibold mb-2">The Lost Kingdom</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  A fantasy adventure where readers guide the hero through mystical lands...
+                </p>
+                <div className="flex justify-between items-center text-xs text-muted-foreground">
+                  <span>Active • Fantasy</span>
+                  <span>12 contributors</span>
+                </div>
+              </div>
+              
+              <div className="bg-card rounded-lg border p-6">
+                <h3 className="font-semibold mb-2">Space Station Alpha</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Sci-fi thriller about survival in the depths of space...
+                </p>
+                <div className="flex justify-between items-center text-xs text-muted-foreground">
+                  <span>Active • Sci-Fi</span>
+                  <span>8 contributors</span>
+                </div>
+              </div>
+              
+              <div className="bg-card rounded-lg border p-6">
+                <h3 className="font-semibold mb-2">The Detective's Dilemma</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Mystery story where every clue is decided by the community...
+                </p>
+                <div className="flex justify-between items-center text-xs text-muted-foreground">
+                  <span>Active • Mystery</span>
+                  <span>15 contributors</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <Link
+                href="/stories"
+                className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+              >
+                View All Stories
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* How It Works */}
+        <section className="py-12 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold tracking-tight text-center mb-12">
+              How It Works
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <span className="text-primary-foreground font-bold">1</span>
+                </div>
+                <h3 className="font-semibold mb-2">Read & Explore</h3>
+                <p className="text-sm text-muted-foreground">
+                  Discover ongoing stories and read the latest chapters written by the community.
+                </p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <span className="text-primary-foreground font-bold">2</span>
+                </div>
+                <h3 className="font-semibold mb-2">Vote & Guide</h3>
+                <p className="text-sm text-muted-foreground">
+                  Vote on story directions and help choose which continuation fits best.
+                </p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <span className="text-primary-foreground font-bold">3</span>
+                </div>
+                <h3 className="font-semibold mb-2">Write & Contribute</h3>
+                <p className="text-sm text-muted-foreground">
+                  Submit your own paragraphs and become part of the storytelling process.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </>
   );
