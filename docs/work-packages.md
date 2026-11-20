@@ -42,7 +42,7 @@ Catatan urutan: ledger tinta (WP-08) sengaja dikerjakan sebelum Continuity Cop (
   - Beranda statis dengan data dummy, meniru layar Beranda prototipe.
   - Panel `/dev` (aktif hanya jika `PUBLIC_DEV_PANEL=1`) berisi **Peta WP** dari `src/lib/dev/wp-map.ts`.
   - CI GitHub Actions: lint, `svelte-check`, Vitest, Playwright smoke test.
-  - Isi bagian "Perintah" di `CLAUDE.md`.
+  - Isi bagian "Perintah" di `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, dan `.github/copilot-instructions.md` (isinya harus tetap sama).
 - **Di luar scope:** database, auth.
 - **Selesai kalau:** CI hijau dan preview Vercel tampil.
 - **Cek di aplikasi:**

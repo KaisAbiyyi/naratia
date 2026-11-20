@@ -1,4 +1,7 @@
-# CLAUDE.md — Naratia v2
+# Naratia v2 — Instruksi Agent
+
+> Isi file ini identik di `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, dan `.github/copilot-instructions.md`. Kalau mengubah satu, ubah semuanya dalam commit yang sama.
+> Jangan pernah menambahkan trailer `Co-Authored-By` (atau atribusi sejenis) di commit maupun PR.
 
 Naratia adalah game menulis cerita bersama yang dibuat sebagai gamifikasi besar. Proyek pribadi pemilik untuk membangun rutinitas menulis. Branch `v2` adalah rebuild dengan SvelteKit. `main` berisi versi lama Next.js dan tidak dipakai lagi.
 

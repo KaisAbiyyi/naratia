@@ -40,7 +40,7 @@ wp/NN-slug    ← satu branch per WP, PR ke v2
 
 ## Prioritas utama
 
-Agent yang claim WP dan reviewer sama-sama memegang empat prioritas tertinggi: **performa, kompleksitas algoritma yang efisien, keamanan, dan UI/UX yang bagus.** Rinciannya ada di `CLAUDE.md`, checklist-nya di `.github/pull_request_template.md`. Anggaran yang dicek setiap WP:
+Agent yang claim WP dan reviewer sama-sama memegang empat prioritas tertinggi: **performa, kompleksitas algoritma yang efisien, keamanan, dan UI/UX yang bagus.** Rinciannya ada di file instruksi agent (`CLAUDE.md` / `AGENTS.md` / `GEMINI.md`, isinya sama), checklist-nya di `.github/pull_request_template.md`. Anggaran yang dicek setiap WP:
 
 | Aspek | Anggaran |
 |---|---|
@@ -123,7 +123,7 @@ Saat menugaskan WP ke agent, cukup kirim:
 
 ```
 Kerjakan WP-NN dari docs/work-packages.md di repo KaisAbiyyi/naratia, branch dasar v2.
-Ikuti CLAUDE.md dan docs/workflow.md. Rujukan perilaku: docs/design.md, docs/tech-plan.md,
+Ikuti AGENTS.md (isinya sama dengan CLAUDE.md dan GEMINI.md) dan docs/workflow.md. Rujukan perilaku: docs/design.md, docs/tech-plan.md,
 dan prototipe prototype/naratia-alur.html (gaya Stabilo).
 Mode: <single | orkestrasi — pengatur X, pekerja Y>.
 ```
