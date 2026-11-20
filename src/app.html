@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="id">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<meta name="text-scale" content="scale" />
+		<meta name="color-scheme" content="light dark" />
+		<meta name="theme-color" content="#F1F0EC" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.svg" type="image/svg+xml" />
+		<script>
+			// Terapkan tema pilihan sebelum halaman digambar, supaya tidak berkedip.
+			try {
+				var t = localStorage.getItem('naratia-theme');
+				if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+			} catch (e) {}
+		</script>
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>

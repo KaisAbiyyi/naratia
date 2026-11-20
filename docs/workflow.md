@@ -44,7 +44,7 @@ Agent yang claim WP dan reviewer sama-sama memegang empat prioritas tertinggi: *
 
 | Aspek | Anggaran |
 |---|---|
-| JS awal per rute | ≤ 100 kB gzip `[TBD setelah WP-01]` |
+| JS awal per rute | ≤ 100 kB gzip (patokan WP-01: seluruh JS klien ±53 kB) |
 | LCP halaman cerita di HP (preview, 4G lambat) | ≤ 2,5 detik |
 | Query per muat halaman | Tetap (tidak tumbuh dengan jumlah paragraf/kandidat) |
 | Jalur panas (tutup ronde, catat baca, saldo) | Tidak memindai seluruh riwayat. Kompleksitas ditulis di PR. |

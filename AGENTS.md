@@ -59,4 +59,21 @@ Checklist lengkapnya ada di `.github/pull_request_template.md`. Reviewer wajib m
 
 ## Perintah
 
-> Diisi oleh WP-01 (install, dev, lint, check, test, e2e, migrasi, seed).
+Butuh Node 24 (lihat `.nvmrc`) dan pnpm 10 (`corepack enable`). Salin `.env.example` ke `.env` untuk lokal.
+
+| Tujuan | Perintah |
+|---|---|
+| Install | `pnpm install` |
+| Server dev | `pnpm dev` (http://localhost:5173, panel di `/dev`) |
+| Lint + format cek | `pnpm lint` (perbaiki format: `pnpm format`) |
+| Typecheck | `pnpm check` |
+| Unit test (Vitest) | `pnpm test:unit --run` |
+| E2E (Playwright) | `pnpm exec playwright install chromium` sekali, lalu `pnpm test:e2e` (build + preview di port 4173, HP 390 px dan desktop) |
+| Build produksi | `pnpm build` |
+| Migrasi & seed | Belum ada. Ditambahkan di WP-02. |
+
+Catatan struktur:
+- Import dari `src/lib` memakai alias `#lib/...` dengan ekstensi lengkap, misalnya `#lib/components/index.ts`, `#lib/toast.svelte.ts`.
+- Variabel env didaftarkan di `src/env.ts`, dibaca lewat `$app/env/private` atau `$app/env/public`.
+- Token gaya ada di `src/lib/styles/tokens.css`. Komponen dasar di `src/lib/components/`. Peta WP di `src/lib/dev/wp-map.ts`.
+- Di Windows tanpa Developer Mode, build lokal melewati adapter Vercel (lihat `vite.config.ts`). CI dan Vercel selalu memakainya.
