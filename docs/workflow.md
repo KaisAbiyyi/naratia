@@ -38,10 +38,22 @@ wp/NN-slug    ← satu branch per WP, PR ke v2
 - Branch `v2` sendiri punya URL tetap: **aplikasi terkini**. Bookmark URL ini.
 - Merge hanya setelah pemilik selesai mengecek preview.
 
+## Prioritas utama
+
+Agent yang claim WP dan reviewer sama-sama memegang empat prioritas tertinggi: **performa, kompleksitas algoritma yang efisien, keamanan, dan UI/UX yang bagus.** Rinciannya ada di `CLAUDE.md`, checklist-nya di `.github/pull_request_template.md`. Anggaran yang dicek setiap WP:
+
+| Aspek | Anggaran |
+|---|---|
+| JS awal per rute | ≤ 100 kB gzip `[TBD setelah WP-01]` |
+| LCP halaman cerita di HP (preview, 4G lambat) | ≤ 2,5 detik |
+| Query per muat halaman | Tetap (tidak tumbuh dengan jumlah paragraf/kandidat) |
+| Jalur panas (tutup ronde, catat baca, saldo) | Tidak memindai seluruh riwayat. Kompleksitas ditulis di PR. |
+| Aksesibilitas | Kontras lolos dua tema, fokus terlihat, area sentuh ≥ 44 px |
+
 ## Status WP
 
 ```
-Backlog → Siap → Dikerjakan → Siap dicek → (Revisi ↺) → Selesai
+Backlog → Siap → Dikerjakan → Review → Siap dicek → (Revisi ↺) → Selesai
                      ↘ Terblokir
 ```
 
@@ -49,9 +61,25 @@ Backlog → Siap → Dikerjakan → Siap dicek → (Revisi ↺) → Selesai
 |---|---|---|
 | Siap | Semua "Kamu lakukan" sudah beres, WP sebelumnya sudah Siap dicek | Pemilik |
 | Dikerjakan | Agent sedang mengerjakan di `wp/NN-slug` | Agent |
-| Siap dicek | PR terbuka, CI hijau, preview jalan, checklist di PR | Agent |
+| Review | PR terbuka, CI hijau. Reviewer (agent lain atau pemilik) memeriksa empat prioritas utama dan fungsionalitas. Temuan diperbaiki di PR yang sama. | Agent / reviewer |
+| Siap dicek | Review lolos, preview jalan, checklist di PR | Reviewer |
 | Revisi | Pemilik minta penyesuaian UI/alur setelah mengecek | Pemilik |
 | Selesai | Pemilik sudah mengecek, PR di-merge ke `v2` | Pemilik |
+
+## Board Focus Lane
+
+Di Notion, kolom **Focus Lane** adalah tampilan papan untuk melihat posisi kerja sekilas. Kolom ini **tidak menggantikan Status**: yang menentukan keadaan WP tetap Status.
+
+| Lane | Isi |
+|---|---|
+| 01 · Last Done | WP yang paling akhir Selesai, terbaru di atas |
+| 02 · Now | WP yang sedang Dikerjakan, Review, Siap dicek, atau Revisi. Kalau belum ada yang dikerjakan: WP berikutnya yang Siap. |
+| 03 · Up Next | WP yang hanya menunggu WP di Now |
+| (kosong) | WP lain |
+
+- Siapa pun yang mengubah Status juga memperbarui Focus Lane di langkah yang sama, dan menghitung ulang Now/Up Next.
+- Claim Owner hanya diisi setelah claim terverifikasi. Saat claim, isi juga Branch dan Next Action.
+- Kartu dashboard di Project Hub (Overall progress, Last Done, Now, Up Next) adalah snapshot. Sinkronkan setiap ada claim, PR, review, cek pemilik, dan merge.
 
 **Aturan antrean:** paling banyak **satu** WP berstatus Siap dicek yang belum dicek pemilik. Kalau sudah ada satu, agent berikutnya tidak memulai WP baru sampai pemilik mengecek. Ini yang menjaga pemilik selalu tahu wujud aplikasinya.
 
@@ -59,7 +87,7 @@ Backlog → Siap → Dikerjakan → Siap dicek → (Revisi ↺) → Selesai
 
 Sebuah WP baru boleh dipindah ke Siap dicek kalau:
 
-1. Semua kriteria **Selesai kalau** di WP terpenuhi, termasuk test.
+1. Semua kriteria **Selesai kalau** di WP terpenuhi, termasuk test, dan reviewer sudah meloloskan empat prioritas utama.
 2. CI hijau (lint, typecheck, unit test, Playwright).
 3. Preview Vercel bisa dibuka, dan data contoh sudah ter-seed di sana.
 4. **Peta WP** di `/dev` diperbarui: WP ini bertanda selesai, lengkap dengan langkah cek dan tautan langsung ke halaman yang relevan.
