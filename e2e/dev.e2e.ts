@@ -2,13 +2,14 @@ import { expect, test } from '@playwright/test';
 
 // Server e2e berjalan dengan PUBLIC_DEV_PANEL=1 (lihat playwright.config.ts).
 test.describe('Panel /dev', () => {
-	test('Peta WP menampilkan WP sekarang dan berikutnya', async ({ page }) => {
+	test('Peta WP menampilkan WP terakhir selesai dan berikutnya', async ({ page }) => {
 		await page.goto('/dev');
 		await expect(page.getByRole('heading', { name: 'Panel dev' })).toBeVisible();
 		await expect(page.getByRole('tab', { name: /Peta WP/ })).toHaveAttribute(
 			'aria-selected',
 			'true'
 		);
+		await expect(page.getByText('1 dari 13 WP selesai.')).toBeVisible();
 		await expect(page.getByText('WP-01 · Fondasi SvelteKit & deploy')).toBeVisible();
 		await expect(page.getByText('WP-02 · Supabase, auth, skema inti & data contoh')).toBeVisible();
 	});

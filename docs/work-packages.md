@@ -7,7 +7,7 @@
 
 | WP | Judul | Milestone | Mode | Lingkungan | Bergantung | Status |
 |---|---|---|---|---|---|---|
-| 01 | Fondasi SvelteKit & deploy | M0 | Single | Cloud + Pemilik | – | Review |
+| 01 | Fondasi SvelteKit & deploy | M0 | Single | Cloud + Pemilik | – | Selesai |
 | 02 | Supabase, auth, skema inti & data contoh | M0 | Single kuat | Cloud + Pemilik | 01 | Backlog |
 | 03 | Baca & tulis cerita (solo) | M1 | Orkestrasi | Cloud | 02 | Backlog |
 | 04 | Ronde, suara & penutupan ronde | M1 | Orkestrasi | Cloud | 03 | Backlog |

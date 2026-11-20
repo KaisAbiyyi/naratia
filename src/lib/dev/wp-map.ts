@@ -41,7 +41,7 @@ export const WP_MAP: readonly WorkPackage[] = [
 		id: 'WP-01',
 		title: 'Fondasi SvelteKit & deploy',
 		milestone: 'M0',
-		status: 'review',
+		status: 'selesai',
 		checks: [
 			{
 				text: 'Buka di HP dan laptop. Beranda tampil dengan gaya Stabilo (garis tebal, bayangan padat).',
@@ -200,6 +200,11 @@ export function nextWp(map: readonly WorkPackage[]): WorkPackage | undefined {
 	const now = currentWp(map);
 	const from = now ? map.indexOf(now) + 1 : 0;
 	return map.slice(from).find((wp) => PENDING.has(wp.status));
+}
+
+/** WP terakhir yang selesai (lane "Last Done"). */
+export function lastDoneWp(map: readonly WorkPackage[]): WorkPackage | undefined {
+	return map.findLast((wp) => wp.status === 'selesai');
 }
 
 /** Jumlah WP selesai, untuk progress keseluruhan. */

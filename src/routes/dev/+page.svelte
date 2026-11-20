@@ -3,7 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { Tabs } from '#lib/components/index.ts';
-	import { WP_MAP, currentWp, doneCount, nextWp } from '#lib/dev/wp-map.ts';
+	import { WP_MAP, currentWp, doneCount, lastDoneWp, nextWp } from '#lib/dev/wp-map.ts';
 	import ComponentGallery from './ComponentGallery.svelte';
 	import WpMap from './WpMap.svelte';
 	import type { DevTab } from './+page.server';
@@ -27,6 +27,7 @@
 		void replaceState(`${resolve('/dev')}${search}`, page.state);
 	}
 
+	const lastDone = lastDoneWp(WP_MAP);
 	const now = currentWp(WP_MAP);
 	const next = nextWp(WP_MAP);
 	const done = doneCount(WP_MAP);
@@ -47,7 +48,7 @@
 	<Tabs items={tabs} bind:value={tab} label="Bagian panel dev" {onchange}>
 		{#snippet panel(value: DevTab)}
 			{#if value === 'peta'}
-				<WpMap map={WP_MAP} {now} {next} />
+				<WpMap map={WP_MAP} {lastDone} {now} {next} />
 			{:else}
 				<ComponentGallery />
 			{/if}

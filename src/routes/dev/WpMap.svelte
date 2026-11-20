@@ -4,11 +4,12 @@
 
 	interface Props {
 		map: readonly WorkPackage[];
+		lastDone?: WorkPackage;
 		now?: WorkPackage;
 		next?: WorkPackage;
 	}
 
-	let { map, now, next }: Props = $props();
+	let { map, lastDone, now, next }: Props = $props();
 
 	const TONE: Partial<Record<WpStatus, 'warn' | 'new' | 'ok'>> = {
 		dikerjakan: 'new',
@@ -20,6 +21,10 @@
 </script>
 
 <div class="lanes">
+	<div class="lane">
+		<span class="sec">Terakhir selesai</span>
+		<b>{lastDone ? `${lastDone.id} · ${lastDone.title}` : 'Belum ada'}</b>
+	</div>
 	<div class="lane now">
 		<span class="sec">Sekarang</span>
 		<b>{now ? `${now.id} · ${now.title}` : 'Belum ada'}</b>

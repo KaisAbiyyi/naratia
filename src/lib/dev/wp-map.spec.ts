@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { WP_MAP, currentWp, doneCount, nextWp, type WorkPackage } from './wp-map';
+import { WP_MAP, currentWp, doneCount, lastDoneWp, nextWp, type WorkPackage } from './wp-map';
 
 const wp = (id: string, status: WorkPackage['status']): WorkPackage => ({
 	id,
@@ -21,8 +21,9 @@ describe('peta WP', () => {
 		for (const w of WP_MAP) expect(w.checks.length).toBeGreaterThan(0);
 	});
 
-	it('saat ini WP-01 berjalan dan WP-02 berikutnya', () => {
-		expect(currentWp(WP_MAP)?.id).toBe('WP-01');
+	it('WP-01 selesai, WP-02 berikutnya', () => {
+		expect(lastDoneWp(WP_MAP)?.id).toBe('WP-01');
+		expect(currentWp(WP_MAP)).toBeUndefined();
 		expect(nextWp(WP_MAP)?.id).toBe('WP-02');
 	});
 
@@ -31,6 +32,7 @@ describe('peta WP', () => {
 		expect(currentWp(map)?.id).toBe('C');
 		expect(nextWp(map)?.id).toBe('D');
 		expect(doneCount(map)).toBe(1);
+		expect(lastDoneWp(map)?.id).toBe('A');
 	});
 
 	it('tanpa WP berjalan, berikutnya = WP pertama yang belum dimulai', () => {
