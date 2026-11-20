@@ -15,3 +15,14 @@ Branch ini (`v2`) adalah rebuild dengan SvelteKit + Supabase, di-deploy ke Verce
 | [prototype/naratia-alur.html](prototype/naratia-alur.html) | Prototipe berpemandu (gaya Stabilo), buka langsung di browser |
 
 Dokumen versi lama (Next.js, 2025) ada di [docs/archive/2025-nextjs/](docs/archive/2025-nextjs/).
+
+## Menjalankan
+
+```sh
+corepack enable
+pnpm install
+cp .env.example .env
+pnpm dev
+```
+
+Perintah lengkap (lint, typecheck, test, e2e) ada di bagian "Perintah" di [AGENTS.md](AGENTS.md).

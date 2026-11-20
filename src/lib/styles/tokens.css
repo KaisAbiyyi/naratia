@@ -1,0 +1,108 @@
+/*
+ * Token gaya Stabilo (neobrutalism), dipindah dari prototype/naratia-alur.html.
+ * Garis tepi tebal, bayangan padat, stabilo kuning untuk kutipan, pink untuk thread, biru untuk tinta.
+ *
+ * Tema: tanpa atribut = ikut sistem. <html data-theme="light|dark"> = pilihan pengguna.
+ * Nama token sama dengan prototipe, kecuali --phone yang di aplikasi menjadi --surface.
+ *
+ * Tema gelap sengaja tidak memakai garis/bayangan putih seperti prototipe: terlalu silau.
+ * Garis dan bayangan memakai abu hangat redup, warna aksen diturunkan saturasinya.
+ */
+:root {
+	--bg: #f1f0ec;
+	--surface: #ffffff;
+	--sunk: #f4f3ef;
+	--ink: #121212;
+	--muted: #55555c;
+	--line: #e2e0da;
+	--edge: #121212;
+	--tinta: #2147e8;
+	--on-tinta: #ffffff;
+	--tinta-soft: #dfe5ff;
+	--hi: #ffe14d;
+	--on-hi: #121212;
+	--hi-mark: #ffe14d;
+	--pink: #ff9ec0;
+	--pink-mark: #ffb8d1;
+	--benang: #b0124f;
+	--benang-soft: #ffe0ec;
+	--ok: #11703f;
+	--ok-soft: #d8f5e5;
+	--warn: #7a4f00;
+	--warn-soft: #fff1c2;
+	--veil: rgba(18, 18, 18, 0.45);
+
+	--f-ui: 'Bricolage Grotesque Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--f-story: 'Source Serif 4 Variable', Georgia, 'Times New Roman', serif;
+
+	--b: 2.5px solid var(--edge);
+	--b-thin: 2px solid var(--edge);
+	--sh: 3px 3px 0 var(--edge);
+	--sh-s: 2px 2px 0 var(--edge);
+	--sh-l: 5px 5px 0 var(--edge);
+
+	--r-s: 10px;
+	--r: 12px;
+	--r-l: 18px;
+	--r-xl: 24px;
+
+	--tap: 44px;
+	--gutter: 16px;
+	--col: 680px;
+
+	color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme='light']) {
+		--bg: #191816;
+		--surface: #23221f;
+		--sunk: #1e1d1a;
+		--ink: #e9e5db;
+		--muted: #a29d91;
+		--line: #34322d;
+		--edge: #6a655c;
+		--tinta: #9ba9f5;
+		--on-tinta: #15161c;
+		--tinta-soft: #282c45;
+		--hi: #e8c547;
+		--on-hi: #1a1814;
+		--hi-mark: rgba(232, 197, 71, 0.26);
+		--pink: #e99ab6;
+		--pink-mark: rgba(233, 154, 182, 0.26);
+		--benang: #f0a3bf;
+		--benang-soft: #3a2530;
+		--ok: #7fd3a6;
+		--ok-soft: #1f3329;
+		--warn: #ebc86b;
+		--warn-soft: #36301c;
+		--veil: rgba(0, 0, 0, 0.6);
+		color-scheme: dark;
+	}
+}
+
+:root[data-theme='dark'] {
+	--bg: #191816;
+	--surface: #23221f;
+	--sunk: #1e1d1a;
+	--ink: #e9e5db;
+	--muted: #a29d91;
+	--line: #34322d;
+	--edge: #6a655c;
+	--tinta: #9ba9f5;
+	--on-tinta: #15161c;
+	--tinta-soft: #282c45;
+	--hi: #e8c547;
+	--on-hi: #1a1814;
+	--hi-mark: rgba(232, 197, 71, 0.26);
+	--pink: #e99ab6;
+	--pink-mark: rgba(233, 154, 182, 0.26);
+	--benang: #f0a3bf;
+	--benang-soft: #3a2530;
+	--ok: #7fd3a6;
+	--ok-soft: #1f3329;
+	--warn: #ebc86b;
+	--warn-soft: #36301c;
+	--veil: rgba(0, 0, 0, 0.6);
+	color-scheme: dark;
+}
