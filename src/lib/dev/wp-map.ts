@@ -48,7 +48,11 @@ export const WP_MAP: readonly WorkPackage[] = [
 				href: '/'
 			},
 			{
-				text: 'Ganti tema HP/OS ke gelap, atau pakai tombol tema di kanan atas. Semua teks tetap terbaca.',
+				text: 'Ketuk ikon profil di kanan atas. Tugas hari ini dan pilihan tema muncul di sana.',
+				href: '/'
+			},
+			{
+				text: 'Ganti tema HP/OS ke gelap, atau pilih Gelap di menu profil. Semua teks nyaman dibaca.',
 				href: '/'
 			},
 			{ text: 'Buka /dev. Peta WP menampilkan WP-01 dan WP-02 sebagai berikutnya.', href: '/dev' },
@@ -150,7 +154,7 @@ export const WP_MAP: readonly WorkPackage[] = [
 		milestone: 'M3',
 		status: 'backlog',
 		checks: [
-			{ text: 'Beranda menampilkan tugas dan streak hari ini.' },
+			{ text: 'Menu profil menampilkan tugas dan streak hari ini dengan data asli.' },
 			{ text: 'Tanya di sebuah paragraf, lalu jawab dari akun lain lewat kandidat yang menang.' },
 			{ text: 'Profil menampilkan Jejak, bukan saldo tinta.' }
 		]

@@ -47,7 +47,7 @@ Catatan urutan: ledger tinta (WP-08) sengaja dikerjakan sebelum Continuity Cop (
 - **Selesai kalau:** CI hijau dan preview Vercel tampil.
 - **Cek di aplikasi:**
   1. Buka preview di HP dan laptop. Beranda tampil dengan gaya Stabilo (garis tebal, bayangan padat).
-  2. Ganti tema HP/OS ke gelap, atau pakai tombol tema. Semua teks tetap terbaca.
+  2. Ganti tema HP/OS ke gelap, atau pilih tema di menu profil. Semua teks tetap terbaca.
   3. Buka `/dev`. Peta WP menampilkan WP-01 selesai dan WP-02 berikutnya.
 
 ## WP-02 · Supabase, auth, skema inti & data contoh
@@ -176,10 +176,10 @@ Catatan urutan: ledger tinta (WP-08) sengaja dikerjakan sebelum Continuity Cop (
 - **Isi:**
   - Utang cerita: tanya di paragraf, dijawab di narasi, divalidasi penanya atau voter, +10.
   - Profil dengan Jejak.
-  - Tugas harian di Beranda, termasuk tugas yang butuh membaca.
+  - Tugas harian di menu profil (ikon profil di app bar), termasuk tugas yang butuh membaca.
   - Streak baca, tulis, dan suara, plus kombo.
 - **Cek di aplikasi:**
-  1. Beranda menampilkan tugas dan streak hari ini.
+  1. Menu profil menampilkan tugas dan streak hari ini.
   2. Tanya di sebuah paragraf, lalu jawab dari akun lain lewat kandidat yang menang.
   3. Profil menampilkan Jejak, bukan saldo tinta.
 

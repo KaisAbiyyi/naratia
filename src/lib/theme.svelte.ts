@@ -1,5 +1,5 @@
 import { browser } from '$app/env';
-import { THEME_STORAGE_KEY, nextThemePref, parseThemePref, type ThemePref } from './theme';
+import { THEME_STORAGE_KEY, parseThemePref, type ThemePref } from './theme';
 
 function readStored(): ThemePref {
 	try {
@@ -29,9 +29,9 @@ class ThemeState {
 		if (browser) this.pref = readStored();
 	}
 
-	cycle() {
-		this.pref = nextThemePref(this.pref);
-		apply(this.pref);
+	set(pref: ThemePref) {
+		this.pref = pref;
+		apply(pref);
 	}
 }
 

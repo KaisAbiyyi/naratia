@@ -2,6 +2,7 @@
 	import '#lib/styles/index.css';
 	import { AppBar, Sheet, Toaster } from '#lib/components/index.ts';
 	import { HOME_DUMMY } from '#lib/dummy/home.ts';
+	import { PROFILE_DUMMY } from '#lib/dummy/profile.ts';
 	import type { LayoutProps } from './$types';
 
 	let { data, children }: LayoutProps = $props();
@@ -15,6 +16,7 @@
 <AppBar
 	tinta={HOME_DUMMY.tinta}
 	cards={HOME_DUMMY.cards}
+	profile={PROFILE_DUMMY}
 	devPanel={data.devPanel}
 	onTinta={() => (tintaOpen = true)}
 	onCards={() => (cardsOpen = true)}

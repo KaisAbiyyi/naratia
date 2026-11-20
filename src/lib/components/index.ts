@@ -6,6 +6,7 @@ export { default as Icon } from './Icon.svelte';
 export { default as Pill } from './Pill.svelte';
 export { default as Sheet } from './Sheet.svelte';
 export { default as Tabs } from './Tabs.svelte';
-export { default as ThemeToggle } from './ThemeToggle.svelte';
+export { default as ProfileMenu } from './ProfileMenu.svelte';
+export { default as ThemeSwitch } from './ThemeSwitch.svelte';
 export { default as Toaster } from './Toaster.svelte';
 export type { IconName } from './icons';

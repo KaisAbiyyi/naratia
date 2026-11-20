@@ -1,12 +1,19 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+const openProfile = async (page: Page) => {
+	await page.getByRole('button', { name: /^Profil kamu_uji/ }).click();
+	const menu = page.locator('[popover]:popover-open');
+	await expect(menu).toBeVisible();
+	return menu;
+};
 
 test.describe('Beranda', () => {
-	test('menampilkan ronde, cerita lain, dan tugas', async ({ page }) => {
+	test('menampilkan ronde dan cerita lain, tanpa daftar tugas', async ({ page }) => {
 		await page.goto('/');
 		await expect(page.getByRole('link', { name: 'Naratia' })).toBeVisible();
 		await expect(page.getByText('Mercusuar Pulau Garam')).toBeVisible();
 		await expect(page.getByRole('heading', { name: 'Cerita lain' })).toBeVisible();
-		await expect(page.getByText('Baca 5 paragraf baru')).toBeVisible();
+		await expect(page.getByText('Baca 5 paragraf baru')).toBeHidden();
 	});
 
 	test('mengetuk kartu ronde menampilkan toast', async ({ page }) => {
@@ -24,19 +31,29 @@ test.describe('Beranda', () => {
 		await expect(sheet).toBeHidden();
 	});
 
-	test('tombol tema berganti dan tersimpan setelah muat ulang', async ({ page }) => {
+	test('menu profil berisi tugas hari ini dan tertutup dengan Esc', async ({ page }) => {
+		await page.goto('/');
+		const avatar = page.getByRole('button', { name: /^Profil kamu_uji/ });
+		await expect(avatar).toHaveAccessibleName(/4 tugas hari ini belum selesai/);
+		const menu = await openProfile(page);
+		await expect(menu.getByText('Baca 5 paragraf baru')).toBeVisible();
+		await expect(menu.getByText('Hari ke-3 beruntun menulis')).toBeVisible();
+		await page.keyboard.press('Escape');
+		await expect(menu).toBeHidden();
+	});
+
+	test('pilihan tema di menu profil berlaku dan tersimpan', async ({ page }) => {
 		await page.goto('/');
 		const html = page.locator('html');
-		const toggle = page.getByRole('button', { name: /^Tema:/ });
-		await expect(toggle).toHaveAttribute('data-theme-pref', 'system');
-		await toggle.click();
-		await expect(html).toHaveAttribute('data-theme', 'light');
-		await toggle.click();
+		let menu = await openProfile(page);
+		await expect(menu.getByRole('radio', { name: 'Sistem' })).toBeChecked();
+		await menu.getByText('Gelap', { exact: true }).click();
 		await expect(html).toHaveAttribute('data-theme', 'dark');
 		await page.reload();
 		await expect(html).toHaveAttribute('data-theme', 'dark');
-		await expect(toggle).toHaveAttribute('data-theme-pref', 'dark');
-		await toggle.click();
+		menu = await openProfile(page);
+		await expect(menu.getByRole('radio', { name: 'Gelap' })).toBeChecked();
+		await menu.getByText('Sistem', { exact: true }).click();
 		await expect(html).not.toHaveAttribute('data-theme', /.+/);
 	});
 

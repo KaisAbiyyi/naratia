@@ -20,23 +20,14 @@ export interface OtherStory {
 	state: string;
 }
 
-export interface DailyTask {
-	label: string;
-	done: number;
-	target: number;
-}
-
 export interface HomeData {
-	streakDays: number;
 	tinta: number;
 	cards: number;
 	featured: FeaturedRound[];
 	others: OtherStory[];
-	tasks: DailyTask[];
 }
 
 export const HOME_DUMMY: HomeData = {
-	streakDays: 3,
 	tinta: 50,
 	cards: 0,
 	featured: [
@@ -53,11 +44,5 @@ export const HOME_DUMMY: HomeData = {
 	others: [
 		{ id: 'pasar-malam-terakhir', title: 'Pasar Malam Terakhir', state: 'voting akhir bab' },
 		{ id: 'kota-yang-lupa-hujan', title: 'Kota yang Lupa Hujan', state: 'ronde sepi' }
-	],
-	tasks: [
-		{ label: 'Baca 5 paragraf baru', done: 0, target: 5 },
-		{ label: 'Simpan 1 kartu kutipan', done: 0, target: 1 },
-		{ label: 'Beri 1 suara', done: 0, target: 1 },
-		{ label: 'Kirim 1 kandidat', done: 0, target: 1 }
 	]
 };

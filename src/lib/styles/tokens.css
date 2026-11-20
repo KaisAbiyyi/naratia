@@ -4,6 +4,9 @@
  *
  * Tema: tanpa atribut = ikut sistem. <html data-theme="light|dark"> = pilihan pengguna.
  * Nama token sama dengan prototipe, kecuali --phone yang di aplikasi menjadi --surface.
+ *
+ * Tema gelap sengaja tidak memakai garis/bayangan putih seperti prototipe: terlalu silau.
+ * Garis dan bayangan memakai abu hangat redup, warna aksen diturunkan saturasinya.
  */
 :root {
 	--bg: #f1f0ec;
@@ -52,54 +55,54 @@
 
 @media (prefers-color-scheme: dark) {
 	:root:not([data-theme='light']) {
-		--bg: #141416;
-		--surface: #1e1e22;
-		--sunk: #27272c;
-		--ink: #f3f2ee;
-		--muted: #a9a9b2;
-		--line: #34343a;
-		--edge: #f3f2ee;
-		--tinta: #8fa3ff;
-		--on-tinta: #121212;
-		--tinta-soft: #2a3160;
-		--hi: #ffe14d;
-		--on-hi: #121212;
-		--hi-mark: rgba(255, 225, 77, 0.3);
-		--pink: #ff9ec0;
-		--pink-mark: rgba(255, 158, 192, 0.32);
-		--benang: #ff8fb8;
-		--benang-soft: #3d2230;
-		--ok: #6fdca4;
-		--ok-soft: #1b3528;
-		--warn: #ffd36b;
-		--warn-soft: #3a3016;
+		--bg: #191816;
+		--surface: #23221f;
+		--sunk: #1e1d1a;
+		--ink: #e9e5db;
+		--muted: #a29d91;
+		--line: #34322d;
+		--edge: #6a655c;
+		--tinta: #9ba9f5;
+		--on-tinta: #15161c;
+		--tinta-soft: #282c45;
+		--hi: #e8c547;
+		--on-hi: #1a1814;
+		--hi-mark: rgba(232, 197, 71, 0.26);
+		--pink: #e99ab6;
+		--pink-mark: rgba(233, 154, 182, 0.26);
+		--benang: #f0a3bf;
+		--benang-soft: #3a2530;
+		--ok: #7fd3a6;
+		--ok-soft: #1f3329;
+		--warn: #ebc86b;
+		--warn-soft: #36301c;
 		--veil: rgba(0, 0, 0, 0.6);
 		color-scheme: dark;
 	}
 }
 
 :root[data-theme='dark'] {
-	--bg: #141416;
-	--surface: #1e1e22;
-	--sunk: #27272c;
-	--ink: #f3f2ee;
-	--muted: #a9a9b2;
-	--line: #34343a;
-	--edge: #f3f2ee;
-	--tinta: #8fa3ff;
-	--on-tinta: #121212;
-	--tinta-soft: #2a3160;
-	--hi: #ffe14d;
-	--on-hi: #121212;
-	--hi-mark: rgba(255, 225, 77, 0.3);
-	--pink: #ff9ec0;
-	--pink-mark: rgba(255, 158, 192, 0.32);
-	--benang: #ff8fb8;
-	--benang-soft: #3d2230;
-	--ok: #6fdca4;
-	--ok-soft: #1b3528;
-	--warn: #ffd36b;
-	--warn-soft: #3a3016;
+	--bg: #191816;
+	--surface: #23221f;
+	--sunk: #1e1d1a;
+	--ink: #e9e5db;
+	--muted: #a29d91;
+	--line: #34322d;
+	--edge: #6a655c;
+	--tinta: #9ba9f5;
+	--on-tinta: #15161c;
+	--tinta-soft: #282c45;
+	--hi: #e8c547;
+	--on-hi: #1a1814;
+	--hi-mark: rgba(232, 197, 71, 0.26);
+	--pink: #e99ab6;
+	--pink-mark: rgba(233, 154, 182, 0.26);
+	--benang: #f0a3bf;
+	--benang-soft: #3a2530;
+	--ok: #7fd3a6;
+	--ok-soft: #1f3329;
+	--warn: #ebc86b;
+	--warn-soft: #36301c;
 	--veil: rgba(0, 0, 0, 0.6);
 	color-scheme: dark;
 }

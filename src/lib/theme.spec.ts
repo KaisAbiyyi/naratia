@@ -1,11 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { nextThemePref, parseThemePref } from './theme';
+import { THEME_OPTIONS, parseThemePref } from './theme';
 
 describe('tema', () => {
-	it('berputar: ikut sistem → terang → gelap → ikut sistem', () => {
-		expect(nextThemePref('system')).toBe('light');
-		expect(nextThemePref('light')).toBe('dark');
-		expect(nextThemePref('dark')).toBe('system');
+	it('pilihan berurutan: ikut sistem, terang, gelap', () => {
+		expect(THEME_OPTIONS).toEqual(['system', 'light', 'dark']);
 	});
 
 	it('nilai tersimpan yang tidak dikenal dianggap ikut sistem', () => {

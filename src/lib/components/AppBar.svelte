@@ -1,17 +1,19 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import Chip from './Chip.svelte';
-	import ThemeToggle from './ThemeToggle.svelte';
+	import ProfileMenu from './ProfileMenu.svelte';
+	import type { ProfileSummary } from '#lib/dummy/profile.ts';
 
 	interface Props {
 		tinta: number;
 		cards: number;
+		profile: ProfileSummary;
 		devPanel?: boolean;
 		onTinta?: () => void;
 		onCards?: () => void;
 	}
 
-	let { tinta, cards, devPanel = false, onTinta, onCards }: Props = $props();
+	let { tinta, cards, profile, devPanel = false, onTinta, onCards }: Props = $props();
 </script>
 
 <header class="abar">
@@ -29,7 +31,7 @@
 			onclick={onTinta}
 		/>
 		<Chip icon="card" value={cards} label="{cards} kartu kutipan" onclick={onCards} />
-		<ThemeToggle />
+		<ProfileMenu {profile} />
 	</div>
 </header>
 

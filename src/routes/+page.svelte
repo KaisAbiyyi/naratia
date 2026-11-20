@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Card, Icon, Pill } from '#lib/components/index.ts';
+	import { Card, Pill } from '#lib/components/index.ts';
 	import { toast } from '#lib/toast.svelte.ts';
 	import type { PageProps } from './$types';
 
@@ -18,7 +18,7 @@
 <div class="home">
 	<header class="intro">
 		<h1 class="visually-hidden">Beranda</h1>
-		<p class="hello">{data.greeting}. Hari ke-{home.streakDays} beruntun menulis.</p>
+		<p class="hello">{data.greeting}. Hari ke-{data.streakDays} beruntun menulis.</p>
 	</header>
 
 	<section aria-labelledby="sec-ronde">
@@ -48,23 +48,6 @@
 		{:else}
 			<p class="empty">Belum ada cerita lain.</p>
 		{/each}
-	</section>
-
-	<section aria-labelledby="sec-tugas">
-		<h2 class="sec" id="sec-tugas">Tugas hari ini</h2>
-		<ul class="tasks">
-			{#each home.tasks as task (task.label)}
-				{@const done = task.done >= task.target}
-				<li class="task" class:done>
-					<span class="tk"><Icon name="check" size={13} /></span>
-					<span>{task.label}</span>
-					<span class="tn">
-						<span class="visually-hidden">{done ? 'selesai' : 'progres'}</span>
-						{task.done}/{task.target}
-					</span>
-				</li>
-			{/each}
-		</ul>
 	</section>
 
 	<p class="note">
@@ -117,44 +100,6 @@
 	.dim-title {
 		color: var(--ink);
 		font-weight: 700;
-	}
-	.tasks {
-		display: flex;
-		flex-direction: column;
-		margin: 0;
-		padding: 0;
-		list-style: none;
-	}
-	.task {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		min-height: var(--tap);
-		padding: 9px 0;
-		border-bottom: 1.5px solid var(--line);
-		font-size: 14px;
-		font-weight: 600;
-	}
-	.tk {
-		display: grid;
-		place-items: center;
-		flex: none;
-		width: 22px;
-		height: 22px;
-		border-radius: 7px;
-		border: var(--b-thin);
-		color: transparent;
-		background: var(--surface);
-	}
-	.done .tk {
-		background: var(--ok);
-		color: var(--surface);
-	}
-	.tn {
-		margin-left: auto;
-		color: var(--muted);
-		font-variant-numeric: tabular-nums;
-		font-size: 13px;
 	}
 	.empty {
 		padding: 14px 16px;
