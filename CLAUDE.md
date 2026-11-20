@@ -1,153 +1,29 @@
-# CLAUDE.md - Development Rules and Guidelines
+# CLAUDE.md — Naratia v2
 
-## Primary Task
-**ALWAYS** read all files in the `docs/` directory at the beginning of any development session to understand the project requirements and architecture.
+Naratia adalah game menulis cerita bersama yang dibuat sebagai gamifikasi besar. Proyek pribadi pemilik untuk membangun rutinitas menulis. Branch `v2` adalah rebuild dengan SvelteKit. `main` berisi versi lama Next.js dan tidak dipakai lagi.
 
-## Development Workflow Rules
+## Baca dulu
 
-### 1. Pre-Development Reading
-- **MANDATORY**: Read all files in `docs/` folder before starting any work
-- Understand the PRD (`docs/prd.md`) for product requirements
-- Review the database schema (`docs/schema.sql`) for data structure
-- Check the development plan (`docs/plan.md`) for task organization
-- Study the technical architecture (`docs/tech.md`) for implementation guidelines
+1. `docs/workflow.md`: cara kerja WP, definisi selesai, aturan antrean. **Wajib.**
+2. `docs/work-packages.md`: WP yang sedang kamu kerjakan. Kerjakan hanya scope WP itu.
+3. `docs/design.md`: aturan game, satu-satunya sumber kebenaran untuk perilaku.
+4. `docs/tech-plan.md`: stack, model data, alur `close_round`, deteksi membaca.
+5. `prototype/naratia-alur.html`: wujud dan gaya (Stabilo) yang harus diikuti UI.
 
-### 2. Post-Completion Code Review
-After completing any user prompt and finishing all related tasks:
+`docs/archive/` berisi dokumen versi lama. Jangan dijadikan rujukan.
 
-#### SOLID Principle Review
-- **Single Responsibility**: Each class/function should have one reason to change
-- **Open/Closed**: Open for extension, closed for modification
-- **Liskov Substitution**: Derived classes must be substitutable for base classes
-- **Interface Segregation**: Clients shouldn't depend on interfaces they don't use
-- **Dependency Inversion**: Depend on abstractions, not concretions
+## Aturan kerja
 
-Review all new/modified code to ensure SOLID compliance.
+- Satu WP = satu branch `wp/NN-slug` dari `v2` = satu PR ke `v2`.
+- Setiap WP harus menghasilkan sesuatu yang bisa diklik di preview Vercel. Perbarui **Peta WP** (`src/lib/dev/wp-map.ts`) dengan langkah cek dan tautannya.
+- Deskripsi PR wajib memuat: ringkasan, tautan preview, screenshot HP (390 px) dan desktop dalam tema terang dan gelap, checklist "Cek di aplikasi", dan hal yang sengaja belum dikerjakan.
+- Aturan domain (tinta, suara, keberatan, penutupan ronde) ditulis sebagai fungsi Postgres dalam satu transaksi. Jangan diduplikasi di klien.
+- Ledger tinta hanya boleh di-insert, tidak pernah di-update. Semua angka ekonomi ada di satu file konfigurasi.
+- Teks UI dalam Bahasa Indonesia yang wajar. Hindari istilah sistem di layar.
+- Gaya diambil dari token Stabilo. Jangan menambah library UI.
+- Panel `/dev` hanya aktif kalau `PUBLIC_DEV_PANEL=1`. Jangan pernah aktif di production.
+- Jangan menyentuh scope WP lain. Kalau menemukan masalah di luar scope, catat di PR.
 
-#### Build and Test Process
-1. **Build**: Always run the build command to ensure no compilation errors
-2. **Development Server**: Start the dev server (`npm run dev` or equivalent)
-3. **Automated Review**: Use available MCP tools (Playwright) to review the implementation
-4. **User Flow Testing**: Follow actual user workflows to validate functionality
+## Perintah
 
-### 3. Technology Learning
-When uncertain about any tech stack usage:
-- **ALWAYS** use Context7 MCP to learn and understand the proper implementation
-- Research best practices and patterns for the specific technology
-- Apply learned patterns consistently throughout the project
-
-### 4. UI Development Rules
-
-#### Layout Preferences
-- **ALWAYS** use `flex flex-col` with `gap-*` classes
-- **NEVER** use `space-y-*` utilities
-- **NEVER** use `max-w-*` classes for width constraints
-
-#### Component Architecture
-- **ALWAYS** use shadcn/ui as the base component library
-- **MANDATORY**: Check `components/ui/` folder before creating any UI component
-- **NEVER** create "shadcn-style" components manually
-- **ALWAYS** use the official shadcn CLI: `bunx shadcn@latest add [component-name]`
-
-#### Component Installation Process
-1. Check if component exists in `components/ui/`
-2. If not present, install via CLI: `bunx shadcn@latest add [component-name]`
-3. Import and use the installed component
-4. Customize through composition, not modification
-
-### 5. Development Quality Assurance
-
-#### Before Marking Tasks Complete
-- [ ] Code follows SOLID principles
-- [ ] Build completes successfully
-- [ ] Development server runs without errors
-- [ ] MCP Playwright review completed (when applicable)
-- [ ] UI follows established patterns (flex, gap, shadcn components)
-- [ ] All functionality tested through user workflows
-
-#### Error Resolution
-- If MCP Context7 is available, use it to research solutions
-- Follow tech stack documentation and best practices
-- Maintain consistency with existing codebase patterns
-
-## Architecture Compliance
-
-### Database Operations
-- Use Drizzle ORM for all database interactions
-- Follow the schema defined in `docs/schema.sql`
-- Implement proper Row Level Security (RLS) policies
-
-### State Management
-- Use TanStack Query for server state
-- Use Zustand for client-side global state
-- Implement optimistic updates for real-time feel
-
-### API Design
-- Follow RESTful conventions
-- Implement proper error handling
-- Use TypeScript for type safety
-
-### Real-time Features
-- Use Supabase subscriptions with TanStack Query integration
-- Implement optimistic updates for immediate feedback
-- Handle connection states and errors gracefully
-
-## Project-Specific Rules
-
-### Naratia MVP Requirements
-Based on the documentation in `docs/`, ensure compliance with:
-- Collaborative storytelling mechanics
-- Voting system implementation
-- Gamification features (XP, achievements, streaks)
-- Content moderation system
-- Mobile-first responsive design
-- Progressive Web App (PWA) capabilities
-
-### Security Requirements
-- Implement proper authentication with Supabase Auth
-- Follow Row Level Security policies
-- Prevent multi-account abuse
-- Content filtering and moderation
-- Rate limiting for API endpoints
-
-### Performance Standards
-- Mobile-optimized loading times
-- Efficient database queries with proper indexing
-- Client-side caching with TanStack Query
-- Progressive enhancement for core functionality
-
-## Testing Standards
-
-### Automated Testing
-- Use Playwright MCP for end-to-end testing when available
-- Test critical user journeys
-- Validate real-time features functionality
-- Ensure mobile responsiveness
-
-### Manual Testing Checklist
-- [ ] User registration and authentication flow
-- [ ] Story creation and reading experience
-- [ ] Contribution and voting mechanics
-- [ ] Real-time updates and notifications
-- [ ] Mobile interface and touch interactions
-- [ ] Achievement and gamification systems
-
-## Deployment Rules
-
-### Pre-Deployment Checklist
-- [ ] All tests passing
-- [ ] Build successful
-- [ ] Database migrations applied
-- [ ] Environment variables configured
-- [ ] Performance metrics acceptable
-- [ ] Security review completed
-
-### Production Monitoring
-- Monitor error rates and performance
-- Track user engagement metrics
-- Validate real-time feature stability
-- Ensure database performance remains optimal
-
----
-
-**Remember**: This document should be referenced at the start of every development session and after completing any major task to ensure consistency and quality.
+> Diisi oleh WP-01 (install, dev, lint, check, test, e2e, migrasi, seed).

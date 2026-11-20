@@ -1,0 +1,897 @@
+<title>Naratia Satu Ronde</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+/* Layout: ponsel di kiri, naskah pemandu di kanan. Di HP, pemandu jadi panel di bawah ponsel.
+   Gaya: Stabilo (neobrutalism) — garis tepi tebal, bayangan padat, stabilo kuning untuk kutipan, pink untuk thread. */
+:root{
+  --bg:#F1F0EC; --panel:#FFFFFF; --phone:#FFFFFF; --sunk:#F4F3EF; --ink:#121212; --muted:#55555C; --line:#E2E0DA; --edge:#121212;
+  --tinta:#2147E8; --on-tinta:#FFFFFF; --tinta-soft:#DFE5FF;
+  --hi:#FFE14D; --on-hi:#121212; --hi-mark:#FFE14D;
+  --pink:#FF9EC0; --pink-mark:#FFB8D1;
+  --benang:#B0124F; --benang-soft:#FFE0EC;
+  --ok:#11703F; --ok-soft:#D8F5E5; --warn:#7A4F00; --warn-soft:#FFF1C2;
+  --veil:rgba(18,18,18,.45);
+  --f-ui:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-story:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --b:2.5px solid var(--edge); --sh:3px 3px 0 var(--edge); --sh-l:5px 5px 0 var(--edge);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141416; --panel:#1E1E22; --phone:#1E1E22; --sunk:#27272C; --ink:#F3F2EE; --muted:#A9A9B2; --line:#34343A; --edge:#F3F2EE;
+  --tinta:#8FA3FF; --on-tinta:#121212; --tinta-soft:#2A3160;
+  --hi:#FFE14D; --on-hi:#121212; --hi-mark:rgba(255,225,77,.30);
+  --pink:#FF9EC0; --pink-mark:rgba(255,158,192,.32);
+  --benang:#FF8FB8; --benang-soft:#3D2230;
+  --ok:#6FDCA4; --ok-soft:#1B3528; --warn:#FFD36B; --warn-soft:#3A3016;
+  --veil:rgba(0,0,0,.6);
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141416; --panel:#1E1E22; --phone:#1E1E22; --sunk:#27272C; --ink:#F3F2EE; --muted:#A9A9B2; --line:#34343A; --edge:#F3F2EE;
+  --tinta:#8FA3FF; --on-tinta:#121212; --tinta-soft:#2A3160;
+  --hi:#FFE14D; --on-hi:#121212; --hi-mark:rgba(255,225,77,.30);
+  --pink:#FF9EC0; --pink-mark:rgba(255,158,192,.32);
+  --benang:#FF8FB8; --benang-soft:#3D2230;
+  --ok:#6FDCA4; --ok-soft:#1B3528; --warn:#FFD36B; --warn-soft:#3A3016;
+  --veil:rgba(0,0,0,.6);
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-ui);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+button:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--tinta);outline-offset:3px}
+b,strong{font-weight:700}
+
+#wrap{height:100%;display:grid;grid-template-columns:minmax(0,400px) minmax(0,420px);grid-template-rows:minmax(0,1fr);justify-content:center;gap:56px;padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+#stage{display:flex;align-items:center;min-height:0;padding:0 8px 8px 0}
+#phone{position:relative;width:100%;height:min(820px,100%);background:var(--phone);border:3px solid var(--edge);border-radius:30px;box-shadow:8px 8px 0 var(--edge);overflow:hidden}
+#app{position:absolute;inset:0;display:flex;flex-direction:column}
+#coach{align-self:center;max-height:100%;overflow:auto;padding:4px 8px 8px 0}
+
+/* ---------- coach ---------- */
+.c-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;font-weight:700}
+.c-count{font-variant-numeric:tabular-nums}
+.c-prog{display:grid;grid-template-columns:repeat(11,1fr);gap:4px;margin:10px 0 22px}
+.c-prog i{height:10px;border:2px solid var(--edge);border-radius:4px;background:var(--phone)}
+.c-prog i.d{background:var(--tinta)}
+.c-prog i.n{background:var(--hi)}
+.c-act{font-size:12px;font-weight:800;color:var(--tinta);letter-spacing:.06em;text-transform:uppercase}
+.c-title{margin:2px 0 14px;font-size:36px;line-height:1.02;letter-spacing:-.04em;font-weight:800;text-wrap:balance}
+.c-do{display:flex;gap:10px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:var(--phone);border:var(--b);box-shadow:var(--sh);font-size:15.5px;line-height:1.5}
+.c-do.ok{background:var(--ok-soft)}
+.c-dot{flex:none;width:13px;height:13px;margin-top:5px;border-radius:50%;background:var(--pink);border:2px solid var(--edge);animation:blink 1.4s infinite}
+.c-okic{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--ok);color:var(--phone);border:2px solid var(--edge)}
+.c-btns{display:flex;gap:10px;margin:16px 0 20px;flex-wrap:wrap}
+.c-btns .btn.primary{min-width:130px}
+.c-why,.c-steps{border-top:2px solid var(--edge);padding:12px 0}
+.c-why summary,.c-steps summary{cursor:pointer;font-weight:800;font-size:14px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.c-why summary::-webkit-details-marker,.c-steps summary::-webkit-details-marker{display:none}
+.c-why summary::after,.c-steps summary::after{content:'+';font-weight:800;font-size:20px;line-height:1}
+.c-why[open] summary::after,.c-steps[open] summary::after{content:'–'}
+.c-why p{margin:8px 0 0;color:var(--muted);line-height:1.6;max-width:62ch}
+.sl-act{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:800;margin:12px 0 4px}
+.sl{list-style:none;margin:0;padding:0;display:grid;gap:3px}
+.sl li{display:flex}
+.sl li>*{display:flex;align-items:center;gap:10px;padding:5px 9px;border-radius:10px;width:100%;font-size:14px;color:var(--muted);border:2px solid transparent}
+.sl li.n>*{color:var(--on-hi);font-weight:800;background:var(--hi);border-color:var(--edge)}
+.sl li.d button{color:var(--ink);font-weight:600}
+.sl li.d button:hover{border-color:var(--edge)}
+.sl li.d svg{color:var(--ok)}
+.sl-i{display:inline-grid;place-items:center;width:18px;font-size:12px;font-variant-numeric:tabular-nums}
+.sl li>span{display:flex;gap:10px}
+.c-sum{display:flex;justify-content:space-between;align-items:baseline;margin:16px 0 4px;font-size:13px;color:var(--muted);font-weight:700}
+.c-sum b{font-size:26px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.c-led{list-style:none;margin:0 0 14px;padding:0;font-size:13.5px}
+.c-led li{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1.5px dashed var(--line)}
+.c-rules{margin:8px 0 0;padding-left:18px;color:var(--muted);line-height:1.55;font-size:14px}
+.c-rules li{margin-bottom:6px}
+.c-rules b{color:var(--ink)}
+.pos{color:var(--ok);font-weight:800} .neg{color:var(--benang);font-weight:800}
+
+/* ---------- phone chrome ---------- */
+.abar{flex:none;display:flex;align-items:center;gap:8px;height:60px;padding:0 14px;border-bottom:var(--b)}
+.logo{font-family:var(--f-ui);font-weight:800;font-size:23px;letter-spacing:-.04em;text-transform:lowercase}
+.abar-t{flex:1;font-weight:800;font-size:15px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;color:var(--ink);background:var(--phone);border:var(--b);box-shadow:2px 2px 0 var(--edge)}
+.ib:active{transform:translate(2px,2px);box-shadow:none}
+.chip{display:inline-flex;align-items:center;gap:5px;height:36px;padding:0 11px;border-radius:12px;background:var(--hi);color:var(--on-hi);border:var(--b);box-shadow:2px 2px 0 var(--edge);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums}
+.chip.ink{color:var(--on-tinta);background:var(--tinta)}
+.chip.bump{animation:bump .5s ease}
+.scr{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:auto}
+.pad{padding:16px 18px 18px 16px}
+.dock{flex:none;display:flex;gap:10px;padding:12px 16px 16px 14px;border-top:var(--b);background:var(--phone)}
+.dock .btn{flex:1}
+.delta{position:absolute;top:56px;right:58px;z-index:40;padding:2px 9px;border-radius:999px;border:var(--b);background:var(--tinta);color:var(--on-tinta);font-weight:800;font-size:14px;pointer-events:none;animation:floatup 1.2s ease-out forwards;font-variant-numeric:tabular-nums}
+.delta.neg{background:var(--pink);color:var(--on-hi)}
+#toast{position:absolute;left:14px;right:14px;bottom:18px;z-index:50;padding:12px 14px;border-radius:14px;background:var(--ink);color:var(--phone);border:var(--b);font-size:13.5px;line-height:1.45;font-weight:600;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none}
+#toast.show{opacity:1;transform:none}
+
+/* ---------- shared bits ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 16px;border-radius:12px;font-weight:800;font-size:15px;background:var(--phone);color:var(--ink);border:var(--b);box-shadow:var(--sh);text-align:center;transition:transform .08s,box-shadow .08s}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--edge)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--edge)}
+.btn.primary{background:var(--tinta);color:var(--on-tinta)}
+.btn.ghost{background:var(--phone)}
+.btn.sm{min-height:38px;padding:0 13px;font-size:14px}
+.btn.block{display:flex;width:100%;margin-top:16px}
+.btn.on{background:var(--hi);color:var(--on-hi)}
+.btn.is-locked{opacity:.45;box-shadow:none;transform:none}
+.btn.sim{border-style:dashed;color:var(--on-hi);background:var(--hi)}
+.sec{margin:24px 0 10px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.sec:first-child{margin-top:4px}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;background:var(--phone);color:var(--ink);border:2px solid var(--edge)}
+.pill.warn{background:var(--hi);color:var(--on-hi)}
+.pill.new{background:var(--tinta);color:var(--on-tinta)}
+.note{font-size:13px;color:var(--muted);margin:8px 0 0;line-height:1.5}
+.note.center{text-align:center}
+.muted{color:var(--muted)}
+.bonus{display:inline-flex;align-items:center;padding:1px 8px;border-radius:999px;background:var(--pink);color:var(--on-hi);border:2px solid var(--edge);font-weight:800;font-size:12.5px;font-variant-numeric:tabular-nums}
+.bonus.big{font-size:15px;padding:3px 11px}
+.rb{display:block;height:10px;border-radius:5px;background:var(--phone);border:2px solid var(--edge);overflow:hidden}
+.rb i{display:block;height:100%;background:var(--tinta);transition:width .3s}
+.proc{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12.5px;color:var(--ok);font-weight:700}
+.minetag{font-size:11px;font-weight:800;padding:1px 7px;border-radius:999px;background:var(--ok-soft);color:var(--ok);border:2px solid var(--edge)}
+.badge{margin-left:auto;font-size:12px;font-weight:800;padding:1px 8px;border-radius:999px;background:var(--phone);color:var(--ink);border:2px solid var(--edge)}
+.badge.bad{background:var(--pink);color:var(--on-hi)}
+.badge.win{background:var(--hi);color:var(--on-hi)}
+
+/* home */
+.hello{margin:0 0 4px;font-size:13.5px;color:var(--muted);font-weight:600}
+.scard{display:flex;flex-direction:column;gap:7px;width:100%;padding:16px;border-radius:18px;border:var(--b);background:var(--phone);box-shadow:var(--sh-l);margin-bottom:14px}
+.scard:hover{transform:translate(-1px,-1px)}
+.scard .row{display:flex;gap:6px;flex-wrap:wrap}
+.scard strong{font-family:var(--f-ui);font-size:23px;font-weight:800;letter-spacing:-.035em;line-height:1.05}
+.scard .sub{font-size:13.5px;color:var(--muted);font-weight:600}
+.scard .top{display:flex;justify-content:space-between;font-size:12px;font-weight:700}
+.scard .due{color:var(--benang)}
+.scard.dim{padding:12px 16px;flex-direction:row;justify-content:space-between;align-items:center;background:var(--sunk);border-style:dashed;box-shadow:none;color:var(--muted);margin-bottom:10px}
+.scard.dim span:first-child{color:var(--ink);font-weight:700}
+.task{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1.5px solid var(--line);font-size:14px;font-weight:600}
+.task .tk{display:grid;place-items:center;width:22px;height:22px;border-radius:7px;border:2px solid var(--edge);color:transparent;flex:none;background:var(--phone)}
+.task.d .tk{background:var(--ok);color:var(--phone)}
+.task .tn{margin-left:auto;color:var(--muted);font-variant-numeric:tabular-nums;font-size:13px}
+
+/* story */
+.shead{flex:none;padding:12px 16px 0;border-bottom:var(--b)}
+.stitle{font-family:var(--f-ui);font-weight:800;font-size:24px;letter-spacing:-.04em;line-height:1.05}
+.smeta{font-size:12.5px;color:var(--muted);margin-top:3px;font-weight:600}
+.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:12px 0 14px;border:var(--b);border-radius:12px;overflow:hidden}
+.tab{position:relative;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px 4px;font-size:14px;font-weight:700;color:var(--ink);border-right:var(--b)}
+.tab:last-child{border-right:0}
+.tab.on{background:var(--hi);color:var(--on-hi);font-weight:800}
+.tab i{font-style:normal;font-size:11px;padding:0 6px;border-radius:999px;background:var(--phone);color:var(--ink);border:1.5px solid var(--edge)}
+.tab i.dot{width:10px;height:10px;padding:0;border-radius:50%;background:var(--pink)}
+.ebanner{display:flex;flex-direction:column;gap:2px;width:100%;margin:0 0 14px;padding:12px 14px;border-radius:14px;background:var(--tinta);color:var(--on-tinta);border:var(--b);box-shadow:var(--sh);font-weight:600}
+.ebanner b{font-weight:800}
+.ebanner span{font-size:13px;opacity:.9}
+.readbar{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:10px;font-size:12.5px;color:var(--muted);font-weight:700;margin-bottom:10px;font-variant-numeric:tabular-nums}
+.para{padding:14px 0 16px;border-bottom:1.5px solid var(--line);scroll-margin:20px}
+.para:last-of-type{border-bottom:0}
+.pmeta{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.pn{font-family:var(--f-ui);font-weight:800;color:var(--ink)}
+.pby{font-weight:700;color:var(--ink)}
+.newtag{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--on-tinta);background:var(--tinta);padding:0 7px;border-radius:999px}
+.para.mine{background:linear-gradient(var(--ok),var(--ok)) left/4px 100% no-repeat;padding-left:12px}
+.ptext{margin:0;font-family:var(--f-story);font-size:16.5px;line-height:1.7;-webkit-user-select:none;user-select:none}
+.sn{cursor:pointer;border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone;transition:background .15s}
+.sn:hover{background:var(--sunk)}
+.sn.carded{background:var(--hi-mark)}
+.th{background:var(--pink-mark);border-radius:3px;padding:0 2px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.lead{margin:0 0 14px;color:var(--muted);font-size:14px;font-weight:600}
+.tcard{display:flex;flex-direction:column;gap:7px;width:100%;padding:14px;border-radius:16px;border:var(--b);margin-bottom:14px;background:var(--phone);box-shadow:var(--sh)}
+.tcard:hover{transform:translate(-1px,-1px)}
+.tcard.prop{background:var(--sunk);border-style:dashed;box-shadow:none}
+.trow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.tname{font-weight:800;font-size:15.5px;letter-spacing:-.01em}
+.tmeta{font-size:12.5px;color:var(--muted);font-weight:600}
+.stale{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--benang);font-weight:700}
+.dots{display:inline-flex;gap:3px}
+.dots i{width:10px;height:10px;border-radius:3px;background:var(--phone);border:1.5px solid var(--edge)}
+.dots i.f{background:var(--pink)}
+.own{font-size:12.5px;color:var(--muted);display:inline-flex;align-items:center;gap:5px;font-weight:600}
+.own.ok{color:var(--ok);font-weight:800}
+.rinfo{padding:14px;border-radius:16px;background:var(--sunk);border:var(--b);display:grid;gap:6px;font-size:13.5px}
+.rinfo.now{background:var(--tinta-soft)}
+.rrow{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.rrow b{font-size:17px;font-weight:800;letter-spacing:-.02em}
+.rrow .due{margin-left:auto;font-size:12.5px;color:var(--benang);font-weight:800}
+.rinfo .pill{justify-self:start}
+.gate{display:flex;gap:8px;align-items:flex-start;margin:12px 0 4px;padding:10px 12px;border-radius:12px;font-size:13px;font-weight:600;background:var(--warn-soft);color:var(--warn);border:2px solid var(--edge)}
+.gate.ok{background:var(--ok-soft);color:var(--ok)}
+.gate svg{flex:none;margin-top:3px}
+.cand{padding:14px;border-radius:18px;border:var(--b);margin-top:16px;background:var(--phone);box-shadow:var(--sh-l)}
+.cand.out{opacity:.55;box-shadow:none}
+.cand.mine{background:var(--ok-soft)}
+.chead{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.chead b{font-size:16px;font-weight:800}
+.anon{font-size:12px;color:var(--muted);font-weight:600}
+.ctext{margin:0;font-family:var(--f-story);font-size:15.5px;line-height:1.65;-webkit-user-select:none;user-select:none}
+.cact{display:flex;gap:10px;margin-top:14px}
+.cact .btn{flex:1}
+.obox{margin-top:12px;padding:11px 12px;border-radius:12px;background:var(--benang-soft);border:2px solid var(--edge);font-size:13px;display:grid;gap:4px}
+.otitle{font-weight:800;color:var(--benang)}
+.oq{font-family:var(--f-story);font-style:italic}
+.ovotes{display:flex;gap:12px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+
+/* writer */
+.wbox{padding:11px 13px;border-radius:12px;background:var(--hi);color:var(--on-hi);border:2px solid var(--edge);font-size:13.5px;display:grid;gap:2px}
+.wbox b{font-weight:800}
+.wbox span{font-size:12.5px}
+.take{display:grid;grid-template-columns:auto 1fr auto;gap:2px 10px;align-items:center;margin-top:12px;padding:11px 13px;border-radius:14px;border:var(--b);box-shadow:var(--sh);font-size:14px;cursor:pointer;background:var(--phone)}
+.take input{width:20px;height:20px;accent-color:var(--tinta);margin:0}
+.take small{grid-column:2/4;font-size:12.5px;color:var(--muted);font-weight:600}
+.take small.ok{color:var(--ok)}
+.ctx{margin-top:14px;font-size:13px;color:var(--muted);font-weight:600}
+.ctx em{font-family:var(--f-story);font-weight:400}
+textarea#ed{display:block;width:100%;margin-top:8px;min-height:190px;resize:vertical;padding:12px 13px;border-radius:14px;border:var(--b);background:var(--phone);color:var(--ink);font:16.5px/1.65 var(--f-story)}
+textarea#ed:focus{outline:none;box-shadow:var(--sh)}
+.wmeta{display:flex;justify-content:space-between;margin-top:8px;font-size:12.5px;color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums}
+#cnt.ok{color:var(--ok);font-weight:800}
+.wline{margin-top:8px;padding:9px 11px;border-radius:12px;font-size:13px;font-weight:600;background:var(--warn-soft);color:var(--warn);border:2px solid var(--edge)}
+
+/* sheets */
+.veil{position:absolute;inset:0;z-index:20;background:var(--veil)}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;max-height:90%;display:flex;flex-direction:column;background:var(--phone);border:3px solid var(--edge);border-bottom:0;border-radius:24px 24px 0 0}
+.sheet.enter{animation:up .26s cubic-bezier(.2,.8,.2,1)}
+.veil.enter{animation:fade .2s}
+.shd{flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 16px 8px}
+.shd h3{margin:0;font-size:20px;font-weight:800;letter-spacing:-.03em}
+.sbody{overflow-y:auto;padding:0 18px 22px 16px;overscroll-behavior:contain}
+.lbl{margin:18px 0 6px;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.q{margin:8px 0 0;padding:10px 12px;border:2px solid var(--edge);border-left-width:6px;background:var(--sunk);border-radius:10px;font-family:var(--f-story);font-size:15px;line-height:1.6}
+.q cite{display:block;margin-top:4px;font:700 12px var(--f-ui);color:var(--muted);font-style:normal}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:14px 0;font-size:13.5px}
+.kv dt{color:var(--muted);font-weight:600} .kv dd{margin:0;font-weight:700}
+.req{display:flex;gap:8px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:var(--sunk);border:2px solid var(--edge);font-size:13px;font-weight:600}
+.req.ok{background:var(--ok-soft);color:var(--ok)}
+.req svg{flex:none;margin-top:3px}
+.trow2{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--benang);font-weight:700}
+.subh{margin:20px 0 6px;font-size:14px;font-weight:800}
+.bt{width:100%;border-collapse:collapse;font-size:13px}
+.bt td{padding:6px 0;border-bottom:1.5px solid var(--line)}
+.bt td:last-child{text-align:right;font-weight:800;color:var(--benang);font-variant-numeric:tabular-nums}
+.mycards{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0 10px;font-size:12.5px}
+.evchip{padding:4px 10px;border-radius:999px;border:2px solid var(--edge);font-size:12.5px;font-weight:600;background:var(--phone)}
+.evchip.on{background:var(--hi);color:var(--on-hi)}
+.evlist{display:grid;gap:2px;border:var(--b);border-radius:14px;padding:4px 10px}
+.evp{display:grid;grid-template-columns:30px 1fr;gap:4px;padding:8px 0;border-bottom:1.5px solid var(--line)}
+.evp:last-child{border-bottom:0}
+.evp p{margin:0;font-family:var(--f-story);font-size:14.5px;line-height:1.6;-webkit-user-select:none;user-select:none}
+.evs{cursor:pointer;border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.evs:hover{background:var(--sunk)}
+.evs.on{background:var(--hi-mark);box-shadow:0 0 0 2px var(--edge)}
+.evfb{margin-top:12px;padding:10px 12px;border-radius:12px;font-size:13px;font-weight:600;display:flex;gap:8px;border:2px solid var(--edge)}
+.evfb.ok{background:var(--ok-soft);color:var(--ok)}
+.evfb.bad{background:var(--benang-soft);color:var(--benang)}
+.evfb svg{flex:none;margin-top:3px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chipb{padding:6px 12px;border-radius:999px;border:2px solid var(--edge);font-size:13px;font-weight:700;background:var(--phone)}
+.chipb.on{background:var(--ink);color:var(--phone)}
+.stake{display:flex;gap:8px;align-items:flex-start;margin-top:16px;padding:11px 12px;border-radius:12px;background:var(--tinta-soft);border:2px solid var(--edge);font-size:13px;color:var(--ink);font-weight:600}
+.stake svg{flex:none;color:var(--tinta);margin-top:3px}
+.rs{display:grid;grid-template-columns:30px 1fr auto;gap:2px 10px;padding:12px 0;border-bottom:1.5px solid var(--line);animation:rise .4s both}
+.rs:nth-child(2){animation-delay:.25s}.rs:nth-child(3){animation-delay:.5s}.rs:nth-child(4){animation-delay:.75s}.rs:nth-child(5){animation-delay:1s}
+.rs .n{grid-row:span 2;display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--hi);color:var(--on-hi);border:2px solid var(--edge);font-size:12.5px;font-weight:800}
+.rs b{font-size:15px;font-weight:800}
+.rs .v{grid-row:span 2;align-self:center;font-weight:800;color:var(--ok);font-variant-numeric:tabular-nums}
+.rs p{margin:0;font-size:13px;color:var(--muted);grid-column:2}
+.vbar{display:grid;grid-template-columns:90px 1fr 22px;gap:8px;align-items:center;font-size:12.5px;font-weight:600;margin-top:4px;grid-column:2/4}
+.vbar .rb i{background:var(--ok)}
+.vbar.lose .rb i{background:var(--muted)}
+.vbar.out{text-decoration:line-through;color:var(--muted)}
+.presets{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.preset{display:flex;flex-direction:column;gap:2px;padding:11px 10px;border-radius:14px;border:var(--b);box-shadow:var(--sh);font-size:13px;background:var(--phone)}
+.preset b{font-size:15px;font-weight:800}
+.preset em{font-style:normal;color:var(--muted);font-size:12px}
+.preset.on{background:var(--hi);color:var(--on-hi)}
+.preset.on em{color:var(--on-hi)}
+.lockbox{display:flex;gap:10px;padding:12px;border-radius:14px;background:var(--sunk);border:2px dashed var(--edge);font-size:13px;color:var(--muted);font-weight:600}
+.lockbox>div{display:grid;gap:5px;flex:1}
+.lockbox b{color:var(--ink);font-weight:800}
+.lockbox svg{flex:none;margin-top:3px}
+.clist{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:13px;opacity:.75}
+.ledger{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}
+.ledger td{padding:7px 0;border-bottom:1.5px solid var(--line)}
+.ledger td:nth-child(2),.ledger td:nth-child(3){text-align:right;padding-left:10px}
+.ledger td:nth-child(3){color:var(--muted)}
+.cardl{padding:10px 0;border-bottom:1.5px solid var(--line)}
+.cardl .q{margin-top:6px}
+
+/* coach target */
+.ct{outline:3px solid var(--tinta)!important;outline-offset:4px;animation:ring 1.6s infinite}
+.sn.ct,.evs.ct{outline-offset:2px}
+.tab.ct{outline-offset:-5px}
+
+@keyframes ring{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--tinta) 45%,transparent)}70%{box-shadow:0 0 0 10px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@keyframes blink{50%{opacity:.35}}
+@keyframes bump{40%{transform:scale(1.15) rotate(-3deg)}}
+@keyframes floatup{0%{opacity:0;transform:translateY(6px) rotate(-4deg)}15%{opacity:1}100%{opacity:0;transform:translateY(-22px) rotate(-4deg)}}
+@keyframes up{from{transform:translateY(100%)}}
+@keyframes fade{from{opacity:0}}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ---------- narrow ---------- */
+@media (max-width:860px){
+  #wrap{display:flex;flex-direction:column;gap:12px;padding-block:10px}
+  #coach{flex:none;max-height:42%;padding:10px 14px 4px;border-radius:18px;background:var(--panel);border:var(--b);box-shadow:var(--sh);align-self:stretch;margin-right:4px}
+  #stage{flex:1;min-height:0;align-items:stretch;padding:0 5px 5px 0}
+  #phone{height:100%;border-radius:22px;box-shadow:5px 5px 0 var(--edge)}
+  .c-top{display:none}
+  .c-prog{margin:0 0 8px}
+  .c-prog i{height:8px}
+  .c-act::after{content:attr(data-n);color:var(--muted);margin-left:6px}
+  .c-title{font-size:21px;margin:1px 0 8px}
+  .c-do{font-size:14px;padding:9px 11px;line-height:1.45}
+  .c-btns{margin:10px 0 6px}
+  .c-btns .btn{min-height:38px;font-size:14px}
+  .c-why,.c-steps{padding:7px 0}
+  .c-why summary,.c-steps summary{font-size:13px}
+}
+</style>
+
+<div id="wrap">
+  <section id="stage" aria-label="Prototipe aplikasi"><div id="phone"><div id="app"></div><div id="toast" role="status" aria-live="polite"></div></div></section>
+  <aside id="coach" aria-label="Panduan langkah demi langkah"></aside>
+</div>
+
+<script>
+(function(){
+'use strict';
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KEY='naratia-alur-v3';
+const IC={
+  drop:'<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 3c3.6 4.3 6 7.5 6 10.6a6 6 0 0 1-12 0C6 10.5 8.4 7.3 12 3z" fill="currentColor"/></svg>',
+  card:'<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 3h10a1 1 0 0 1 1 1v17l-6-4-6 4V4a1 1 0 0 1 1-1z" fill="currentColor"/></svg>',
+  back:'<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  lock:'<svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M7.5 11V8a4.5 4.5 0 0 1 9 0v3" fill="none" stroke="currentColor" stroke-width="2"/><rect x="5" y="11" width="14" height="10" rx="2" fill="currentColor"/></svg>',
+  check:'<svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  x:'<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  ff:'<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M3 6l9 6-9 6zM12 6l9 6-9 6z" fill="currentColor"/></svg>'
+};
+
+/* ---------- konten ---------- */
+const PARAS=[
+  {n:1,by:'ombak',ago:'6 hari lalu',s:['Raka tiba di Pulau Garam dengan kapal pos terakhir musim itu.','Penjaga mercusuar sudah tiga minggu hilang, dan satu-satunya yang ia tinggalkan di meja hanyalah sebuah kunci kuningan yang dingin, seperti baru diangkat dari laut.','Tidak ada satu pun pintu di rumah itu yang cocok dengan kunci tersebut.'],marks:[[1,'kunci kuningan']]},
+  {n:2,by:'lentera',ago:'5 hari lalu',s:['Warga pulau tidak mau bicara banyak.','Mereka hanya bilang lampu mercusuar masih menyala setiap Kamis malam, padahal tidak ada seorang pun yang naik ke atas.','Raka mencatatnya di buku kecil, lalu menggarisbawahinya dua kali.'],marks:[[1,'menyala setiap Kamis malam']]},
+  {n:3,by:'nadiraa',ago:'4 hari lalu',s:['Di dapur, Raka menemukan foto lama: sang penjaga berdiri di samping seorang gadis kecil.','Di baliknya tertulis dengan tinta pudar: Sekar, ulang tahun ketujuh.','Ibu pemilik warung kemudian bercerita bahwa Sekar adalah putri tunggal sang penjaga, dan ia meninggalkan pulau sepuluh tahun lalu.'],marks:[]},
+  {n:4,by:'lentera',ago:'3 hari lalu',s:['Kamis tiba, dan Raka menunggu di bawah menara sejak senja.','Tepat tengah malam, lampu di puncak menyala sendiri, berputar pelan, lalu padam lagi.','Ketika ia berlari ke tangga, pintu menuju ruang lampu ternyata terkunci dari dalam.'],marks:[[1,'lampu di puncak menyala sendiri']]},
+  {n:5,by:'bayu_r',ago:'2 hari lalu',s:['Pagi harinya ia memeriksa pintu itu.','Lubang kuncinya baru dan mengilap, sangat berbeda dengan engselnya yang sudah berkarat.','Di lantai depan pintu ada jejak pasir basah yang mengarah ke tebing utara.'],marks:[]},
+  {n:6,by:'lentera',ago:'kemarin',s:['Jejak itu berhenti di bibir tebing, tepat di atas batu-batu hitam yang dihantam ombak.','Raka hampir berbalik ketika melihat sesuatu tersangkut di semak: sebuah syal merah yang masih basah.','Di ujungnya, sebuah huruf S dijahit dengan benang putih.'],marks:[[1,'syal merah']]}
+];
+const CANDS={
+  A:{by:'senja',text:'Raka memungut syal itu. Baunya asin, tapi ada bau lain yang ia kenal: minyak tanah, sama persis dengan bau di tangga mercusuar. Ia menatap menara dari bibir tebing dan untuk pertama kalinya bertanya-tanya apakah yang menyalakan lampu setiap Kamis bukan hantu, melainkan seseorang yang tidak ingin ditemukan.'},
+  B:{by:'ombak',text:'Raka teringat cerita ibu pemilik warung tentang Seruni, putri tunggal sang penjaga yang pergi sepuluh tahun lalu. Huruf S di syal itu pasti miliknya. Ia melipat syal itu hati-hati, memasukkannya ke saku jaket, lalu bergegas kembali ke rumah penjaga untuk mencari petunjuk ke mana Seruni pergi.'}
+};
+const SAMPLE='Raka membawa syal itu pulang dan meletakkannya di meja, tepat di samping kunci kuningan yang belum juga menemukan pintunya. Lama ia memandangi keduanya. Lalu ia teringat lubang kunci yang baru dan mengilap di pintu ruang lampu. Ia belum pernah mencoba kunci itu di sana. Malam itu ia menunggu sampai seluruh pulau gelap, lalu menaiki tangga menara dengan kunci di tangan dan jantung yang berdegup terlalu keras untuk orang yang mengaku tidak percaya hantu.';
+const EVIDENCE=['3.1','3.2'];
+const REASONS=['Nama tokoh berbeda','Waktu tidak cocok','Tokoh di dua tempat','Melanggar constraint'];
+const PRESETS=[{id:'kilat',name:'Kilat',dur:'1 jam',mult:1.5},{id:'normal',name:'Normal',dur:'24 jam',mult:1},{id:'panjang',name:'Panjang',dur:'3 hari',mult:0.8}];
+const CONSTRAINTS=['Tanpa dialog','Dari sudut pandang tokoh lain','Maksimal 1 tokoh baru','Harus ada kilas balik','Tanpa kata “tiba-tiba”'];
+const ACTS=['Membaca','Menilai','Menulis','Hasil'];
+const fmt=n=>String(n).replace('.',',');
+const sign=v=>(v>0?'+':'−')+Math.abs(v);
+
+/* ---------- state ---------- */
+function fresh(){return {step:0,screen:'home',tab:'narasi',sheet:null,tinta:50,ledger:[],read:[],cards:[],threadSeen:false,supported:false,
+  objEv:null,objReason:null,obj:null,vote:null,draft:'',revs:0,wStart:0,take:true,submitted:null,closed:false,resultSeen:false,estafet:null,preset:'normal'};}
+const clone=o=>JSON.parse(JSON.stringify(o));
+let S=fresh(), snaps=[clone(S)], gen=0, typing=false, lastDel=false, deltas=0, lastTargetKey='', scrollMem={}, sheetMem=0, lastSheetKey='', pendingScroll=null;
+const ui={why:false,steps:false};
+try{const raw=localStorage.getItem(KEY); if(raw){const d=JSON.parse(raw); if(d&&d.S&&Array.isArray(d.snaps)){S=d.S;snaps=d.snaps;}}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({S,snaps}))}catch(e){}}
+
+const sentence=sid=>{const [p,i]=sid.split('.').map(Number);const para=allParas().find(x=>x.n===p);return para?para.s[i]:''};
+function splitS(t){return (t.match(/[^.!?]+[.!?]+["”]?|[^.!?]+$/g)||[t]).map(x=>x.trim()).filter(Boolean)}
+function allParas(){
+  if(!S.closed||!S.submitted) return PARAS;
+  const s=splitS(S.submitted.text); const mi=s.findIndex(x=>/kunci kuningan/i.test(x));
+  return PARAS.concat([{n:7,by:'kamu',ago:'baru saja',s,marks:S.submitted.touched&&mi>=0?[[mi,'kunci kuningan']]:[],mine:true,proc:procOf(S.submitted)}]);
+}
+function threads(){
+  const total=allParas().length;
+  return [
+    {id:'t1',name:'Kunci kuningan',open:1,by:'ombak',last:(S.closed&&S.submitted&&S.submitted.touched)?7:1,q:'1.1'},
+    {id:'t2',name:'Lampu menyala tiap Kamis',open:2,by:'lentera',last:4,q:'4.1'},
+    {id:'t3',name:'Syal merah berinisial S',open:6,by:'lentera',last:6,q:'6.1'}
+  ].map(t=>{const stale=total-t.last;return Object.assign(t,{stale,bonus:stale>=5?15:5})});
+}
+const hasCard=sid=>S.cards.some(c=>c.sid===sid);
+const procOf=x=>`diketik langsung · ${x.mins} menit · ${x.revs} revisi`;
+const minsSince=t=>Math.max(1,Math.round((Date.now()-t)/60000));
+const votesOf=k=>k==='A'?1+(S.vote==='A'?1:0):k==='B'?2+(S.vote==='B'?1:0):3;
+
+function addTinta(v,label){
+  S.tinta+=v; deltas+=v;
+  const last=S.ledger[S.ledger.length-1];
+  if(last&&last.label===label&&label==='Membaca paragraf baru') last.v+=v; else S.ledger.push({label,v});
+}
+function addCard(sid,silent){
+  if(hasCard(sid)){ if(!silent) toast('Kartu ini sudah kamu simpan.'); return; }
+  const p=+sid.split('.')[0]; const v=Math.max(3,3+(6-p));
+  S.cards.push({sid,p,v,text:sentence(sid)});
+  if(!silent){
+    if(S.step===2&&sid!=='1.1') toast(`Kartu tersimpan dari ¶${p} · nilai ${v}. Untuk langkah ini, coba kalimat di ¶1 yang menyebut kunci kuningan (distabilo pink).`);
+    else toast(`Kartu tersimpan dari ¶${p} · nilai ${v}. Makin jauh ke belakang, makin tinggi nilainya.`);
+  }
+}
+function markRead(n){ if(S.read.includes(n)) return; S.read.push(n); addTinta(2,'Membaca paragraf baru'); render(); }
+function validEv(){ return S.sheet&&S.sheet.type==='obj'&&S.sheet.c==='B'&&EVIDENCE.includes(S.objEv); }
+function submitObj(){
+  if(!validEv()) return false;
+  addTinta(-10,'Taruhan keberatan');
+  addCard(S.objEv,true);
+  S.obj={c:'B',ev:S.objEv,reason:S.objReason||'Nama tokoh berbeda',agree:0,deny:0};
+  S.sheet=null; scheduleObjTicks(); return true;
+}
+function scheduleObjTicks(){
+  const g=gen; const plan=[[1300,'agree'],[2600,'agree'],[3900,'agree'],[5400,'deny']];
+  let done={agree:S.obj?S.obj.agree:0,deny:S.obj?S.obj.deny:0}, seen={agree:0,deny:0};
+  plan.forEach(([ms,k])=>{seen[k]++; if(seen[k]<=done[k]) return; setTimeout(()=>{
+    if(g!==gen||!S.obj||S.closed) return; S.obj[k]++; save();
+    if(S.screen==='story'&&S.tab==='ronde'&&!S.sheet) render();
+  },ms)});
+}
+function doVote(k){
+  if(S.read.length<6){toast(`Baca semua paragraf baru dulu (${S.read.length}/6). Tombol Pilih terbuka setelah itu.`);return;}
+  if(S.vote===k){toast('Kamu sudah memilih kandidat ini.');return;}
+  if(!S.vote) addTinta(3,'Memberi suara');
+  S.vote=k;
+}
+function doSubmit(){
+  const text=S.draft.trim();
+  if(text.length<300){toast(`Minimal 300 karakter. Sekarang ${text.length}.`);return;}
+  if(!S.wStart) S.wStart=Date.now();
+  const elapsed=Date.now()-S.wStart;
+  const touched=S.take&&hasCard('1.1')&&/kunci/i.test(text);
+  addTinta(-10,'Mengirim kandidat');
+  if(elapsed<10*60000) addTinta(5,'Bonus sprint (di bawah 10 menit)');
+  S.submitted={text,mins:minsSince(S.wStart),revs:S.revs,touched};
+  S.screen='story'; S.tab='ronde'; pendingScroll='#cand-C';
+}
+function closeRound(){
+  if(!S.submitted||S.closed) return;
+  S.closed=true;
+  if(S.obj){S.obj.agree=Math.max(S.obj.agree,3);S.obj.deny=Math.max(S.obj.deny,1);addTinta(25,'Keberatan sah atas Kandidat B');}
+  addTinta(30,'Menang ronde 7 (Normal ×1)');
+  if(S.submitted.touched) addTinta(15,'Menyentuh thread basi: Kunci kuningan');
+  S.sheet={type:'result'};
+}
+function seeNarasi(){ S.sheet=null; S.resultSeen=true; S.screen='story'; S.tab='narasi'; pendingScroll='.para[data-p="7"]'; }
+
+/* ---------- langkah ---------- */
+function nav(s,tab){
+  if(s.sheet) return '[data-a="closeSheet"]';
+  if(s.screen==='home') return '[data-a="open"]';
+  if(s.screen==='write') return '[data-a="back"]';
+  if(tab&&s.tab!==tab) return `[data-a="tab"][data-v="${tab}"]`;
+  return null;
+}
+const STEPS=[
+ {act:0,t:'Buka cerita',
+  do:()=>'Di Beranda, ketuk kartu <b>Mercusuar Pulau Garam</b>. Ronde 7 cerita ini sedang terbuka dan butuh orang.',
+  why:'Beranda tidak berisi feed tanpa ujung. Isinya ronde yang sedang butuh orang dan tugas hari ini, jadi selalu ada alasan jelas untuk masuk ke satu cerita.',
+  ok:()=>'Kamu masuk ke cerita. Paragraf yang belum kamu baca diberi tanda <b>baru</b>.',
+  target:s=>nav(s,null),
+  done:s=>s.screen!=='home',
+  skip:s=>{s.sheet=null;s.screen='story';s.tab='narasi';}},
+ {act:0,t:'Baca paragraf baru',noScroll:true,
+  do:s=>`Gulir pelan dan baca keenam paragraf. Setiap paragraf baru yang terlihat cukup lama memberi <b>+2 tinta</b>. Terbaca: <b>${s.read.length}/6</b>.`,
+  why:'Membaca dibayar kecil. Pemasukan dari membaca dan memilih digabung dan dibatasi 25 tinta per hari, jadi tidak bisa di-farm. Yang lebih penting, tombol Pilih di ronde baru terbuka setelah semua paragraf baru terbaca.',
+  ok:()=>'+12 tinta dari membaca. Tombol Pilih di ronde sekarang terbuka.',
+  target:s=>nav(s,'narasi')||(()=>{const u=PARAS.find(p=>!s.read.includes(p.n));return u?`.para[data-p="${u.n}"]`:null})(),
+  done:s=>s.read.length>=6,
+  skip:s=>{s.sheet=null;s.screen='story';s.tab='narasi';PARAS.forEach(p=>{if(!s.read.includes(p.n)){s.read.push(p.n);addTinta(2,'Membaca paragraf baru')}});}},
+ {act:0,t:'Simpan kartu kutipan',
+  do:()=>'Ketuk kalimat di ¶1 yang menyebut <b>kunci kuningan</b> (distabilo pink, tanda thread). Kalimat itu tersimpan sebagai kartu kutipan dan berubah kuning.',
+  why:'Teks cerita tidak bisa disalin, hanya bisa dikutip. Kartu kutipan dipakai sebagai syarat mengambil thread dan sebagai bukti keberatan. Kalimat yang jauh di belakang nilainya lebih tinggi, jadi orang terdorong membaca mundur, bukan hanya paragraf terakhir.',
+  ok:()=>'Kartu dari ¶1 tersimpan dengan nilai 8. Jumlah kartumu ada di pojok kanan atas.',
+  target:s=>nav(s,'narasi')||'[data-s="1.1"]',
+  done:s=>s.cards.some(c=>c.sid==='1.1'),
+  skip:s=>{s.sheet=null;s.screen='story';s.tab='narasi';addCard('1.1',true);}},
+ {act:0,t:'Cek papan thread',
+  do:()=>'Buka tab <b>Threads</b>, lalu ketuk <b>Kunci kuningan</b>.',
+  why:'Thread adalah benang cerita yang belum selesai. Makin lama tidak disentuh, makin besar bonusnya. Penulis jadi terdorong membaca ulang bagian lama dan merangkainya, bukan hanya menambah kejadian baru.',
+  ok:()=>'Thread ini sudah 5 paragraf tidak disentuh, jadi bonusnya +15. Kamu punya kartunya, jadi kamu boleh mengambilnya saat menulis nanti.',
+  target:s=>(s.sheet&&s.sheet.type==='thread'&&s.sheet.id==='t1')?null:(nav(s,'threads')||'[data-a="thread"][data-v="t1"]'),
+  done:s=>s.threadSeen,
+  skip:s=>{s.screen='story';s.tab='threads';s.sheet={type:'thread',id:'t1'};s.threadSeen=true;}},
+ {act:1,t:'Cari kesalahan',
+  do:()=>'Buka tab <b>Ronde 7</b> dan baca Kandidat B dengan teliti. Ada yang tidak cocok dengan ¶3. Ketuk <b>Keberatan</b> di Kandidat B.',
+  why:'Kandidat tampil tanpa nama penulis, jadi orang menilai tulisan, bukan reputasi. Pembaca yang teliti bisa menangkap kesalahan kontinuitas dan dibayar untuk itu. Membaca jadi senjata, bukan kewajiban.',
+  ok:()=>'Lembar keberatan terbuka. Sekarang cari buktinya.',
+  target:s=>nav(s,'ronde')||'[data-a="objOpen"][data-v="B"]',
+  done:s=>!!s.obj||!!(s.sheet&&s.sheet.type==='obj'&&s.sheet.c==='B'),
+  skip:s=>{s.screen='story';s.tab='ronde';s.sheet={type:'obj',c:'B'};}},
+ {act:1,t:'Tarik bukti',
+  do:s=>!(s.sheet&&s.sheet.type==='obj')?'Buka lagi lembar keberatan di Kandidat B.':(validEv()?'Buktinya cocok. Kirim keberatanmu. Taruhannya 10 tinta.':'Di lembar keberatan, ketuk kalimat ¶3 yang bertentangan dengan Kandidat B.'),
+  why:'Bukti diambil langsung dari teks, bukan dari screenshot. Taruhan membuat orang tidak asal menuduh: keberatan yang sah memberi +25, yang tidak sah memindahkan taruhan ke penulis. Pembaca lain ikut memutus.',
+  ok:()=>'Keberatan terkirim. Lihat kartu Kandidat B: pembaca lain mulai ikut menilai.',
+  target:s=>{ if(s.sheet&&s.sheet.type==='obj'&&s.sheet.c==='B') return validEv()?'[data-a="objSubmit"]':'[data-ev="3.2"]'; return nav(s,'ronde')||'[data-a="objOpen"][data-v="B"]'; },
+  done:s=>!!s.obj,
+  skip:s=>{s.screen='story';s.tab='ronde';s.sheet={type:'obj',c:'B'};s.objEv='3.2';submitObj();}},
+ {act:1,t:'Pilih kandidat',
+  do:()=>'Ketuk <b>Pilih</b> di Kandidat A.',
+  why:'Memberi suara dibayar +3 tinta, tapi tombolnya baru terbuka setelah semua paragraf baru terbaca. Jumlah suara disembunyikan sampai ronde ditutup supaya orang tidak ikut-ikutan.',
+  ok:()=>'Suaramu tercatat. Jumlah suara tetap disembunyikan sampai ronde ditutup.',
+  target:s=>nav(s,'ronde')||'[data-a="vote"][data-v="A"]',
+  done:s=>!!s.vote,
+  skip:s=>{s.sheet=null;s.screen='story';s.tab='ronde';doVote('A');}},
+ {act:2,t:'Tulis lanjutan',
+  do:s=>s.screen!=='write'?'Di tab Ronde 7, ketuk <b>Tulis lanjutan</b>.':(s.draft.length<300?'Tulis minimal 300 karakter, atau ketuk <b>Ketik contoh</b> supaya cepat. Coba juga paste: editor menolaknya.':'Kirim kandidatmu. Biayanya 10 tinta.'),
+  why:'Editor menolak paste dan mencatat proses: lama mengetik dan jumlah revisi. Catatan itu ditampilkan terbuka di bawah paragraf, bukan untuk menuduh. Biaya kirimnya 10 tinta, dan kandidat yang kalah tanpa kena keberatan sah dapat 5 kembali, jadi menulis tidak lebih rugi daripada membaca.',
+  ok:()=>'Kandidatmu masuk sebagai Kandidat C, plus bonus sprint +5 karena selesai di bawah 10 menit.',
+  target:s=>s.screen!=='write'?(nav(s,'ronde')||'[data-a="write"]'):(s.draft.length<300?'[data-a="demoType"]':'[data-a="submit"]'),
+  done:s=>!!s.submitted,
+  skip:s=>{s.sheet=null;if(!s.wStart)s.wStart=Date.now();s.draft=SAMPLE;s.take=true;doSubmit();}},
+ {act:3,t:'Tutup ronde',
+  do:s=>!s.closed?'Di demo ini waktu bisa dipercepat. Ketuk <b>Lompat ke penutupan ronde</b> di tab Ronde 7.':'Baca hasilnya dari atas ke bawah, lalu ketuk <b>Lihat di narasi</b>.',
+  why:'Ronde tidak pernah ditutup lebih cepat. Saat ditutup, keberatan diputus dulu, kandidat yang gugur dikeluarkan, baru suara dihitung. Pemenang masuk narasi bersama nama penulis dan catatan prosesnya.',
+  ok:()=>'Paragrafmu sekarang jadi ¶7, lengkap dengan nama dan catatan proses.',
+  target:s=>{ if(s.sheet&&s.sheet.type==='result') return '[data-a="seeNarasi"]'; if(!s.closed) return nav(s,'ronde')||'[data-a="close"]'; return nav(s,null)||'[data-a="result"]'; },
+  done:s=>s.resultSeen,
+  skip:s=>{s.sheet=null;s.screen='story';s.tab='ronde';closeRound();seeNarasi();}},
+ {act:3,t:'Pegang estafet',
+  do:s=>!(s.sheet&&s.sheet.type==='estafet')?'Karena menang, kamu jadi pemegang estafet ronde 8. Ketuk banner <b>Kamu pemegang estafet</b> di bawah tab.':'Pilih durasi ronde 8, lalu ketuk <b>Buka ronde 8</b>. Constraint masih terkunci untukmu.',
+  why:'Pemegang estafet adalah pemenang ronde terakhir, dan haknya cuma berlaku satu ronde: menentukan durasi, serta memasang constraint kalau sudah punya minimal 3 paragraf diterima di cerita ini. Kamu baru punya 1, jadi belum bisa. Ini mencegah kesan pendatang baru mengatur-atur.',
+  ok:()=>'Ronde 8 terbuka. Sekarang giliran orang lain menulis lanjutan dari paragrafmu.',
+  target:s=>(s.sheet&&s.sheet.type==='estafet')?'[data-a="estafetStart"]':(nav(s,null)||'[data-a="estafet"]'),
+  done:s=>!!s.estafet,
+  skip:s=>{s.screen='story';s.tab='ronde';s.sheet=null;s.estafet={preset:s.preset};}},
+ {act:3,t:'Satu ronde selesai',final:true}
+];
+const val=(f)=>typeof f==='function'?f(S):f;
+
+/* ---------- views ---------- */
+function hdr(){
+  const left=S.screen==='home'?'<span class="logo">Naratia</span><span class="abar-t"></span>'
+    :`<button class="ib" data-a="back" aria-label="Kembali">${IC.back}</button><span class="abar-t">${S.screen==='write'?'Tulis ¶7':'Cerita'}</span>`;
+  return `<header class="abar">${left}<button class="chip ink" id="inkChip" data-a="ledger" aria-label="Tinta ${S.tinta}, lihat riwayat">${IC.drop}<span>${S.tinta}</span></button><button class="chip" data-a="cards" aria-label="${S.cards.length} kartu kutipan">${IC.card}<span>${S.cards.length}</span></button></header>`;
+}
+function vHome(){
+  const tasks=[['Baca 5 paragraf baru',Math.min(S.read.length,5),5],['Simpan 1 kartu kutipan',Math.min(S.cards.length,1),1],['Beri 1 suara',S.vote?1:0,1],['Kirim 1 kandidat',S.submitted?1:0,1]];
+  const sub=S.estafet?'Ronde 8 · kamu pemegang estafet':S.closed?'Ronde 7 selesai · kamu menang':'Ronde 7 · menulis ¶7 · 2 kandidat';
+  const unread=PARAS.filter(p=>!S.read.includes(p.n)).length;
+  return `<div class="scr" id="scr"><div class="pad">
+  <p class="hello">Selamat malam. Hari ke-3 beruntun menulis.</p>
+  <h2 class="sec">Ronde yang butuh kamu</h2>
+  <button class="scard" data-a="open"><span class="top"><span>Misteri</span><span class="due">${S.closed?'':'ditutup 21 jam lagi'}</span></span><strong>Mercusuar Pulau Garam</strong><span class="sub">${sub}</span>
+   <span class="row">${S.closed?'':'<span class="pill warn">Constraint: Tanpa dialog</span>'}${unread?`<span class="pill new">${unread} paragraf baru</span>`:''}</span></button>
+  <h2 class="sec">Cerita lain</h2>
+  <button class="scard dim" data-a="other"><span>Pasar Malam Terakhir</span><span>voting akhir bab</span></button>
+  <button class="scard dim" data-a="other"><span>Kota yang Lupa Hujan</span><span>ronde sepi</span></button>
+  <h2 class="sec">Tugas hari ini</h2>
+  ${tasks.map(([l,a,b])=>`<div class="task${a>=b?' d':''}"><span class="tk">${IC.check}</span><span>${l}</span><span class="tn">${a}/${b}</span></div>`).join('')}
+  </div></div>`;
+}
+function eBanner(){ return (S.closed&&!S.estafet)?`<button class="ebanner" data-a="estafet"><b>Kamu pemegang estafet ronde 8</b><span>Atur durasi ronde berikutnya →</span></button>`:''; }
+function vStory(){
+  const r=S.estafet?8:7;
+  const tabs=[['narasi','Narasi'],['threads','Threads'],['ronde','Ronde '+r]];
+  return `<div class="shead"><div class="stitle">Mercusuar Pulau Garam</div><div class="smeta">Misteri · 5 penulis · ${allParas().length} paragraf</div>
+  <nav class="tabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" class="tab${S.tab===k?' on':''}" aria-selected="${S.tab===k}" data-a="tab" data-v="${k}">${l}${k==='threads'?` <i>${threads().length}</i>`:''}${k==='ronde'&&!S.closed?'<i class="dot"></i>':''}</button>`).join('')}</nav></div>
+  <div class="scr" id="scr"><div class="pad">${eBanner()}${S.tab==='narasi'?vNarasi():S.tab==='threads'?vThreads():vRonde()}</div></div>`;
+}
+function paraHTML(p){
+  const unread=!p.mine&&!S.read.includes(p.n);
+  const sents=p.s.map((t,i)=>{const sid=p.n+'.'+i;let tx=esc(t);(p.marks||[]).forEach(([mi,w])=>{if(mi===i)tx=tx.replace(new RegExp(w,'i'),m=>`<span class="th">${m}</span>`)});
+    return `<span class="sn${hasCard(sid)?' carded':''}" data-a="sn" data-v="${sid}" data-s="${sid}">${tx}</span>`}).join(' ');
+  return `<article class="para${unread?' unread':''}${p.mine?' mine':''}" data-p="${p.n}"${unread?' data-unread':''}>
+   <div class="pmeta"><span class="pn">¶${p.n}</span><span class="pby">${p.by}</span><span>${p.ago}</span>${unread?'<span class="newtag">baru</span>':''}${p.mine?'<span class="minetag">tulisanmu</span>':''}</div>
+   <p class="ptext">${sents}</p>${p.proc?`<div class="proc">${IC.check} ${p.proc}</div>`:''}</article>`;
+}
+function vNarasi(){
+  const r=PARAS.filter(p=>S.read.includes(p.n)).length;
+  let h=r<6?`<div class="readbar"><span>${r}/6 paragraf baru terbaca</span><span class="rb"><i style="width:${r/6*100}%"></i></span></div>`:'';
+  h+=allParas().map(paraHTML).join('');
+  h+=!S.closed?'<button class="btn primary block" data-a="tab" data-v="ronde">Ke ronde 7</button>':'';
+  return h;
+}
+const dots=n=>`<span class="dots">${Array.from({length:6},(_,i)=>`<i class="${i<n?'f':''}"></i>`).join('')}</span>`;
+function vThreads(){
+  return `<p class="lead">Benang cerita yang belum selesai. Makin lama tidak disentuh, makin besar bonusnya.</p>
+  ${threads().map(t=>{const own=hasCard(t.q),qp=t.q.split('.')[0];return `<button class="tcard" data-a="thread" data-v="${t.id}">
+   <span class="trow"><span class="tname">${t.name}</span><span class="bonus">+${t.bonus}</span></span>
+   <span class="stale">${dots(t.stale)}<span>${t.stale===0?'baru disentuh':t.stale+' paragraf tidak disentuh'}</span></span>
+   <span class="tmeta">dibuka ¶${t.open} · terakhir disentuh ¶${t.last}</span>
+   <span class="own${own?' ok':''}">${own?IC.check+' kamu punya kartu ¶'+qp:'butuh kartu dari ¶'+qp+' untuk mengambil'}</span></button>`}).join('')}
+  <h3 class="sec">Usulan pembaca</h3>
+  <div class="tcard prop"><span class="tname">Siapa yang mengganti kunci pintu ruang lampu?</span><span class="tmeta">diusulkan senja · ${S.supported?'3 dari 3 dukungan, jadi thread resmi':'2 dari 3 dukungan'}</span>${S.supported?'':'<button class="btn sm ghost" data-a="support" style="align-self:flex-start">Dukung</button>'}</div>`;
+}
+function objBox(ob){
+  return `<div class="obox"><div class="otitle">Keberatanmu · ${esc(ob.reason)}</div><div class="oq">Bukti ¶${ob.ev.split('.')[0]}: “${esc(sentence(ob.ev))}”</div>
+  <div class="ovotes"><span>Setuju <b>${ob.agree}</b></span><span>Menolak <b>${ob.deny}</b></span><span class="muted">${S.closed?'Diputus: sah':'diputus saat ronde ditutup'}</span></div></div>`;
+}
+function candHTML(k){
+  const c=CANDS[k],gate=S.read.length>=6,mine=S.vote===k,ob=S.obj&&S.obj.c===k?S.obj:null,out=S.closed&&ob;
+  const st=S.closed?(out?'<span class="badge bad">Gugur</span>':`<span class="badge">${votesOf(k)} suara</span>`):'';
+  return `<div class="cand${out?' out':''}" id="cand-${k}"><div class="chead"><b>Kandidat ${k}</b><span class="anon">${S.closed?'ditulis '+c.by:'penulis disembunyikan'}</span>${st}</div>
+   <p class="ctext">${esc(c.text)}</p>${ob?objBox(ob):''}
+   ${S.closed?'':`<div class="cact"><button class="btn sm${mine?' on':''}${gate?'':' is-locked'}" data-a="vote" data-v="${k}">${mine?IC.check+' Pilihanmu':(gate?'':IC.lock+' ')+'Pilih'}</button>${ob?'':`<button class="btn sm ghost" data-a="objOpen" data-v="${k}">Keberatan</button>`}</div>`}</div>`;
+}
+function mineHTML(){
+  const m=S.submitted;
+  return `<div class="cand mine" id="cand-C"><div class="chead"><b>Kandidat C</b><span class="minetag">tulisanmu</span>${S.closed?'<span class="badge win">Menang · 3 suara</span>':''}</div>
+  <p class="ctext">${esc(m.text)}</p><div class="proc">${IC.check} ${procOf(m)}</div>${S.closed?'':'<p class="note">Kamu tidak bisa memilih tulisanmu sendiri.</p>'}</div>`;
+}
+function vRonde(){
+  let h='';const gate=S.read.length>=6;
+  if(S.estafet){const p=PRESETS.find(x=>x.id===S.estafet.preset);
+    h+=`<div class="rinfo now"><div class="rrow"><b>Ronde 8</b><span>menulis ¶8</span><span class="due">${p.name} · ${p.dur}</span></div><div>Pemegang estafet: <b>kamu</b> · tanpa constraint</div><div class="muted">Belum ada kandidat. Kamu akan diberi tahu saat ada yang masuk.</div></div><h3 class="sec">Ronde 7 · selesai</h3>`;}
+  else if(S.closed) h+='<h3 class="sec">Ronde 7 · selesai</h3>';
+  else h+=`<div class="rinfo"><div class="rrow"><b>Ronde 7</b><span>menulis ¶7</span><span class="due">ditutup 21 jam lagi</span></div>
+    <div>Pemegang estafet: <b>lentera</b> (3 paragraf diterima) · Normal 24 jam</div><span class="pill warn">Constraint: Tanpa dialog</span></div>
+    <div class="gate${gate?' ok':''}">${gate?IC.check+'<span>Kamu sudah membaca semua paragraf baru. Tombol Pilih terbuka.</span>':IC.lock+`<span>Baca semua paragraf baru dulu (${S.read.length}/6) untuk membuka tombol Pilih.</span>`}</div>`;
+  h+=candHTML('A')+candHTML('B');
+  if(S.submitted) h+=mineHTML();
+  if(!S.closed){
+    if(!S.submitted) h+='<button class="btn primary block" data-a="write">Tulis lanjutan</button>';
+    else h+=`<button class="btn sim block" data-a="close">${IC.ff} Lompat ke penutupan ronde</button><p class="note center">Tombol simulasi. Di aplikasi asli, ronde berjalan sampai waktunya habis.</p>`;
+  } else h+='<button class="btn ghost block" data-a="result">Lihat hasil ronde 7</button>';
+  return h;
+}
+function vWrite(){
+  const own=hasCard('1.1'),n=S.draft.length;
+  return `<div class="scr" id="scr"><div class="pad">
+   <div class="wbox"><b>Constraint ronde ini: Tanpa dialog</b><span>Dipasang oleh lentera, pemegang estafet ronde 7.</span></div>
+   <label class="take" for="takeT1"><input type="checkbox" id="takeT1" data-a="takeToggle"${S.take&&own?' checked':''}${own?'':' disabled'}><span>Ambil thread <b>Kunci kuningan</b></span><span class="bonus">+15</span>
+    <small class="${own?'ok':''}">${own?'Kamu punya kartu dari ¶1. Sebut kuncinya di paragrafmu.':'Butuh kartu kutipan dari ¶1.'}</small></label>
+   <div class="ctx">Lanjutan dari ¶6: <em>“…sebuah huruf S dijahit dengan benang putih.”</em></div>
+   <textarea id="ed" maxlength="1000" placeholder="Lanjutkan ceritanya di sini…" aria-label="Paragraf lanjutan">${esc(S.draft)}</textarea>
+   <div class="wmeta"><span id="cnt"${n>=300?' class="ok"':''}>${n} / 300–1000</span><span id="sprint">${sprintText()}</span></div>
+   <div class="proc" id="proc">${IC.check} <span>${procOf({mins:S.wStart?minsSince(S.wStart):0,revs:S.revs})}</span></div>
+   <div id="warn">${warnHTML()}</div>
+  </div></div>
+  <div class="dock"><button class="btn" data-a="demoType">Ketik contoh</button><button class="btn primary${n<300?' is-locked':''}" id="submitBtn" data-a="submit">Kirim · −10 tinta</button></div>`;
+}
+function sprintText(){ if(!S.wStart) return 'Sprint 10:00'; const left=Math.max(0,10*60000-(Date.now()-S.wStart)); const m=Math.floor(left/60000),s=Math.floor(left%60000/1000); return `Sprint ${m}:${String(s).padStart(2,'0')}`; }
+function warnHTML(){
+  const w=[];
+  if(/["“”]/.test(S.draft)) w.push('Ada tanda petik. Ronde ini melarang dialog, dan pembaca bisa mengajukan keberatan.');
+  if(S.take&&hasCard('1.1')&&S.draft.length>120&&!/kunci/i.test(S.draft)) w.push('Kamu mengambil thread Kunci kuningan, tapi paragrafmu belum menyebut kuncinya. Bonusnya tidak akan cair.');
+  return w.map(x=>`<div class="wline">${x}</div>`).join('');
+}
+
+/* sheets */
+function shd(t){return `<div class="shd"><h3>${t}</h3><button class="ib" data-a="closeSheet" aria-label="Tutup">${IC.x}</button></div>`;}
+function vSheet(){
+  const t=S.sheet.type; let body='';
+  if(t==='thread'){
+    const th=threads().find(x=>x.id===S.sheet.id),own=hasCard(th.q),qp=th.q.split('.')[0];
+    body=shd(th.name)+`<div class="sbody"><div class="trow2"><span class="bonus big">+${th.bonus}</span><span>${th.stale>=5?'Basi: '+th.stale+' paragraf tidak disentuh':th.stale===0?'Baru disentuh':'Disentuh '+th.stale+' paragraf lalu'}</span></div>
+     <blockquote class="q">${esc(sentence(th.q))}<cite>Penyebutan terakhir · ¶${qp}</cite></blockquote>
+     <dl class="kv"><dt>Dibuka</dt><dd>¶${th.open} oleh ${th.by}</dd><dt>Terakhir disentuh</dt><dd>¶${th.last}</dd><dt>Status</dt><dd>Terbuka</dd></dl>
+     <div class="req${own?' ok':''}">${own?IC.check:IC.lock}<span>Syarat mengambil: punya kartu kutipan dari penyebutan terakhir (¶${qp}). ${own?'Kamu punya.':'Kamu belum punya. Ketuk kalimatnya di narasi.'}</span></div>
+     <p class="note">Ambil thread ini saat menulis, lalu sebut lagi di paragrafmu. Kalau paragrafmu menang, bonusnya cair.</p>
+     <h4 class="subh">Bonus thread</h4>
+     <table class="bt"><tr><td>Disentuh biasa</td><td>+5</td></tr><tr><td>Basi, 5 paragraf atau lebih</td><td>+15</td></tr><tr><td>Lintas bab</td><td>+30</td></tr><tr><td>Menutup thread</td><td>+10</td></tr><tr><td>Pengusul, saat threadnya diambil orang</td><td>+10</td></tr></table></div>`;
+  } else if(t==='obj'){
+    const k=S.sheet.c,ev=S.objEv,valid=validEv();
+    body=shd('Keberatan untuk Kandidat '+k)+`<div class="sbody">
+     <blockquote class="q">${esc(CANDS[k].text)}<cite>Kandidat ${k}</cite></blockquote>
+     <p class="lbl">1 · Tarik bukti dari narasi</p><p class="note" style="margin-top:0">Ketuk kalimat yang bertentangan dengan kandidat ini.</p>
+     ${S.cards.length?`<div class="mycards"><span class="muted">Dari kartumu:</span>${S.cards.map(c=>`<button class="evchip${ev===c.sid?' on':''}" data-a="ev" data-v="${c.sid}">¶${c.p} · ${esc(c.text.slice(0,26))}…</button>`).join('')}</div>`:''}
+     <div class="evlist">${PARAS.map(p=>`<div class="evp"><span class="pn">¶${p.n}</span><p>${p.s.map((x,i)=>{const sid=p.n+'.'+i;return `<span class="evs${ev===sid?' on':''}" data-a="ev" data-v="${sid}" data-ev="${sid}">${esc(x)}</span>`}).join(' ')}</p></div>`).join('')}</div>
+     ${ev?`<div class="evfb ${valid?'ok':'bad'}">${valid?IC.check+'<span>Cocok. ¶3 menyebut putri sang penjaga bernama Sekar, sedangkan Kandidat B menyebutnya Seruni.</span>':'<span>Kalimat ini tidak bertentangan dengan Kandidat '+k+'. '+(k==='B'?'Cari kalimat yang menyebut nama putri sang penjaga.':'Kandidat A konsisten dengan narasi. Coba periksa Kandidat B.')+'</span>'}</div>`:''}
+     <p class="lbl">2 · Jenis masalah</p><div class="chips">${REASONS.map(r=>`<button class="chipb${S.objReason===r?' on':''}" data-a="reason" data-v="${r}">${r}</button>`).join('')}</div>
+     <div class="stake">${IC.drop}<span>Taruhan <b>10 tinta</b>. Kalau sah, kamu dapat <b>+25</b>. Kalau tidak sah, taruhanmu pindah ke penulis kandidat.</span></div>
+     <button class="btn primary block${valid?'':' is-locked'}" data-a="objSubmit">Kirim keberatan · −10 tinta</button></div>`;
+  } else if(t==='result'){
+    const ob=S.obj,m=S.submitted,a=votesOf('A');
+    const rows=[];
+    rows.push(ob?['Keberatan diputus','Kandidat B: 3 pembaca setuju, 1 menolak. Keberatanmu sah, jadi B gugur.','+25']:['Tidak ada keberatan','Semua kandidat ikut dihitung.','']);
+    rows.push(['Suara dihitung',`<span class="vbar"><span>C · kamu</span><span class="rb"><i style="width:100%"></i></span><b>3</b></span><span class="vbar lose"><span>A · senja</span><span class="rb"><i style="width:${a/3*100}%"></i></span><b>${a}</b></span><span class="vbar out"><span>B · ombak</span><span>gugur</span><b></b></span>`,'']);
+    rows.push(['Kamu menang ronde 7','Hadiah pemenang 30 × Normal 1,0.','+30']);
+    rows.push(m.touched?['Thread basi disentuh','Kunci kuningan disebut lagi setelah 5 paragraf.','+15']:['Bonus thread tidak cair','Paragrafmu tidak menyebut kunci kuningan.','']);
+    rows.push(['Paragrafmu jadi ¶7','Kamu juga jadi pemegang estafet ronde 8.','']);
+    body=shd('Ronde 7 ditutup')+`<div class="sbody"><div>${rows.map((r,i)=>`<div class="rs"><span class="n">${i+1}</span><b>${r[0]}</b><span class="v">${r[2]}</span><p>${r[1]}</p></div>`).join('')}</div>
+     <p class="note">Kandidat A kalah tanpa kena keberatan sah, jadi senja mendapat 5 tinta kembali. Penulis B tidak mendapat pengembalian.${S.vote==='A'?' Suaramu ke A tetap dihitung, walaupun kamu juga ikut menulis.':''}</p>
+     <button class="btn primary block" data-a="seeNarasi">Lihat di narasi</button></div>`;
+  } else if(t==='estafet'){
+    body=shd('Kamu pemegang estafet')+`<div class="sbody"><p class="note" style="margin-top:0">Hakmu berlaku untuk ronde 8 saja. Setelah itu estafet pindah ke pemenang berikutnya.</p>
+     <p class="lbl">Durasi ronde 8</p>
+     <div class="presets">${PRESETS.map(p=>`<button class="preset${S.preset===p.id?' on':''}" data-a="preset" data-v="${p.id}" aria-pressed="${S.preset===p.id}"><b>${p.name}</b><span>${p.dur}</span><em>hadiah ×${fmt(p.mult)}</em></button>`).join('')}</div>
+     <p class="lbl">Constraint (opsional)</p>
+     <div class="lockbox">${IC.lock}<div><b>Terkunci untukmu</b><span>Butuh 3 paragraf diterima di cerita ini. Kamu baru punya 1.</span><span class="rb"><i style="width:33.3%"></i></span></div></div>
+     <ul class="clist">${CONSTRAINTS.map(c=>`<li>${c}</li>`).join('')}</ul>
+     <button class="btn primary block" data-a="estafetStart">Buka ronde 8</button></div>`;
+  } else if(t==='ledger'){
+    let bal=50;
+    body=shd('Riwayat tinta')+`<div class="sbody"><table class="ledger"><tr><td>Saldo awal</td><td></td><td>50</td></tr>${S.ledger.map(e=>{bal+=e.v;return `<tr><td>${e.label}</td><td class="${e.v<0?'neg':'pos'}">${sign(e.v)}</td><td>${bal}</td></tr>`}).join('')}</table>
+     <p class="note">Tinta dipakai untuk mengirim kandidat (10), bertaruh di keberatan (10), membangunkan cerita tidur (30), membuat cerita kolaborasi (40), memasang bounty thread, dan membuka cabang (150). Menulis cerita solo gratis tapi tidak menghasilkan tinta. Tinta bukan skor: gengsi dan ranking diambil dari Jejak.</p></div>`;
+  } else if(t==='cards'){
+    body=shd('Kartu kutipan')+`<div class="sbody">${S.cards.length?S.cards.map(c=>`<div class="cardl"><b>¶${c.p}</b> <span class="muted">· nilai ${c.v}</span><blockquote class="q">${esc(c.text)}</blockquote></div>`).join(''):'<p class="note" style="margin-top:0">Belum ada kartu. Ketuk kalimat mana pun di narasi untuk menyimpannya.</p>'}
+     <p class="note">Nilai kartu naik kalau kalimatnya jauh di belakang, dan turun kalau kalimat yang sama sudah sering dikutip orang.</p></div>`;
+  }
+  const veilA=t==='result'?'seeNarasi':'closeSheet';
+  return `<div class="veil" data-a="${veilA}"></div><div class="sheet" role="dialog" aria-modal="true">${body}</div>`;
+}
+function vApp(){
+  let h=hdr();
+  h+=S.screen==='home'?vHome():S.screen==='story'?vStory():vWrite();
+  if(S.sheet) h+=vSheet();
+  return h;
+}
+
+/* ---------- coach ---------- */
+const isDesk=()=>matchMedia('(min-width: 861px)').matches;
+function stepList(){
+  const i=S.step;
+  return ACTS.map((a,ai)=>`<div class="sl-act">${a}</div><ol class="sl">${STEPS.map((x,j)=>x.act!==ai?'':`<li class="${j<i?'d':j===i?'n':''}">${j<i?`<button data-a="jump" data-v="${j}">${IC.check}<span>${x.t}</span></button>`:`<span><span class="sl-i">${j+1}</span><span>${x.t}</span></span>`}</li>`).join('')}</ol>`).join('');
+}
+function finalHTML(){
+  return `<div class="c-do ok"><span class="c-okic">${IC.check}</span><span>Kamu sudah melewati satu siklus penuh: membaca, mengutip, menangkap kesalahan, memilih, menulis, menang, lalu memegang estafet. Prototipenya tetap bisa diklik bebas.</span></div>
+  <div class="c-sum"><span>Tinta</span><b>50 → ${S.tinta}</b></div>
+  <ul class="c-led">${S.ledger.map(e=>`<li><span>${e.label}</span><b class="${e.v<0?'neg':'pos'}">${sign(e.v)}</b></li>`).join('')}</ul>
+  <div class="c-btns"><button class="btn ghost" data-a="prev">Kembali</button><button class="btn primary" data-a="restart">Ulangi dari awal</button></div>
+  <details class="c-why" data-ui="why"${isDesk()||ui.why?' open':''}><summary>Kalau cerita sedang sepi</summary><ul class="c-rules">
+   <li><b>Hanya 1 kandidat:</b> otomatis diterima saat ronde ditutup.</li>
+   <li><b>Beberapa kandidat, tidak ada suara:</b> pemegang estafet memilih, asal dia bukan kandidat. Kalau dia ikut menulis, ronde diperpanjang sekali, lalu pemenangnya diundi.</li>
+   <li><b>Tidak ada kandidat:</b> ronde diperpanjang. Setelah beberapa kali, cerita ditandai tidur.</li>
+   <li><b>Keberatan tanpa putusan:</b> jadi sengketa yang bisa diputus siapa saja belakangan. Kalau ternyata sah setelah paragrafnya masuk narasi, muncul luka kontinuitas dan thread plot hole (+40 untuk yang menambal).</li>
+   <li><b>Setiap sekitar 20 paragraf:</b> voting lanjut atau tamat bab. Cerita boleh tidak pernah tamat.</li></ul></details>
+  <details class="c-why"><summary>Belum ada di prototipe ini</summary><ul class="c-rules">
+   <li>Penanya: pembaca menempelkan pertanyaan sebagai utang cerita, dan yang menjawabnya di narasi dapat +10.</li>
+   <li>Jejak: statistik permanen di profil (paragraf diterima, keberatan sah, streak) yang dipakai untuk ranking. Tinta tidak dihitung sebagai skor.</li>
+   <li>Bounty thread: pemain menaruh tinta di sebuah thread untuk siapa pun yang mengambil atau menutupnya. 10% dibakar.</li>
+   <li>Cabang cerita seharga 150 tinta.</li>
+   <li>Langganan berbayar untuk cerita solo (akses lebih awal, potongan platform 10%).</li>
+   <li>AI penanya, di lapisan paling akhir setelah ekonomi aplikasi stabil.</li></ul></details>`;
+}
+function renderCoach(){
+  const i=S.step,st=STEPS[i],N=STEPS.length,desk=isDesk(),done=!st.final&&st.done(S);
+  let h=`<div class="c-top"><span>Naratia · prototipe alur</span><span class="c-count">Langkah ${i+1} dari ${N}</span></div>
+  <div class="c-prog" aria-hidden="true">${STEPS.map((x,j)=>`<i class="${j<i?'d':j===i?'n':''}"></i>`).join('')}</div>
+  <div class="c-act" data-n="· ${i+1}/${N}">${ACTS[st.act]}</div><h1 class="c-title">${st.t}</h1>`;
+  if(st.final) h+=finalHTML();
+  else h+=`<div class="c-do${done?' ok':''}" aria-live="polite">${done?`<span class="c-okic">${IC.check}</span><span>${val(st.ok)}</span>`:`<span class="c-dot"></span><span>${val(st.do)}</span>`}</div>
+   <div class="c-btns">${i>0?'<button class="btn ghost" data-a="prev">Kembali</button>':''}${done?'<button class="btn primary" data-a="next">Lanjut</button>':'<button class="btn ghost" data-a="skip">Lewati langkah ini</button>'}</div>
+   <details class="c-why" data-ui="why"${desk||ui.why?' open':''}><summary>Kenapa begini?</summary><p>${st.why}</p></details>`;
+  h+=`<details class="c-steps" data-ui="steps"${desk||ui.steps?' open':''}><summary>Semua langkah</summary>${stepList()}</details>`;
+  $('#coach').innerHTML=h;
+}
+function applyCoach(){
+  document.querySelectorAll('.ct').forEach(e=>e.classList.remove('ct'));
+  const st=STEPS[S.step]; if(st.final) return;
+  const done=st.done(S);
+  const sel=done?'#coach [data-a="next"]':st.target(S);
+  const el=sel&&document.querySelector(sel); if(!el) return;
+  el.classList.add('ct');
+  const key=S.step+'|'+sel;
+  if(key!==lastTargetKey){
+    lastTargetKey=key;
+    if(el.closest('#phone')&&!(st.noScroll&&!done)){
+      const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const box=el.closest('.sbody,.scr'); if(box){
+        const r=el.getBoundingClientRect(),b=box.getBoundingClientRect();
+        if(r.top<b.top+20||r.bottom>b.bottom-20) box.scrollTo({top:box.scrollTop+(r.top-b.top)-b.height/2+r.height/2,behavior:reduce?'auto':'smooth'});
+      }
+    }
+  }
+}
+
+/* ---------- render ---------- */
+let io=null; const ioT=new Map();
+function observeReads(){
+  if(io){io.disconnect();io=null;}
+  const scr=$('#scr'); if(!scr||S.screen!=='story'||S.tab!=='narasi'||!('IntersectionObserver' in window)){ioT.forEach(clearTimeout);ioT.clear();return;}
+  io=new IntersectionObserver(es=>es.forEach(e=>{
+    const n=+e.target.dataset.p;
+    const seen=e.isIntersecting&&(e.intersectionRatio>=0.6||(e.rootBounds&&e.intersectionRect.height>=e.rootBounds.height*0.5));
+    if(seen){ if(!ioT.has(n)) ioT.set(n,setTimeout(()=>{ioT.delete(n);markRead(n)},800)); }
+    else { clearTimeout(ioT.get(n)); ioT.delete(n); }
+  }),{root:scr,threshold:[0,0.2,0.4,0.6,0.8,1]});
+  scr.querySelectorAll('.para[data-unread]').forEach(el=>io.observe(el));
+}
+function render(){
+  const app=$('#app');
+  const oldScr=$('#scr'); if(oldScr&&oldScr.dataset.k) scrollMem[oldScr.dataset.k]=oldScr.scrollTop;
+  const oldSb=$('.sbody'); if(oldSb) sheetMem=oldSb.scrollTop;
+  const key=S.screen+'/'+S.tab;
+  const sk=S.sheet?S.sheet.type+(S.sheet.id||S.sheet.c||''):'';
+  app.innerHTML=vApp();
+  const scr=$('#scr'); if(scr){scr.dataset.k=key; scr.scrollTop=scrollMem[key]||0;}
+  if(S.sheet){
+    if(sk===lastSheetKey){const sb=$('.sbody'); if(sb) sb.scrollTop=sheetMem;}
+    else {$('.sheet').classList.add('enter');$('.veil').classList.add('enter');sheetMem=0;}
+  }
+  lastSheetKey=sk;
+  if(pendingScroll&&!S.sheet){const t=$(pendingScroll); if(t&&scr){scr.scrollTop=Math.max(0,t.offsetTop-scr.offsetTop-12);} pendingScroll=null;}
+  observeReads(); bindWriter(); renderCoach(); applyCoach(); showDeltas(); save();
+}
+function showDeltas(){
+  if(!deltas) return; const v=deltas; deltas=0;
+  const chip=$('#inkChip'); if(chip){chip.classList.remove('bump');void chip.offsetWidth;chip.classList.add('bump');}
+  const d=document.createElement('span'); d.className='delta'+(v<0?' neg':''); d.textContent=sign(v);
+  $('#phone').appendChild(d); setTimeout(()=>d.remove(),1300);
+}
+let tT; function toast(m){const t=$('#toast');t.innerHTML=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2800);}
+
+/* writer */
+function bindWriter(){
+  const ed=$('#ed'); if(!ed) return;
+  if(!S.wStart){S.wStart=Date.now();}
+  ed.addEventListener('paste',e=>{e.preventDefault();toast('Paste diblokir. Paragraf harus diketik langsung.');});
+  ed.addEventListener('drop',e=>{e.preventDefault();toast('Seret-lepas teks diblokir.');});
+  ed.addEventListener('beforeinput',e=>{if(e.inputType==='insertFromPaste'||e.inputType==='insertFromDrop'){e.preventDefault();}});
+  ed.addEventListener('input',e=>{
+    const del=e.inputType&&e.inputType.indexOf('delete')===0;
+    if(del&&!lastDel) S.revs++; lastDel=del;
+    S.draft=ed.value; updWriter(); renderCoach(); applyCoach(); save();
+  });
+}
+function updWriter(){
+  const n=S.draft.length,c=$('#cnt'); if(!c) return;
+  c.textContent=`${n} / 300–1000`; c.className=n>=300?'ok':'';
+  $('#warn').innerHTML=warnHTML();
+  $('#submitBtn').classList.toggle('is-locked',n<300);
+  $('#proc span').textContent=procOf({mins:minsSince(S.wStart),revs:S.revs});
+}
+setInterval(()=>{const sp=$('#sprint'); if(sp) sp.textContent=sprintText();},1000);
+
+/* ---------- actions ---------- */
+function goTo(j){gen++;typing=false;S=clone(snaps[j]);snaps.length=j+1;lastTargetKey='';pendingScroll=null;if(S.obj&&!S.closed)scheduleObjTicks();}
+const A={
+  open(){S.screen='story';S.tab='narasi';},
+  other(){toast('Prototipe ini fokus ke satu cerita. Aturan untuk ronde sepi dan akhir bab ada di langkah terakhir panduan.');return false;},
+  back(){if(S.screen==='write'){S.screen='story';S.tab='ronde';}else{S.screen='home';S.sheet=null;}},
+  tab(v){S.tab=v;S.sheet=null;},
+  sn(v){addCard(v);},
+  thread(v){S.sheet={type:'thread',id:v};if(v==='t1')S.threadSeen=true;},
+  support(){S.supported=true;toast('Dukungan tercatat. Usulan ini jadi thread resmi.');},
+  objOpen(v){S.sheet={type:'obj',c:v};S.objEv=null;},
+  ev(v){S.objEv=v;},
+  reason(v){S.objReason=S.objReason===v?null:v;},
+  objSubmit(){ if(!S.objEv){toast('Pilih dulu kalimat bukti dari narasi.');return false;} if(!validEv()){toast('Bukti ini belum menunjukkan pertentangan.');return false;} submitObj(); toast('Keberatan terkirim. Taruhan 10 tinta ditahan sampai ada putusan.'); },
+  vote(v){doVote(v);},
+  write(){if(S.read.length<6){toast('Baca semua paragraf baru dulu sebelum menulis lanjutan.');return false;}S.screen='write';S.sheet=null;},
+  takeToggle(v,el){S.take=el.checked;},
+  demoType(){
+    if(typing) return false; const ed=$('#ed'); if(!ed) return false;
+    typing=true; const g=gen; let i=0; ed.value=''; S.draft='';
+    const t=setInterval(()=>{
+      if(g!==gen||!document.body.contains(ed)){clearInterval(t);typing=false;return;}
+      i=Math.min(SAMPLE.length,i+7); ed.value=SAMPLE.slice(0,i); S.draft=ed.value; updWriter();
+      if(i>=SAMPLE.length){clearInterval(t);typing=false;renderCoach();applyCoach();save();}
+    },16);
+    return false;
+  },
+  submit(){doSubmit();},
+  close(){closeRound();},
+  result(){S.sheet={type:'result'};},
+  seeNarasi(){seeNarasi();},
+  estafet(){S.sheet={type:'estafet'};},
+  preset(v){S.preset=v;},
+  estafetStart(){S.estafet={preset:S.preset};S.sheet=null;S.screen='story';S.tab='ronde';toast('Ronde 8 dibuka.');},
+  ledger(){S.sheet={type:'ledger'};},
+  cards(){S.sheet={type:'cards'};},
+  closeSheet(){ if(S.sheet&&S.sheet.type==='result'){seeNarasi();return;} S.sheet=null; },
+  next(){
+    const st=STEPS[S.step]; if(st.final||!st.done(S)) return false;
+    if(S.sheet&&['thread','cards','ledger'].includes(S.sheet.type)) S.sheet=null;
+    S.step++; snaps[S.step]=clone(S); lastTargetKey='';
+  },
+  skip(){STEPS[S.step].skip(S);},
+  prev(){if(S.step>0) goTo(S.step-1);},
+  jump(v){goTo(+v);},
+  restart(){gen++;typing=false;S=fresh();snaps=[clone(S)];scrollMem={};lastTargetKey='';}
+};
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-a]'); if(!el) return;
+  const a=el.dataset.a; if(!A[a]) return;
+  if(el.tagName!=='INPUT') e.preventDefault();
+  if(A[a](el.dataset.v,el)!==false) render();
+});
+document.addEventListener('copy',e=>{
+  const n=getSelection&&getSelection().anchorNode; const p=n&&(n.nodeType===1?n:n.parentElement);
+  if(p&&p.closest('.ptext,.ctext,.evlist,.q')){e.preventDefault();toast('Teks cerita tidak bisa disalin. Ketuk kalimatnya untuk menyimpan kartu kutipan.');}
+});
+$('#coach').addEventListener('toggle',e=>{const k=e.target.dataset&&e.target.dataset.ui; if(k&&!isDesk()) ui[k]=e.target.open;},true);
+let wasDesk=isDesk(); addEventListener('resize',()=>{const d=isDesk(); if(d!==wasDesk){wasDesk=d;renderCoach();applyCoach();}});
+
+if(S.obj&&!S.closed) scheduleObjTicks();
+render();
+})();
+</script>

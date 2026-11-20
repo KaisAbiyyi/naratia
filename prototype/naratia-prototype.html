@@ -1,0 +1,980 @@
+<title>Naratia Prototipe</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&display=swap">
+<style>
+/* Layout: phone-width app column (scrolling inside), guide panel beside it on desktop.
+   Identity: cool paper + blue-black ink (tinta) accent; threads are "benang merah" (red string). */
+:root{
+  --paper:#EEF1F6; --surface:#FFFFFF; --sunk:#E4E8F0; --ink:#1A1F33; --muted:#5B6277; --line:#D7DCE6;
+  --tinta:#2F3DBF; --tinta-soft:#E3E6FA; --benang:#C4303A; --benang-soft:#F8E1E3;
+  --luka:#A96A12; --luka-soft:#F7EBD6; --ok:#257A4E; --ok-soft:#DDF1E6;
+  --f-ui:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-story:"Literata",Georgia,"Times New Roman",serif;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0D1020; --surface:#161A2D; --sunk:#1E2338; --ink:#E7E9F3; --muted:#9BA2BA; --line:#2A3050;
+  --tinta:#8E99FF; --tinta-soft:#252B57; --benang:#FF6E76; --benang-soft:#3A1E26;
+  --luka:#E4AC52; --luka-soft:#3A2D18; --ok:#62C894; --ok-soft:#173326; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0D1020; --surface:#161A2D; --sunk:#1E2338; --ink:#E7E9F3; --muted:#9BA2BA; --line:#2A3050;
+  --tinta:#8E99FF; --tinta-soft:#252B57; --benang:#FF6E76; --benang-soft:#3A1E26;
+  --luka:#E4AC52; --luka-soft:#3A2D18; --ok:#62C894; --ok-soft:#173326; color-scheme:dark}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.5;overflow:hidden}
+button{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--tinta);outline-offset:2px}
+#wrap{height:100%;display:grid;grid-template-columns:minmax(0,1fr)}
+#guide{display:none}
+#app{height:100%;min-width:0;position:relative;background:var(--paper)}
+.shell{height:100%;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media (min-width:960px){
+  #wrap{grid-template-columns:300px 430px;justify-content:center;gap:32px;padding-block:20px}
+  #guide{display:block;overflow-y:auto;padding-block:8px}
+  #app{border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 20px 50px -30px rgba(20,30,80,.35)}
+  .demo-fab{display:none!important}
+}
+/* top bar */
+.bar{display:flex;align-items:center;gap:10px;padding-block:12px;background:var(--surface);border-bottom:1px solid var(--line);flex:none}
+.bar-title{flex:1;min-width:0}
+.bar-title .t{font-family:var(--f-story);font-weight:700;font-size:18px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-title .s{font-size:12px;color:var(--muted)}
+.icon-btn{border:0;background:transparent;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;cursor:pointer;margin-left:-8px}
+.icon-btn:hover{background:var(--sunk)}
+.ink{display:flex;align-items:center;gap:5px;background:var(--tinta-soft);color:var(--tinta);font-weight:700;border-radius:999px;padding:5px 11px;font-variant-numeric:tabular-nums;position:relative}
+.ink svg{flex:none}
+.delta{position:absolute;right:6px;top:-4px;font-size:12px;font-weight:700;pointer-events:none;animation:rise 1s ease-out forwards}
+.delta.neg{color:var(--benang)} .delta.pos{color:var(--ok)}
+@keyframes rise{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-22px)}}
+.scroll{flex:1;overflow-y:auto;overscroll-behavior:contain}
+.screen{padding-block:16px 28px;display:flex;flex-direction:column;gap:16px}
+/* tabs */
+.tabs{display:flex;gap:4px;background:var(--surface);border-bottom:1px solid var(--line);flex:none;padding-block:0}
+.tabs button{border:0;background:transparent;padding:10px 12px;font-weight:600;font-size:14px;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer;display:flex;gap:6px;align-items:center}
+.tabs button.on{color:var(--ink);border-color:var(--tinta)}
+.count{background:var(--sunk);border-radius:999px;padding:0 7px;font-size:12px}
+/* bottom nav */
+.nav{display:flex;justify-content:space-around;background:var(--surface);border-top:1px solid var(--line);flex:none;padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav button{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 6px 9px;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;flex:1}
+.nav button.on{color:var(--tinta)}
+/* generic */
+h2.sec{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:4px 0 -6px}
+.btn{border:0;border-radius:10px;padding:11px 16px;font-weight:600;cursor:pointer;background:var(--tinta);color:var(--surface);display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.soft{background:var(--tinta-soft);color:var(--tinta)}
+.btn.red{background:var(--benang);color:var(--surface)}
+.btn.sm{padding:7px 11px;font-size:13px;border-radius:8px}
+.btn.block{width:100%}
+.link{border:0;background:none;color:var(--tinta);font-weight:600;cursor:pointer;padding:0;font-size:13px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.muted{color:var(--muted)} .small{font-size:13px}
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:600;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.pill.live{background:var(--tinta-soft);color:var(--tinta)}
+.pill.warn{background:var(--luka-soft);color:var(--luka)}
+.pill.red{background:var(--benang-soft);color:var(--benang)}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.spread{display:flex;justify-content:space-between;align-items:center;gap:8px}
+/* login */
+.login{flex:1;display:flex;flex-direction:column;justify-content:center;gap:28px;padding-block:40px}
+.wordmark{font-family:var(--f-story);font-size:44px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.wordmark span{color:var(--benang)}
+.login p.lead{font-family:var(--f-story);font-size:19px;line-height:1.45;max-width:30ch}
+.thread-art{height:2px;background:var(--benang);border-radius:2px;width:60%;position:relative}
+.thread-art::after{content:"";position:absolute;right:-6px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--benang)}
+/* home */
+.taskstrip{display:flex;align-items:center;gap:12px;cursor:pointer;text-align:left;width:100%}
+.bar-prog{height:6px;background:var(--sunk);border-radius:6px;overflow:hidden;flex:1}
+.bar-prog i{display:block;height:100%;background:var(--tinta);border-radius:6px}
+.scard{display:flex;flex-direction:column;gap:8px;text-align:left;width:100%;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.scard:hover{border-color:var(--tinta)}
+.scard h3{font-family:var(--f-story);font-size:20px;margin:0;line-height:1.25}
+.scard .excerpt{font-family:var(--f-story);color:var(--muted);margin:0;font-size:14px;line-height:1.55}
+.scard-meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted)}
+.genre{font-size:12px;font-weight:600;color:var(--muted)}
+.redtxt{color:var(--benang);font-weight:600}
+/* reading */
+.chap{font-family:var(--f-story);text-align:center;padding:14px 0 2px}
+.chap small{display:block;font-family:var(--f-ui);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.chap b{font-size:19px}
+.para{display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:6px;position:relative}
+.pnum{font-size:12px;color:var(--muted);font-weight:600;padding-top:5px;font-variant-numeric:tabular-nums}
+.para.unread .pnum::after{content:"";display:block;width:7px;height:7px;border-radius:50%;background:var(--tinta);margin-top:6px}
+.ptext{font-family:var(--f-story);font-size:17px;line-height:1.72;margin:0;grid-column:2}
+.para > :not(.pnum){grid-column:2}
+.pmeta{display:flex;gap:12px;align-items:center;font-size:12px;color:var(--muted);margin-top:6px;flex-wrap:wrap}
+.who{font-weight:600;color:var(--ink)}
+.who.me{color:var(--tinta)}
+.thr{border-bottom:2px solid var(--benang);cursor:pointer;padding-bottom:1px}
+.thr:hover{background:var(--benang-soft)}
+.thr.plothole{border-bottom:2px dashed var(--luka)}
+.thr.closed{border-bottom:1px solid var(--muted)}
+.wound{margin-top:8px;border-left:3px solid var(--luka);background:var(--luka-soft);border-radius:0 8px 8px 0;padding:8px 10px;font-size:13px}
+.wound b{color:var(--luka)}
+.wound.patched{opacity:.7}
+.debt{margin-top:8px;border-left:3px solid var(--tinta);background:var(--tinta-soft);border-radius:0 8px 8px 0;padding:8px 10px;font-size:13px}
+.debt.answered{opacity:.65}
+.cta{background:var(--surface);border-top:1px solid var(--line);padding-block:12px;flex:none;display:flex;flex-direction:column;gap:10px}
+.cta .row .btn{flex:1}
+/* threads */
+.tcard{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--benang);border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.tcard.plothole{border-left-color:var(--luka)}
+.tcard.proposed{border-left-style:dashed}
+.tcard.closed{border-left-color:var(--muted);opacity:.75}
+.tcard h4{margin:0;font-size:15px}
+.bonus{font-weight:700;color:var(--ok);font-variant-numeric:tabular-nums}
+blockquote.q{margin:0;font-family:var(--f-story);font-style:italic;font-size:14px;color:var(--ink);border-left:2px solid var(--line);padding-left:10px}
+blockquote.q cite{font-style:normal;font-family:var(--f-ui);font-size:12px;color:var(--muted);margin-left:6px}
+/* round */
+.rinfo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rinfo div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+.rinfo small{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.rinfo b{font-size:15px;font-variant-numeric:tabular-nums}
+.cand{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:10px}
+.cand.mine{border-color:var(--tinta)}
+.cand.voted{box-shadow:inset 0 0 0 2px var(--tinta)}
+.cand .ptext{font-size:16px}
+.cand-h{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.cand-h b{font-family:var(--f-story);font-size:17px}
+.proc{font-size:12px;color:var(--muted)}
+.obj{border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;background:var(--paper)}
+.obj-h{font-size:13px}
+.obj p{margin:0;font-size:14px}
+.def{font-size:13px;border-top:1px dashed var(--line);padding-top:8px;display:flex;flex-direction:column;gap:6px}
+.rule{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px}
+.rule .tally{flex:1;min-width:140px;color:var(--muted);font-variant-numeric:tabular-nums}
+.btn.pick{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn.pick.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+/* write */
+.sprint{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.sprint b{font-size:20px;font-variant-numeric:tabular-nums;color:var(--tinta)}
+.sprint.over b{color:var(--muted)}
+.banner{border-radius:10px;padding:10px 12px;font-size:14px;background:var(--benang-soft);color:var(--ink);border:1px solid var(--benang)}
+.banner b{color:var(--benang)}
+.prevpara{font-family:var(--f-story);font-size:15px;line-height:1.6;color:var(--muted);max-height:120px;overflow-y:auto;border-left:2px solid var(--line);padding-left:12px}
+textarea,input[type=text],select{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:12px;font:inherit}
+textarea.story{font-family:var(--f-story);font-size:17px;line-height:1.65;min-height:200px;resize:vertical}
+.meter{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.meter .bad{color:var(--benang);font-weight:600} .meter .good{color:var(--ok);font-weight:600}
+.warn{font-size:13px;color:var(--benang)}
+.tpick{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+.tpick.locked{cursor:not-allowed;background:var(--paper)}
+.tpick input{margin-top:3px;accent-color:var(--tinta)}
+.tpick .sub{font-size:12px;color:var(--muted)}
+.tpick .need{font-size:12px;color:var(--benang)}
+.tpick .have{font-size:12px;color:var(--ok);font-weight:600}
+.subopt{display:flex;gap:6px;align-items:center;font-size:13px;margin-top:4px}
+/* cards */
+.kcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.kval{font-weight:700;color:var(--tinta);font-variant-numeric:tabular-nums}
+/* tasks */
+.task{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.task .bar-prog{grid-column:1}
+.task.done{border-color:var(--ok)}
+.streaks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.streaks div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+.streaks b{display:block;font-size:22px;font-family:var(--f-story)}
+.streaks small{color:var(--muted);font-size:12px}
+/* ledger */
+.ledger{display:flex;flex-direction:column}
+.ledger div{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.ledger b{font-variant-numeric:tabular-nums}
+.ledger .p{color:var(--ok)} .ledger .n{color:var(--benang)}
+/* sheet */
+.veil{position:absolute;inset:0;background:rgba(10,14,30,.45);z-index:30;display:flex;align-items:flex-end}
+.sheet{background:var(--surface);width:100%;max-height:88%;overflow-y:auto;border-radius:18px 18px 0 0;padding-block:18px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px;animation:up .2s ease-out}
+@keyframes up{from{transform:translateY(30px);opacity:.5}to{transform:none;opacity:1}}
+.sheet h3{margin:0;font-family:var(--f-story);font-size:20px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+.opt input{margin-top:3px;accent-color:var(--tinta)}
+.opt.dis{opacity:.5;cursor:not-allowed}
+.res-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+/* floating */
+.demo-fab{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-weight:700;font-size:12px;border-radius:999px;padding:5px 10px;cursor:pointer}
+#cardBtn{position:fixed;z-index:50;border:0;background:var(--benang);color:#fff;font-weight:700;font-size:13px;border-radius:999px;padding:8px 14px;cursor:pointer;box-shadow:0 8px 20px -8px rgba(0,0,0,.5)}
+#toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:12px;font-size:14px;max-width:min(380px,calc(100vw - 32px));box-shadow:0 10px 30px -10px rgba(0,0,0,.5)}
+/* guide */
+.guide h1{font-family:var(--f-story);font-size:26px;margin:0 0 4px}
+.guide ol{padding-left:20px;margin:12px 0;display:flex;flex-direction:column;gap:10px;font-size:14px}
+.guide li::marker{color:var(--benang);font-weight:700}
+.guide .demo{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.empty{text-align:center;color:var(--muted);padding:28px 12px;font-size:14px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div id="wrap">
+  <aside id="guide" class="guide"></aside>
+  <div id="app"></div>
+</div>
+<button id="cardBtn" type="button" hidden>+ Simpan kartu</button>
+<div id="toast" hidden></div>
+
+<script>
+(function(){
+const ME='kamu';
+const H=3600e3, M=60e3;
+const PRESETS={Kilat:{h:1,mult:1.5,d:'1 jam'},Normal:{h:24,mult:1,d:'24 jam'},Panjang:{h:72,mult:0.8,d:'3 hari'}};
+const CONSTRAINTS=['Tanpa dialog','Dari POV tokoh lain','Maksimal 1 tokoh baru','Harus ada kilas balik','Tanpa kata "tiba-tiba"'];
+const GENRES=['Misteri','Fantasi','Fiksi ilmiah','Horor','Drama','Komedi','Romansa'];
+const BULAN=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+const MIN_LEN=300, MAX_LEN=1000, READ_CAP=20, SPRINT_MS=10*M;
+const KEY='naratia-proto-v1';
+
+const ICON=(p,s=22)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const I={
+  back:ICON('<path d="M15 18l-6-6 6-6"/>',20),
+  home:ICON('<path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z"/>'),
+  cards:ICON('<rect x="4" y="6" width="12" height="15" rx="2"/><path d="M8 3h10a2 2 0 012 2v13"/>'),
+  tasks:ICON('<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2h9"/>'),
+  user:ICON('<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>'),
+  drop:'<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12 2.5c-.3 0-.6.2-.8.4C9.4 5.3 5 11 5 15a7 7 0 0014 0c0-4-4.4-9.7-6.2-12.1-.2-.2-.5-.4-.8-.4z"/></svg>'
+};
+
+function day(n,h,m){return new Date(2026,10,n,h,m).getTime()}
+
+function seed(){
+  const now=Date.now();
+  const s1={
+    id:'s1', title:'Mercusuar Pulau Garam', genre:['Misteri'], solo:false,
+    chapters:{1:'Lampu yang Menyala Sendiri',2:'Yang Menunggu di Bawah'},
+    quoted:{s1p3:2,s1p8:1},
+    paras:[
+      {id:'s1p1',ch:1,author:'ombak',at:day(12,20,4),q:[],text:'Sudah tiga tahun mercusuar di Pulau Garam tidak berpenjaga. Dinas pelabuhan memutus listriknya sejak Pak Darsa, penjaga terakhirnya, menghilang tanpa pamit. Tapi setiap Kamis malam, para nelayan bersumpah melihat lampunya berputar lagi, tiga kali, lalu padam. Malam ini Kamis. Ralin, cucu Pak Darsa, menambatkan perahunya di dermaga yang sudah lapuk dan menatap menara putih itu lama sekali.'},
+      {id:'s1p2',ch:1,author:'lentera',at:day(13,21,15),q:[],text:'Pintu menara tidak terkunci. Di meja jaga, debu menutupi segalanya kecuali satu benda: sebuah kunci kuningan kecil, mengilap seperti baru dipakai. Di sebelahnya tergeletak jam saku Pak Darsa, kacanya retak dan jarumnya berhenti di pukul 11.40. Ralin memasukkan keduanya ke saku jaket. Dari atas terdengar bunyi logam beradu pelan, seperti seseorang sedang memutar tuas.'},
+      {id:'s1p3',ch:1,author:ME,at:day(14,22,2),q:[],text:'Ralin naik dengan napas tertahan. Tangga besi berderit di setiap anak tangga. Di ruang lampu tidak ada siapa-siapa, hanya jendela yang terbuka dan bau solar yang tajam. Dari jendela itu ia melihat perahunya sendiri, Seruni, terlepas dari tambatan dan terseret arus. Dalam hitungan menit perahu kecil itu terbalik dan tenggelam di antara karang. Ralin kini terjebak di pulau sampai kapal pos datang hari Senin.'},
+      {id:'s1p4',ch:1,author:'nadiraa',at:day(15,20,40),q:[],wound:{by:'bayu_r',reason:'Jam saku retak dan mati di ¶2, lalu tiba-tiba berdetak di sini tanpa penjelasan.',ruling:'4–1',patched:false},text:'Ralin duduk di lantai, mencoba menenangkan diri. Ia mengeluarkan jam saku kakeknya dan terkejut: jarumnya bergerak, berdetak pelan, seolah tidak pernah rusak. Di balik tutupnya ada ukiran yang belum pernah ia lihat: "Untuk D., dari yang menunggu di bawah." Di bawah? Ralin menatap lantai. Mercusuar ini tidak punya ruang bawah tanah. Setidaknya, begitulah yang selalu dikatakan kakeknya.'},
+      {id:'s1p5',ch:1,author:'bayu_r',at:day(16,23,1),q:[{id:'q1',by:'senja',text:'Siapa yang mengunci pintu dari luar kalau tidak ada orang lain di pulau?',status:'open'}],text:'Tengah malam, lampu di atas kepalanya menyala sendiri. Berputar sekali, dua kali, tiga kali, lalu padam. Ralin berlari ke ruang lampu, tapi tuasnya dingin dan tidak ada jejak kaki di debu selain miliknya. Saat turun lagi, ia menyadari satu hal yang membuat bulu kuduknya berdiri: pintu menara yang tadi ia biarkan terbuka kini terkunci dari luar.'},
+      {id:'s1p6',ch:2,author:ME,at:day(17,21,30),q:[],text:'Pagi datang abu-abu. Ralin memeriksa setiap dinding di lantai dasar, mengetuknya satu per satu. Di balik rak tali tambang, ketukannya terdengar berbeda: kosong. Ia menggeser rak itu dengan susah payah dan menemukan sebuah pelat besi di lantai, dengan lubang kunci kecil di tengahnya, terlalu kecil untuk kunci pintu biasa.'},
+      {id:'s1p7',ch:2,author:'senja',at:day(18,20,12),q:[],text:'Sebelum sempat mencoba apa pun, Ralin mendengar suara mesin perahu dari arah dermaga. Ia mengintip lewat celah jendela. Seorang perempuan tua turun dari perahu motor, membawa termos dan senter, lalu berjalan lurus ke menara seolah sudah ratusan kali melakukannya. Ralin mengenali wajahnya dari foto lama di dompet kakeknya, foto yang selalu ia kira foto neneknya yang sudah meninggal.'},
+      {id:'s1p8',ch:2,author:'lentera',at:day(19,21,5),q:[],text:'Perempuan itu berhenti di depan pintu dan tidak mengetuk. Ia hanya berkata pelan, cukup keras untuk terdengar dari dalam, bahwa cucu Darsa pasti sudah menemukan apa yang ditinggalkan di meja jaga. Lalu ia duduk di anak tangga, menuang teh dari termosnya, dan menunggu.'}
+    ],
+    threads:[
+      {id:'t1',label:'Lampu menyala tiap Kamis',pid:'s1p1',phrase:'setiap Kamis malam',last:'s1p5',status:'open',kind:'normal',by:'ombak'},
+      {id:'t2',label:'Kunci kuningan',pid:'s1p2',phrase:'kunci kuningan kecil',last:'s1p2',status:'open',kind:'normal',by:'lentera'},
+      {id:'t3',label:'Jam saku berhenti di 11.40',pid:'s1p2',phrase:'jam saku Pak Darsa',last:'s1p4',status:'open',kind:'normal',by:'lentera'},
+      {id:'t4',label:'Terjebak sampai kapal pos datang',pid:'s1p3',phrase:'kapal pos datang hari Senin',last:'s1p3',status:'open',kind:'normal',by:ME},
+      {id:'t5',label:'Yang menunggu di bawah',pid:'s1p4',phrase:'yang menunggu di bawah',last:'s1p6',status:'open',kind:'normal',by:'nadiraa'},
+      {id:'t6',label:'Plot hole: jam saku tiba-tiba berdetak',pid:'s1p4',phrase:'jarumnya bergerak',last:'s1p4',status:'open',kind:'plothole',by:'sistem'},
+      {id:'t7',label:'Perempuan dari foto',pid:'s1p7',phrase:'foto neneknya yang sudah meninggal',last:'s1p7',status:'open',kind:'normal',by:'senja'},
+      {id:'t8',label:'Bau solar di ruang lampu',pid:'s1p3',phrase:'bau solar yang tajam',last:'s1p3',status:'proposed',kind:'normal',by:'senja',support:2,supported:false}
+    ],
+    round:{n:9,endsAt:now+17*H+42*M,preset:'Normal',constraint:'Tanpa dialog',holder:'lentera',extended:false,myVote:null,cands:[
+      {id:'c1',label:'A',author:'bayu_r',votes:2,flaw:null,takes:['t2'],closes:[],opens:[],answers:[],proc:{min:9,rev:4},obj:[],
+       text:'Ralin mengeluarkan kunci kuningan kecil dari saku jaketnya dan berlutut di depan pelat besi. Ukurannya pas. Kunci itu berputar dengan bunyi klik yang berat, dan pelat terangkat sedikit, cukup untuk mengeluarkan udara dingin berbau garam dan karat. Di bawahnya ada tangga batu yang menurun ke gelap. Di luar, perempuan tua itu berhenti menuang teh, seolah mendengar bunyi yang sudah lama ia tunggu.'},
+      {id:'c2',label:'B',author:'ombak',votes:1,flaw:'kontinuitas',takes:[],closes:[],opens:[],answers:[],proc:{min:2,rev:0},
+       obj:[{id:'o1',by:'nadiraa',kind:'kontinuitas',reason:'Seruni sudah terbalik dan tenggelam di ¶3. Ralin tidak punya perahu lagi.',cards:[{pid:'s1p3',text:'perahu kecil itu terbalik dan tenggelam di antara karang'}],def:{pid:'s1p7',text:'suara mesin perahu dari arah dermaga',note:'Mungkin ada perahu lain yang ditambatkan di sana.'},valid:2,invalid:1,mine:null}],
+       text:'Ralin tidak mau menunggu. Ia menyelinap lewat jendela belakang, berlari ke dermaga, dan melompat ke Seruni yang masih tertambat di tempat semula. Mesin tuanya batuk dua kali sebelum menyala. Dari kejauhan ia melihat perempuan tua itu berdiri, tidak mengejar, hanya mengangkat termosnya seperti memberi salam perpisahan. Ralin mengarahkan perahu ke barat, ke arah daratan.'},
+      {id:'c3',label:'C',author:'senja',votes:1,flaw:'constraint',takes:['t5'],closes:[],opens:[],answers:[],proc:{min:6,rev:2},obj:[],
+       text:'Ralin membuka pintu. “Siapa kau sebenarnya?” tanyanya. Perempuan itu meletakkan cangkirnya dan tersenyum lelah. “Aku yang menunggu di bawah, Nak. Sudah tiga tahun aku menunggu kakekmu kembali dari sana.” Ia menunjuk ke dalam, tepat ke arah rak tali tambang yang sudah digeser. Ralin merasakan jam saku di sakunya berdetak makin cepat.'}
+    ]}
+  };
+  const s2={
+    id:'s2', title:'Pasar Malam Terakhir', genre:['Fantasi'], solo:false, chapters:{1:'Tiket Tanpa Harga'}, quoted:{},
+    paras:[
+      {id:'s2p1',ch:1,author:ME,at:day(15,19,30),q:[],text:'Pasar malam itu hanya muncul di lapangan Desa Ranu saat bulan mati, dan selalu pergi sebelum azan subuh. Tidak ada yang tahu siapa pemiliknya. Wahana-wahananya berkarat tapi lampunya selalu terang, dan tiketnya tidak dibeli dengan uang. Penjaga loket hanya bertanya satu hal kepada setiap pengunjung: Kenangan mana yang mau kau tukar?'},
+      {id:'s2p2',ch:1,author:'senja',at:day(16,20,10),q:[],text:'Laras menukar ingatan tentang ulang tahun kelimanya. Ia tidak merasa kehilangan apa-apa, dan justru itu yang membuatnya takut. Di tangannya kini ada tiket kuning bertuliskan "Bianglala, satu putaran". Dari puncak bianglala, kata orang-orang, kau bisa melihat apa pun yang paling kau rindukan.'},
+      {id:'s2p3',ch:1,author:'bayu_r',at:day(17,21,45),q:[],text:'Di puncak, bianglala berhenti. Laras melihat ke bawah dan tidak menemukan desanya. Yang ada hanya lautan lampu pasar malam, membentang sampai ke cakrawala: ribuan wahana yang sama, ribuan loket yang sama. Dan di setiap loket duduk seorang penjaga yang wajahnya persis wajah Laras.'},
+      {id:'s2p4',ch:1,author:'nadiraa',at:day(18,22,20),q:[],text:'Bianglala bergerak turun. Saat kakinya menyentuh tanah, penjaga loket tersenyum padanya, senyum yang terlalu ia kenal. Putaran berikutnya gratis, katanya, karena mulai malam ini Laras yang menjaga loket. Lampu-lampu meredup satu per satu. Azan subuh tidak terdengar.'}
+    ],
+    threads:[
+      {id:'u1',label:'Kenangan yang ditukar',pid:'s2p1',phrase:'Kenangan mana yang mau kau tukar?',last:'s2p2',status:'open',kind:'normal',by:ME},
+      {id:'u2',label:'Subuh yang tidak datang',pid:'s2p4',phrase:'Azan subuh tidak terdengar',last:'s2p4',status:'open',kind:'normal',by:'nadiraa'}
+    ],
+    round:null,
+    chapterEnd:{endsAt:now+9*H+5*M,lanjut:3,tamat:1,mine:null}
+  };
+  const s3={
+    id:'s3', title:'Kota yang Lupa Hujan', genre:['Fiksi ilmiah'], solo:false, chapters:{1:'Genangan'}, quoted:{},
+    paras:[
+      {id:'s3p1',ch:1,author:'ombak',at:day(17,19,0),q:[],text:'Sudah sembilan tahun tidak ada hujan di Kota Sela. Bukan kemarau, karena air tetap mengalir dari menara kondensasi di setiap blok. Hanya saja langit tidak pernah mendung lagi, dan anak-anak yang lahir setelah tahun itu menganggap hujan cuma dongeng. Sampai suatu pagi, Gita menemukan genangan air di atap rumahnya.'},
+      {id:'s3p2',ch:1,author:'nadiraa',at:day(18,20,30),q:[],text:'Genangan itu tidak menguap meski matahari terik. Airnya dingin dan berbau tanah, bau yang tidak pernah Gita kenal tapi entah kenapa membuatnya ingin menangis. Di permukaannya, samar-samar, terlihat pantulan langit yang berbeda: kelabu dan penuh awan, seperti foto lama yang tertinggal di air.'}
+    ],
+    threads:[{id:'v1',label:'Genangan yang tidak menguap',pid:'s3p2',phrase:'Genangan itu tidak menguap',last:'s3p2',status:'open',kind:'normal',by:'nadiraa'}],
+    round:{n:3,endsAt:now+1*H+52*M,preset:'Normal',constraint:null,holder:'nadiraa',extended:true,myVote:null,cands:[
+      {id:'d1',label:'A',author:'nadiraa',votes:0,flaw:null,takes:['v1'],closes:[],opens:[],answers:[],proc:{min:8,rev:3},obj:[],
+       text:'Gita mencelupkan jarinya ke genangan. Dingin itu merambat naik sampai ke siku, lalu tiba-tiba ia tidak lagi berdiri di atap. Ia berdiri di jalan yang sama, di kota yang sama, tapi semuanya basah. Orang-orang berlarian mencari teduh sambil tertawa, dan di papan reklame di ujung jalan tertulis tanggal dari sembilan tahun yang lalu.'},
+      {id:'d2',label:'B',author:'senja',votes:0,flaw:null,takes:[],closes:[],opens:[],answers:[],proc:{min:7,rev:1},obj:[],
+       text:'Gita menutup genangan itu dengan terpal dan tidak bilang kepada siapa pun. Tapi malamnya, menara kondensasi di bloknya berhenti berdengung untuk pertama kali dalam sembilan tahun. Dari jendela ia melihat petugas berseragam abu-abu naik ke atap-atap tetangga dengan senter, memeriksa sesuatu dengan teliti. Mereka juga sedang mencari genangan.'}
+    ]}
+  };
+  const read={};
+  [s1,s2,s3].forEach(s=>s.paras.forEach(p=>{if(p.author===ME)read[p.id]=1}));
+  return {screen:'login',sid:null,tab:'narasi',sheet:null,tinta:50,readToday:0,read,cards:[],
+    ledger:[{t:'Saldo awal',v:50,at:now}],stats:{voted:0,submitted:0,cards:0,stale:0,objValid:0,cons:0},
+    claimed:{},streak:{baca:4,vote:2,tulis:1},draft:null,stories:[s1,s2,s3]};
+}
+
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
+if(!S||!S.stories)S=seed();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+/* helpers */
+const $=s=>document.querySelector(s);
+function esc(t){return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fmt(ts){const d=new Date(ts);return `${d.getDate()} ${BULAN[d.getMonth()]}, ${String(d.getHours()).padStart(2,'0')}.${String(d.getMinutes()).padStart(2,'0')}`}
+function left(ts){let ms=ts-Date.now();if(ms<=0)return 'habis';const h=Math.floor(ms/H),m=Math.floor(ms%H/M);return h?`${h}j ${m}m`:`${m}m`}
+function story(id){return S.stories.find(s=>s.id===(id||S.sid))}
+function pIndex(st,pid){return st.paras.findIndex(p=>p.id===pid)}
+function curCh(st){return st.paras[st.paras.length-1].ch}
+function handle(a){return a===ME?'kamu':'@'+a}
+function accepted(st){return st.paras.filter(p=>p.author===ME).length}
+function hasCard(sid,pid){return S.cards.some(c=>c.sid===sid&&c.pid===pid)}
+function tcalc(st,t){
+  const i=pIndex(st,t.last),last=st.paras.length-1,stale=last-i,cross=st.paras[last].ch>st.paras[i].ch;
+  const bonus=t.kind==='plothole'?40:cross?30:stale>=5?15:5;
+  return {stale,cross,bonus};
+}
+function cardValue(st,pid){
+  const i=pIndex(st,pid),last=st.paras.length-1;
+  const ch=st.paras[last].ch-st.paras[i].ch;
+  return Math.max(1,1+Math.floor((last-i)/2)+ch*2-((st.quoted||{})[pid]||0));
+}
+function toast(msg){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,3200)}
+function addTinta(v,label,quiet){
+  S.tinta+=v;
+  const last=S.ledger[0];
+  if(last&&last.t===label&&label==='Baca paragraf baru'){last.v+=v;last.at=Date.now()}
+  else S.ledger.unshift({t:label,v,at:Date.now()});
+  const chip=$('#inkChip');
+  if(chip){chip.querySelector('span').textContent=S.tinta;const d=document.createElement('i');d.className='delta '+(v<0?'neg':'pos');d.textContent=(v>0?'+':'')+v;chip.appendChild(d);setTimeout(()=>d.remove(),1000)}
+  save();
+}
+
+/* ---------- views ---------- */
+function inkChip(){return `<div class="ink" id="inkChip" title="Tinta">${I.drop}<span>${S.tinta}</span></div>`}
+function bar(title,back,sub){
+  return `<header class="bar gut">${back?`<button class="icon-btn" data-a="back" aria-label="Kembali">${I.back}</button>`:''}<div class="bar-title"><div class="t">${title}</div>${sub?`<div class="s">${sub}</div>`:''}</div><button class="demo-fab" data-a="demo">Panduan</button>${inkChip()}</header>`;
+}
+function nav(){
+  const it=[['home','Beranda',I.home],['cards','Kartu',I.cards],['tasks','Tugas',I.tasks],['profile','Profil',I.user]];
+  return `<nav class="nav gut">${it.map(([k,l,ic])=>`<button class="${S.screen===k?'on':''}" data-a="go" data-to="${k}">${ic}${l}</button>`).join('')}</nav>`;
+}
+
+function vLogin(){
+  return `<main class="scroll"><div class="login gut">
+    <div class="wordmark">Naratia<span>.</span></div>
+    <div class="thread-art"></div>
+    <p class="lead">Satu paragraf, satu ronde. Cerita yang ditulis bergiliran, dan pembaca yang paling teliti yang menang.</p>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button class="btn block" data-a="login">Masuk dengan Google</button>
+      <button class="btn ghost block" data-a="login">Masuk dengan email</button>
+    </div>
+    <p class="small muted">Ini prototipe. Login, data, dan pembaca lain semuanya simulasi.</p>
+  </div></main>`;
+}
+
+function statusPill(st){
+  if(st.solo)return '<span class="pill">Mode solo</span>';
+  if(st.chapterEnd)return `<span class="pill warn">Akhir bab · voting</span>`;
+  if(st.round){
+    const r=st.round;
+    if(r.extended&&!r.cands.some(c=>c.votes>0))return `<span class="pill red">Sepi · diperpanjang <span data-ends="${r.endsAt}">${left(r.endsAt)}</span></span>`;
+    return `<span class="pill live">Ronde ${r.n} · <span data-ends="${r.endsAt}">${left(r.endsAt)}</span></span>`;
+  }
+  return '';
+}
+function storyCard(st){
+  const last=st.paras[st.paras.length-1];
+  const stale=st.threads.filter(t=>t.status==='open'&&tcalc(st,t).stale>=5).length;
+  const debts=st.paras.reduce((a,p)=>a+p.q.filter(q=>q.status==='open').length,0);
+  const unread=st.paras.filter(p=>!S.read[p.id]).length;
+  return `<button class="scard" data-a="open" data-sid="${st.id}">
+    <div class="spread"><span class="genre">${st.genre.join(' · ')}</span>${statusPill(st)}</div>
+    <h3>${esc(st.title)}</h3>
+    <p class="excerpt">${esc(last.text.slice(0,118))}…</p>
+    <div class="scard-meta"><span>Bab ${curCh(st)} · ${st.paras.length} paragraf</span>${stale?`<span class="redtxt">${stale} thread basi</span>`:''}${debts?`<span>${debts} utang cerita</span>`:''}${unread?`<span>${unread} belum dibaca</span>`:'<span>semua sudah dibaca</span>'}</div>
+  </button>`;
+}
+function vHome(){
+  const done=TASKS.filter(t=>t.val()>=t.goal).length;
+  return bar('Naratia',false,'Cerita yang sedang berjalan')+`<main class="scroll"><div class="screen gut">
+    <button class="panel taskstrip" data-a="go" data-to="tasks"><div style="flex:1;min-width:0"><div class="spread"><b>Tugas hari ini</b><span class="small muted">${done}/${TASKS.length}</span></div><div class="bar-prog" style="margin-top:8px"><i style="width:${done/TASKS.length*100}%"></i></div></div></button>
+    <h2 class="sec">Cerita aktif</h2>
+    ${S.stories.map(storyCard).join('')}
+    <button class="btn ghost block" data-a="create">Mulai cerita baru · 40 tinta</button>
+  </div></main>`;
+}
+
+function paraHTML(st,p){
+  let html=esc(p.text);
+  st.threads.filter(t=>t.pid===p.id&&t.status!=='proposed').forEach(t=>{
+    const ph=esc(t.phrase);const i=html.indexOf(ph);
+    if(i>-1)html=html.slice(0,i)+`<span class="thr ${t.kind==='plothole'?'plothole':''} ${t.status==='closed'?'closed':''}" data-a="thread" data-tid="${t.id}" data-from="text">${ph}</span>`+html.slice(i+ph.length);
+  });
+  return html;
+}
+function vNarasi(st){
+  let out='',ch=0;
+  st.paras.forEach((p,i)=>{
+    if(p.ch!==ch){ch=p.ch;out+=`<div class="chap"><small>Bab ${ch}</small><b>${esc(st.chapters[ch]||'Bab '+ch)}</b></div>`}
+    out+=`<article class="para ${S.read[p.id]?'':'unread'}" data-pid="${p.id}">
+      <div class="pnum">¶${i+1}</div>
+      <p class="ptext" data-pid="${p.id}">${paraHTML(st,p)}</p>
+      ${p.wound?`<div class="wound ${p.wound.patched?'patched':''}"><b>Luka kontinuitas.</b> ${esc(p.wound.reason)} <span class="muted">${p.wound.patched?'Sudah ditambal.':`Diputus valid ${p.wound.ruling}. Tambal lewat thread plot hole: +40.`}</span></div>`:''}
+      ${p.q.map(q=>`<div class="debt ${q.status}"><b>Utang cerita</b> dari ${handle(q.by)}: ${esc(q.text)} ${q.status==='answered'?'<span class="muted">· terjawab</span>':''}</div>`).join('')}
+      <footer class="pmeta"><span class="who ${p.author===ME?'me':''}">${handle(p.author)}</span><span>${fmt(p.at)}</span><button class="link" data-a="ask" data-pid="${p.id}">Tanya</button></footer>
+    </article>`;
+  });
+  return `<div class="screen gut">${out}<p class="small muted" style="text-align:center">Blok teks untuk menyimpannya sebagai kartu kutipan. Paragraf baru yang kamu baca memberi +2 tinta (maks ${READ_CAP} per hari).</p></div>`;
+}
+function ctaNarasi(st){
+  if(st.solo)return `<div class="cta gut"><button class="btn block" data-a="write">Tulis lanjutan (mode solo)</button></div>`;
+  if(st.chapterEnd)return `<div class="cta gut"><div class="small"><b>Bab ${curCh(st)} selesai.</b> Pembaca sedang voting: lanjut ke bab berikutnya atau tamat?</div><button class="btn block" data-a="tab" data-tab="ronde">Ikut voting akhir bab</button></div>`;
+  const r=st.round;
+  return `<div class="cta gut"><div class="spread small"><span><b>Ronde ${r.n}</b> · sisa <span data-ends="${r.endsAt}">${left(r.endsAt)}</span> · ${r.cands.length} kandidat</span>${r.constraint?`<span class="pill red">${esc(r.constraint)}</span>`:''}</div>
+    <div class="row"><button class="btn ghost" data-a="tab" data-tab="ronde">Lihat kandidat</button><button class="btn" data-a="write">Tulis lanjutan</button></div></div>`;
+}
+
+function threadCard(st,t,opts={}){
+  const c=tcalc(st,t);const oi=pIndex(st,t.pid);const li=pIndex(st,t.last);
+  const have=hasCard(st.id,t.pid);
+  const cls=t.kind==='plothole'?'plothole':t.status==='proposed'?'proposed':t.status==='closed'?'closed':'';
+  let tags='';
+  if(t.status==='open'){
+    tags=`<span class="pill ${c.stale>=5||c.cross?'red':''}">basi ${c.stale} paragraf</span>${c.cross?'<span class="pill red">lintas bab</span>':''}${t.kind==='plothole'?'<span class="pill warn">plot hole</span>':''}<span class="bonus">+${c.bonus}</span>`;
+  }
+  return `<div class="tcard ${cls}">
+    <div class="spread"><h4>${esc(t.label)}</h4>${t.status==='closed'?'<span class="pill">ditutup</span>':''}</div>
+    <blockquote class="q">“${esc(t.phrase)}”<cite>¶${oi+1}</cite></blockquote>
+    <div class="small muted">Dibuka ${handle(t.by)} di ¶${oi+1}${t.status!=='proposed'?` · terakhir disentuh ¶${li+1}`:''}</div>
+    ${tags?`<div class="row">${tags}</div>`:''}
+    ${t.status==='open'?`<div class="small ${have?'':'muted'}">${have?'<span style="color:var(--ok);font-weight:600">Kamu punya kartunya. Thread ini bisa kamu ambil.</span>':`Belum punya kartu dari ¶${oi+1}. Baca paragrafnya dan blok kutipannya.`}</div>`:''}
+    ${t.status==='proposed'?`<div class="spread"><span class="small muted">Usulan · ${t.support}/3 dukungan untuk dibuka</span><button class="btn sm soft" data-a="support" data-tid="${t.id}" ${t.supported?'disabled':''}>${t.supported?'Kamu mendukung':'+1 Dukung'}</button></div>`:''}
+  </div>`;
+}
+function vThreads(st){
+  const open=st.threads.filter(t=>t.status==='open').sort((a,b)=>tcalc(st,b).bonus-tcalc(st,a).bonus||tcalc(st,b).stale-tcalc(st,a).stale);
+  const prop=st.threads.filter(t=>t.status==='proposed');
+  const closed=st.threads.filter(t=>t.status==='closed');
+  const debts=[];st.paras.forEach((p,i)=>p.q.forEach(q=>debts.push({q,i})));
+  return `<div class="screen gut">
+    <div class="spread"><span class="small muted">Diurutkan dari bonus terbesar. Makin lama tidak disentuh, makin mahal.</span><button class="btn sm soft" data-a="propose">Usulkan thread</button></div>
+    <h2 class="sec">Papan thread</h2>
+    ${open.map(t=>threadCard(st,t)).join('')||'<div class="empty">Belum ada thread terbuka.</div>'}
+    ${prop.length?`<h2 class="sec">Usulan pembaca</h2>${prop.map(t=>threadCard(st,t)).join('')}`:''}
+    <h2 class="sec">Utang cerita</h2>
+    ${debts.length?debts.map(({q,i})=>`<div class="debt ${q.status}"><b>¶${i+1}</b> · ${handle(q.by)}: ${esc(q.text)} ${q.status==='answered'?'<span class="muted">· terjawab</span>':'<span class="bonus">+10</span>'}</div>`).join(''):'<div class="empty">Belum ada pertanyaan. Ketuk "Tanya" di bawah paragraf untuk menempelkan utang cerita.</div>'}
+    ${closed.length?`<h2 class="sec">Ditutup</h2>${closed.map(t=>threadCard(st,t)).join('')}`:''}
+  </div>`;
+}
+
+function objHTML(st,c,o){
+  const mineObj=o.by===ME,mineCand=c.author===ME;
+  return `<div class="obj">
+    <div class="obj-h"><b>Keberatan</b> dari ${handle(o.by)} · ${o.kind==='constraint'?'Melanggar constraint':'Kontinuitas'}</div>
+    <p>${esc(o.reason)}</p>
+    ${o.cards.map(k=>`<blockquote class="q">“${esc(k.text)}”<cite>¶${pIndex(st,k.pid)+1}</cite></blockquote>`).join('')}
+    ${o.def?`<div class="def"><span><b>Pembelaan penulis:</b> ${esc(o.def.note)}</span><blockquote class="q">“${esc(o.def.text)}”<cite>¶${pIndex(st,o.def.pid)+1}</cite></blockquote></div>`:''}
+    <div class="rule"><span class="tally">Putusan pembaca: valid ${o.valid} · tidak valid ${o.invalid}</span>
+      ${mineObj||mineCand?'<span class="small muted">Kamu tidak bisa memutus perkara sendiri</span>':`<button class="btn sm pick ${o.mine==='valid'?'on':''}" data-a="rule" data-cid="${c.id}" data-oid="${o.id}" data-v="valid">Valid</button><button class="btn sm pick ${o.mine==='invalid'?'on':''}" data-a="rule" data-cid="${c.id}" data-oid="${o.id}" data-v="invalid">Tidak valid</button>`}
+    </div>
+  </div>`;
+}
+function candHTML(st,c){
+  const r=st.round,mine=c.author===ME,voted=r.myVote===c.id;
+  const takes=c.takes.map(id=>st.threads.find(t=>t.id===id)).filter(Boolean);
+  return `<div class="cand ${mine?'mine':''} ${voted?'voted':''}">
+    <div class="cand-h"><b>Kandidat ${c.label}${mine?' · milikmu':''}</b><span class="proc">Diketik langsung · ${c.proc.min} menit · ${c.proc.rev} revisi</span></div>
+    <p class="ptext">${esc(c.text)}</p>
+    ${takes.length||c.closes.length||c.opens.length?`<div class="row">${takes.map(t=>`<span class="pill red">Ambil: ${esc(t.label)}${c.closes.includes(t.id)?' (tutup)':''}</span>`).join('')}${c.opens.map(o=>`<span class="pill">Buka: ${esc(o)}</span>`).join('')}</div>`:''}
+    ${c.obj.map(o=>objHTML(st,c,o)).join('')}
+    <div class="row">
+      <button class="btn sm ${voted?'soft':''}" data-a="vote" data-cid="${c.id}" ${mine||r.myVote?'disabled':''}>${voted?'Suaramu di sini':mine?'Tidak bisa vote milik sendiri':'Vote · +5 tinta'}</button>
+      ${mine?'':`<button class="btn sm ghost" data-a="objOpen" data-cid="${c.id}">Ajukan keberatan</button>`}
+    </div>
+  </div>`;
+}
+function vRonde(st){
+  if(st.solo)return `<div class="screen gut"><div class="panel"><b>Mode solo.</b> <span class="muted">Kamu menulis berturut-turut tanpa ronde voting. Threads, kartu, dan tugas tetap berjalan.</span></div><button class="btn block" data-a="write">Tulis lanjutan</button></div>`;
+  if(st.chapterEnd){
+    const e=st.chapterEnd;
+    return `<div class="screen gut">
+      <div class="panel" style="display:flex;flex-direction:column;gap:10px">
+        <b style="font-family:var(--f-story);font-size:19px">Bab ${curCh(st)} selesai</b>
+        <span class="muted small">Cerita dibagi per bab. Di akhir bab, pembaca memutuskan apakah cerita lanjut ke bab berikutnya atau tamat di sini. Cerita boleh tidak pernah tamat.</span>
+        <span class="small">Voting ditutup dalam <b data-ends="${e.endsAt}">${left(e.endsAt)}</b>. Hasil disembunyikan sampai selesai.</span>
+        ${e.mine?`<div class="pill ok" style="align-self:flex-start">Suaramu: ${e.mine==='lanjut'?'Lanjut ke Bab '+(curCh(st)+1):'Tamat di sini'}</div>`:
+        `<div class="row"><button class="btn" data-a="chapVote" data-v="lanjut" style="flex:1">Lanjut ke Bab ${curCh(st)+1}</button><button class="btn ghost" data-a="chapVote" data-v="tamat" style="flex:1">Tamat di sini</button></div>`}
+      </div>
+    </div>`;
+  }
+  const r=st.round;
+  const quiet=r.extended&&!r.cands.some(c=>c.votes>0);
+  return `<div class="screen gut">
+    <div class="rinfo">
+      <div><small>Sisa waktu</small><b data-ends="${r.endsAt}">${left(r.endsAt)}</b></div>
+      <div><small>Durasi</small><b>${r.preset} · ×${PRESETS[r.preset].mult}</b></div>
+      <div><small>Constraint</small><b>${r.constraint?esc(r.constraint):'Tidak ada'}</b></div>
+      <div><small>Pemegang estafet</small><b>${handle(r.holder)}</b></div>
+    </div>
+    ${quiet?`<div class="wound"><b>Ronde sepi.</b> Waktu sempat habis tanpa suara. Pemegang estafet (${handle(r.holder)}) ikut jadi kandidat, jadi ronde diperpanjang sekali. Kalau tetap tidak ada suara, pemenang diundi.</div>`:''}
+    <p class="small muted" style="margin:0">Penulis kandidat disembunyikan sampai ronde selesai. Jumlah suara juga disembunyikan.</p>
+    ${r.cands.length?r.cands.map(c=>candHTML(st,c)).join(''):`<div class="empty">Belum ada kandidat di ronde ${r.n}. Jadilah yang pertama.</div>`}
+  </div>`;
+}
+function vStory(){
+  const st=story();
+  const t=S.tab;
+  const roundLabel=st.solo?'Solo':st.chapterEnd?'Akhir bab':`Ronde ${st.round.n}`;
+  const openCount=st.threads.filter(x=>x.status==='open').length;
+  const body=t==='threads'?vThreads(st):t==='ronde'?vRonde(st):vNarasi(st);
+  return bar(esc(st.title),true,`${st.genre.join(' · ')} · Bab ${curCh(st)} · ${st.paras.length} paragraf`)+
+    `<nav class="tabs gut"><button class="${t==='narasi'?'on':''}" data-a="tab" data-tab="narasi">Narasi</button><button class="${t==='threads'?'on':''}" data-a="tab" data-tab="threads">Threads <span class="count">${openCount}</span></button><button class="${t==='ronde'?'on':''}" data-a="tab" data-tab="ronde">${roundLabel}</button></nav>
+    <main class="scroll" id="storyScroll">${body}</main>${t==='narasi'?ctaNarasi(st):''}`;
+}
+
+function vWrite(){
+  const st=story();const solo=st.solo;const r=st.round;
+  const d=S.draft;const lastP=st.paras[st.paras.length-1];
+  const open=st.threads.filter(t=>t.status==='open');
+  const debts=[];st.paras.forEach((p,i)=>p.q.forEach(q=>{if(q.status==='open')debts.push({q,i})}));
+  const picks=open.map(t=>{const c=tcalc(st,t);const oi=pIndex(st,t.pid);const have=hasCard(st.id,t.pid);
+    return `<label class="tpick ${have?'':'locked'}"><input type="checkbox" name="take" value="${t.id}" ${have?'':'disabled'} ${d.takes.includes(t.id)?'checked':''}>
+      <div><div class="spread"><b>${esc(t.label)}</b><span class="bonus">+${c.bonus}</span></div>
+      <div class="sub">basi ${c.stale} paragraf${c.cross?' · lintas bab':''}${t.kind==='plothole'?' · plot hole':''}</div>
+      ${have?`<div class="have">Kartu ¶${oi+1} siap jadi bukti</div><label class="subopt"><input type="checkbox" name="close" value="${t.id}" ${d.closes.includes(t.id)?'checked':''}> ${t.kind==='plothole'?'Paragrafku menambal plot hole ini':'Paragrafku menutup thread ini (+10)'}</label>`:`<div class="need">Butuh kartu dari ¶${oi+1}. Blok teksnya saat membaca.</div>`}
+      </div></label>`}).join('');
+  return bar('Tulis lanjutan',true,solo?`Mode solo · ${esc(st.title)}`:`Ronde ${r.n} · ${esc(st.title)}`)+`<main class="scroll"><div class="screen gut">
+    ${solo?'':`<div class="sprint" id="sprintBox"><div style="flex:1"><div class="small"><b>Sprint</b></div><div class="small muted">Kirim sebelum waktu habis untuk bonus +5 tinta.</div></div><b id="sprintT">10:00</b></div>`}
+    ${r&&r.constraint?`<div class="banner"><b>Constraint ronde ini: ${esc(r.constraint)}.</b> Dipasang ${handle(r.holder)}. Kandidat yang melanggar bisa digugat.</div>`:''}
+    <div><div class="small muted" style="margin-bottom:6px">Paragraf terakhir (¶${st.paras.length}) · ${handle(lastP.author)}</div><div class="prevpara">${esc(lastP.text)}</div></div>
+    <textarea id="draft" class="story" placeholder="Lanjutkan ceritanya di sini. Paste dimatikan, jadi ketik langsung." aria-label="Paragraf lanjutan">${esc(d.text)}</textarea>
+    <div class="meter"><span id="cc">${d.text.length} karakter · butuh ${MIN_LEN}–${MAX_LEN}</span><span id="procLive">diketik langsung · 0:00 · ${d.rev} revisi</span></div>
+    <div id="warn" class="warn"></div>
+    <h2 class="sec">Ambil thread</h2>
+    ${picks||'<div class="empty">Belum ada thread terbuka.</div>'}
+    ${debts.length?`<h2 class="sec">Jawab utang cerita</h2>${debts.map(({q,i})=>`<label class="tpick"><input type="checkbox" name="answer" value="${q.id}" ${d.answers.includes(q.id)?'checked':''}><div><b>¶${i+1}</b> · ${esc(q.text)} <span class="bonus">+10</span><div class="sub">dari ${handle(q.by)}</div></div></label>`).join('')}`:''}
+    <h2 class="sec">Buka thread baru (opsional)</h2>
+    <input type="text" id="newThr" value="${esc(d.newThr)}" placeholder="Salin frasa dari paragrafmu, mis. surat tanpa perangko" aria-label="Frasa thread baru">
+    <p class="small muted" style="margin:0">Kamu dapat +10 kalau penulis lain mengambil thread ini nanti.</p>
+  </div></main>
+  <div class="cta gut"><button class="btn block" data-a="submitDraft" id="submitBtn">${solo?'Tambahkan ke cerita':'Kirim kandidat · 15 tinta'}</button></div>`;
+}
+
+function vCreate(){
+  return bar('Cerita baru',true,'Kamu hanya memiliki paragraf yang kamu tulis')+`<main class="scroll"><div class="screen gut">
+    <label class="small"><b>Judul</b><input type="text" id="cTitle" placeholder="Mis. Surat untuk Penghuni Kamar 7" style="margin-top:6px"></label>
+    <div><div class="small"><b>Genre</b></div><div class="row" style="margin-top:6px">${GENRES.map(g=>`<label class="pill" style="cursor:pointer"><input type="checkbox" name="genre" value="${g}" style="accent-color:var(--tinta)"> ${g}</label>`).join('')}</div></div>
+    <label class="small"><b>Paragraf pembuka</b><textarea id="cOpen" class="story" placeholder="Paragraf pertama. Paste dimatikan." style="margin-top:6px"></textarea></label>
+    <div class="meter"><span id="cc2">0 karakter · butuh ${MIN_LEN}–${MAX_LEN}</span></div>
+    <label class="opt"><input type="checkbox" id="cSolo"><div><b>Mode solo</b><div class="small muted">Kamu menulis berturut-turut tanpa ronde voting. Cocok untuk latihan rutin pribadi.</div></div></label>
+    <p class="small muted" style="margin:0">Tidak ada pemilik cerita. Kamu memiliki paragraf pembuka, dan penulis berikutnya memiliki paragraf mereka.</p>
+  </div></main>
+  <div class="cta gut"><button class="btn block" data-a="createSubmit">Terbitkan · 40 tinta</button></div>`;
+}
+
+function vCards(){
+  const groups=S.stories.map(st=>({st,cs:S.cards.filter(c=>c.sid===st.id)})).filter(g=>g.cs.length);
+  return bar('Kartu kutipan',false,`${S.cards.length} kartu`)+`<main class="scroll"><div class="screen gut">
+    <p class="small muted" style="margin:0">Kartu adalah amunisimu: bukti untuk mengambil thread, mengajukan keberatan, dan membela diri. Kutipan dari paragraf yang jauh ke belakang dan jarang dikutip nilainya lebih tinggi.</p>
+    ${groups.length?groups.map(g=>`<h2 class="sec">${esc(g.st.title)}</h2>${g.cs.map(c=>`<div class="kcard"><blockquote class="q">“${esc(c.text)}”<cite>¶${pIndex(g.st,c.pid)+1}</cite></blockquote><div class="spread small"><span class="muted">Disimpan ${fmt(c.at)}</span><span class="kval">nilai ${c.value}</span></div><div><button class="link" data-a="rmCard" data-id="${c.id}">Buang kartu</button></div></div>`).join('')}`).join(''):
+    `<div class="empty">Belum ada kartu.<br>Buka cerita, lalu blok potongan teks di paragraf mana pun dan ketuk “+ Simpan kartu”.</div>`}
+  </div></main>`;
+}
+
+const TASKS=[
+  {id:'read',t:'Baca 10 paragraf baru',goal:10,r:10,val:()=>S.readToday},
+  {id:'cards',t:'Simpan 3 kartu kutipan',goal:3,r:10,val:()=>S.stats.cards,read:true},
+  {id:'vote',t:'Vote di satu ronde atau akhir bab',goal:1,r:10,val:()=>S.stats.voted},
+  {id:'submit',t:'Kirim satu kandidat paragraf',goal:1,r:10,val:()=>S.stats.submitted},
+  {id:'stale',t:'Kirim kandidat yang mengambil thread basi ≥ 5 paragraf',goal:1,r:15,val:()=>S.stats.stale,read:true},
+  {id:'obj',t:'Tangkap satu inkonsistensi (keberatan valid)',goal:1,r:15,val:()=>S.stats.objValid,read:true},
+  {id:'cons',t:'Kirim kandidat di ronde yang punya constraint',goal:1,r:10,val:()=>S.stats.cons}
+];
+function vTasks(){
+  return bar('Tugas',false,'Reset setiap hari pukul 00.00')+`<main class="scroll"><div class="screen gut">
+    <div class="streaks"><div><b>${S.streak.baca}</b><small>hari baca</small></div><div><b>${S.streak.vote}</b><small>hari vote</small></div><div><b>${S.streak.tulis}</b><small>minggu menulis</small></div></div>
+    <h2 class="sec">Hari ini</h2>
+    ${TASKS.map(t=>{const v=Math.min(t.val(),t.goal),done=v>=t.goal,cl=S.claimed[t.id];
+      return `<div class="task ${done?'done':''}"><div><div style="font-weight:600">${t.t}</div>${t.read?'<span class="pill red" style="margin-top:4px">butuh membaca</span>':''}</div>
+      <div>${cl?'<span class="pill ok">Diklaim</span>':done?`<button class="btn sm" data-a="claim" data-id="${t.id}">Klaim +${t.r}</button>`:`<span class="bonus">+${t.r}</span>`}</div>
+      <div class="bar-prog"><i style="width:${v/t.goal*100}%"></i></div><span class="small muted">${v}/${t.goal}</span></div>`}).join('')}
+  </div></main>`;
+}
+
+function vProfile(){
+  const acc=S.stories.reduce((a,st)=>a+accepted(st),0);
+  return bar('Profil',false,'kamu')+`<main class="scroll"><div class="screen gut">
+    <div class="panel spread"><div><div style="font-family:var(--f-story);font-size:22px;font-weight:700">kamu</div><div class="small muted">Bergabung 2 Nov 2026</div></div><div class="ink" style="font-size:18px">${I.drop}<span>${S.tinta}</span></div></div>
+    <div class="streaks"><div><b>${acc}</b><small>paragraf diterima</small></div><div><b>${S.cards.length}</b><small>kartu</small></div><div><b>${S.stats.objValid}</b><small>keberatan valid</small></div></div>
+    <h2 class="sec">Riwayat tinta</h2>
+    <div class="panel ledger">${S.ledger.slice(0,40).map(l=>`<div><span>${esc(l.t)}<br><span class="small muted">${fmt(l.at)}</span></span><b class="${l.v>=0?'p':'n'}">${l.v>0?'+':''}${l.v}</b></div>`).join('')}</div>
+  </div></main>`;
+}
+
+/* sheets */
+function vSheet(){
+  const sh=S.sheet,st=story();let h='';
+  if(sh.type==='thread'){
+    const t=st.threads.find(x=>x.id===sh.tid);
+    h=`<h3>Thread</h3>${threadCard(st,t)}${sh.from==='text'&&!hasCard(st.id,t.pid)?`<button class="btn block" data-a="cardFromThread" data-tid="${t.id}">Simpan kutipan ini sebagai kartu</button>`:''}<button class="btn ghost block" data-a="closeSheet">Tutup</button>`;
+  }
+  if(sh.type==='objection'){
+    const c=st.round.cands.find(x=>x.id===sh.cid);
+    const cs=S.cards.filter(k=>k.sid===st.id);
+    h=`<h3>Keberatan · Kandidat ${c.label}</h3>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <label class="opt"><input type="radio" name="okind" value="kontinuitas" checked><div><b>Kontinuitas</b><div class="small muted">Bertentangan dengan cerita sebelumnya. Wajib lampirkan minimal 1 kartu sebagai bukti.</div></div></label>
+      ${st.round.constraint?`<label class="opt"><input type="radio" name="okind" value="constraint"><div><b>Melanggar constraint</b><div class="small muted">Tidak mengikuti "${esc(st.round.constraint)}". Kartu tidak wajib.</div></div></label>`:''}
+    </div>
+    <label class="small"><b>Alasan (satu kalimat)</b><textarea id="oReason" rows="2" style="margin-top:6px" placeholder="Mis. Seruni sudah tenggelam di ¶3."></textarea></label>
+    <div class="small"><b>Lampirkan kartu</b></div>
+    ${cs.length?cs.map(k=>`<label class="opt"><input type="checkbox" name="ocard" value="${k.id}"><div><blockquote class="q">“${esc(k.text)}”<cite>¶${pIndex(st,k.pid)+1}</cite></blockquote></div></label>`).join(''):'<div class="small muted">Kamu belum punya kartu dari cerita ini. Untuk keberatan kontinuitas, simpan dulu kutipan yang bertentangan.</div>'}
+    <p class="small muted" style="margin:0">Taruhan 10 tinta. Kalau keberatanmu valid, taruhan kembali plus 15. Kalau tidak valid, taruhan diberikan ke penulis kandidat.</p>
+    <div class="row"><button class="btn ghost" data-a="closeSheet" style="flex:1">Batal</button><button class="btn red" data-a="objSubmit" data-cid="${c.id}" style="flex:1">Ajukan · 10 tinta</button></div>`;
+  }
+  if(sh.type==='ask'){
+    const i=pIndex(st,sh.pid);
+    h=`<h3>Tanya di ¶${i+1}</h3><p class="small muted" style="margin:0">Pertanyaanmu jadi utang cerita yang terlihat semua orang. Penulis yang menjawabnya di dalam narasi dapat +10. Kamu hanya bertanya, tanpa memberi solusi.</p>
+    <textarea id="qText" rows="3" placeholder="Mis. Kenapa dia percaya begitu saja pada orang asing?"></textarea>
+    <div class="row"><button class="btn ghost" data-a="closeSheet" style="flex:1">Batal</button><button class="btn" data-a="askSubmit" data-pid="${sh.pid}" style="flex:1">Tempel pertanyaan</button></div>`;
+  }
+  if(sh.type==='propose'){
+    const cs=S.cards.filter(k=>k.sid===st.id);
+    h=`<h3>Usulkan thread</h3><p class="small muted" style="margin:0">Pilih kartu yang menunjukkan elemen yang masih menggantung. Usulan resmi dibuka setelah dapat 3 dukungan. Biaya 3 tinta, dan kamu dapat +10 kalau thread-nya diambil penulis.</p>
+    ${cs.length?cs.map((k,i)=>`<label class="opt"><input type="radio" name="pcard" value="${k.id}" ${i===0?'checked':''}><div><blockquote class="q">“${esc(k.text)}”<cite>¶${pIndex(st,k.pid)+1}</cite></blockquote></div></label>`).join('')+`<input type="text" id="pLabel" placeholder="Nama thread, mis. Surat yang belum dibuka">`:'<div class="small muted">Kamu belum punya kartu dari cerita ini. Blok teks di Narasi untuk membuat kartu.</div>'}
+    <div class="row"><button class="btn ghost" data-a="closeSheet" style="flex:1">Batal</button>${cs.length?'<button class="btn" data-a="proposeSubmit" style="flex:1">Usulkan · 3 tinta</button>':''}</div>`;
+  }
+  if(sh.type==='result'){
+    const d=sh.data;
+    h=`<h3>Ronde ${d.n} selesai</h3>
+    ${d.note?`<div class="wound">${esc(d.note)}</div>`:''}
+    <div><div class="small muted">Pemenang</div><div style="font-family:var(--f-story);font-size:20px;font-weight:700">Kandidat ${d.label} · ${handle(d.author)}</div></div>
+    <div>${d.rows.map(r=>`<div class="res-row"><b>${r.label}</b><span>${handle(r.author)}${r.dq?' · <span class="redtxt">didiskualifikasi</span>':''}</span><span class="muted">${r.votes} suara</span></div>`).join('')}</div>
+    ${d.lines.length?`<div class="panel ledger">${d.lines.map(([t,v])=>`<div><span>${esc(t)}</span><b class="${v>=0?'p':'n'}">${v>0?'+':''}${v}</b></div>`).join('')}</div>`:''}
+    ${d.then==='estafet'?'<button class="btn block" data-a="toEstafet">Kamu pemegang estafet · atur ronde berikutnya</button>':'<button class="btn block" data-a="closeSheet">Baca lanjutannya</button>'}`;
+  }
+  if(sh.type==='estafet'){
+    const acc=accepted(st),ok=acc>=3;
+    h=`<h3>Pemegang estafet · Ronde ${st.round.n}</h3>
+    <p class="small muted" style="margin:0">Hakmu hanya berlaku untuk satu ronde ini. Setelah itu tongkatnya pindah ke pemenang berikutnya.</p>
+    <div class="small"><b>Durasi ronde</b></div>
+    ${Object.entries(PRESETS).map(([k,p])=>`<label class="opt"><input type="radio" name="preset" value="${k}" ${k==='Normal'?'checked':''}><div><b>${k}</b> · ${p.d}<div class="small muted">Pemenang ronde mendapat ×${p.mult} tinta${k==='Kilat'?'. Cepat, tapi kandidatnya biasanya sedikit.':''}</div></div></label>`).join('')}
+    <div class="small"><b>Constraint (opsional)</b></div>
+    <div class="small ${ok?'':'muted'}">Syarat: 3 paragraf diterima di cerita ini · punyamu ${acc}/3 ${ok?'<span style="color:var(--ok);font-weight:700">terpenuhi</span>':''}</div>
+    <select id="cons" ${ok?'':'disabled'} aria-label="Constraint"><option value="">Tanpa constraint</option>${CONSTRAINTS.map(c=>`<option>${esc(c)}</option>`).join('')}</select>
+    <button class="btn block" data-a="estafetStart">Mulai Ronde ${st.round.n}</button>`;
+  }
+  if(sh.type==='demo'){h=guideHTML(true)+'<button class="btn ghost block" data-a="closeSheet">Tutup</button>'}
+  return `<div class="veil" data-a="veil"><div class="sheet gut" role="dialog" aria-modal="true">${h}</div></div>`;
+}
+
+function guideHTML(inSheet){
+  return `${inSheet?'<h3>Panduan prototipe</h3>':'<h1>Naratia</h1><p class="small muted" style="margin:0">Prototipe yang bisa diklik. Semua data dan pembaca lain adalah simulasi, tersimpan hanya di browser ini.</p>'}
+  <ol>
+    <li>Masuk, lalu buka <b>Mercusuar Pulau Garam</b>.</li>
+    <li>Baca narasinya. Paragraf yang terlihat sekitar 1 detik memberi +2 tinta.</li>
+    <li>Ketuk teks bergaris merah untuk melihat thread. Di tab Threads, cek <b>Kunci kuningan</b> (lintas bab, +30).</li>
+    <li>Blok teks “kunci kuningan kecil” di ¶2, lalu simpan sebagai kartu. Coba juga copy teks cerita.</li>
+    <li>Di tab Ronde, cari kandidat yang melanggar constraint <b>Tanpa dialog</b> dan ajukan keberatan.</li>
+    <li>Tulis lanjutanmu dan ambil thread kunci (butuh kartu tadi). Coba paste, lalu ketik langsung.</li>
+    <li>Akhiri ronde lewat tombol di bawah. Kalau kamu menang, kamu jadi pemegang estafet dan constraint terbuka.</li>
+    <li>Klaim hadiah di Tugas. Lihat juga <b>Pasar Malam Terakhir</b> (voting akhir bab) dan <b>Kota yang Lupa Hujan</b> (ronde sepi, diundi).</li>
+  </ol>
+  <div class="demo">
+    <div class="small muted"><b>Kontrol simulasi</b> · berlaku untuk cerita yang sedang dibuka</div>
+    <button class="btn sm" data-a="endRound" data-mode="mine">Akhiri ronde · kandidatmu menang</button>
+    <button class="btn sm soft" data-a="endRound" data-mode="normal">Akhiri ronde · hitung suara</button>
+    <button class="btn sm ghost" data-a="addInk">Tambah 50 tinta</button>
+    <button class="btn sm ghost" data-a="reset">Reset prototipe</button>
+  </div>`;
+}
+
+/* ---------- render ---------- */
+let io=null,readTimers={};
+function render(){
+  const s=S.screen;
+  const body=s==='login'?vLogin():s==='home'?vHome():s==='story'?vStory():s==='write'?vWrite():s==='create'?vCreate():s==='cards'?vCards():s==='tasks'?vTasks():vProfile();
+  const showNav=['home','cards','tasks','profile'].includes(s);
+  $('#app').innerHTML=`<div class="shell">${body}${showNav?nav():''}${S.sheet?vSheet():''}</div>`;
+  $('#guide').innerHTML=guideHTML(false);
+  $('#cardBtn').hidden=true;
+  afterRender();
+  save();
+}
+function afterRender(){
+  if(io){io.disconnect();io=null}
+  Object.values(readTimers).forEach(clearTimeout);readTimers={};
+  if(S.screen==='story'&&S.tab==='narasi'){
+    const root=$('#storyScroll');
+    io=new IntersectionObserver(es=>es.forEach(en=>{
+      const pid=en.target.dataset.pid;
+      const vis=en.isIntersecting&&(en.intersectionRatio>=.5||en.intersectionRect.height>=root.clientHeight*.45);
+      if(vis&&!S.read[pid]){readTimers[pid]=setTimeout(()=>markRead(pid,en.target),1100)}
+      else clearTimeout(readTimers[pid]);
+    }),{root,threshold:[0,.25,.5,.75,1]});
+    document.querySelectorAll('.para.unread').forEach(el=>io.observe(el));
+    if(S.scrollBottom){root.scrollTop=root.scrollHeight;S.scrollBottom=false}
+  }
+  if(S.screen==='write')bindWriter();
+  if(S.screen==='create')bindCreate();
+}
+function markRead(pid,el){
+  if(S.read[pid])return;
+  S.read[pid]=1;el.classList.remove('unread');
+  if(S.readToday<READ_CAP){S.readToday++;addTinta(2,'Baca paragraf baru')}else save();
+}
+
+/* ---------- writer ---------- */
+function blockPaste(el){
+  el.addEventListener('paste',e=>{e.preventDefault();toast('Paste dimatikan di editor. Ketik langsung supaya kandidatmu dapat badge “diketik langsung”.')});
+  el.addEventListener('drop',e=>{e.preventDefault();toast('Tarik-lepas teks dimatikan. Ketik langsung.')});
+}
+function bindWriter(){
+  const ta=$('#draft'),d=S.draft;const st=story();
+  blockPaste(ta);
+  const upd=()=>{
+    const n=ta.value.length;
+    const cc=$('#cc');cc.innerHTML=`<span class="${n<MIN_LEN||n>MAX_LEN?'bad':'good'}">${n} karakter</span> · butuh ${MIN_LEN}–${MAX_LEN}`;
+    const w=[];
+    if(st.round&&st.round.constraint==='Tanpa dialog'&&/["“”]/.test(ta.value))w.push('Ada tanda petik. Kandidatmu bisa digugat karena melanggar constraint “Tanpa dialog”.');
+    if(st.round&&st.round.constraint==='Tanpa kata "tiba-tiba"'&&/tiba-tiba/i.test(ta.value))w.push('Ada kata “tiba-tiba”. Itu melanggar constraint ronde ini.');
+    $('#warn').innerHTML=w.map(esc).join('<br>');
+  };
+  ta.addEventListener('input',e=>{
+    if(e.inputType&&e.inputType.startsWith('delete')){if(!d._del){d.rev++;d._del=true}}else d._del=false;
+    if(!d.typedStart)d.typedStart=Date.now();
+    d.text=ta.value;upd();
+  });
+  ta.addEventListener('blur',save);
+  $('#newThr').addEventListener('input',e=>{d.newThr=e.target.value});
+  document.querySelectorAll('input[name=take],input[name=close],input[name=answer]').forEach(cb=>cb.addEventListener('change',()=>{
+    d.takes=[...document.querySelectorAll('input[name=take]:checked')].map(x=>x.value);
+    d.closes=[...document.querySelectorAll('input[name=close]:checked')].map(x=>x.value).filter(v=>d.takes.includes(v));
+    d.answers=[...document.querySelectorAll('input[name=answer]:checked')].map(x=>x.value);
+  }));
+  upd();tickWriter();
+}
+function tickWriter(){
+  if(S.screen!=='write'||!S.draft)return;
+  const d=S.draft;const el=$('#sprintT');
+  if(el){const rem=SPRINT_MS-(Date.now()-d.start);
+    if(rem<=0){el.textContent='habis';$('#sprintBox').classList.add('over')}
+    else el.textContent=`${Math.floor(rem/M)}:${String(Math.floor(rem%M/1000)).padStart(2,'0')}`}
+  const p=$('#procLive');
+  if(p){const ms=d.typedStart?Date.now()-d.typedStart:0;p.textContent=`diketik langsung · ${Math.floor(ms/M)}:${String(Math.floor(ms%M/1000)).padStart(2,'0')} · ${d.rev} revisi`}
+}
+function bindCreate(){
+  const ta=$('#cOpen');blockPaste(ta);
+  ta.addEventListener('input',()=>{const n=ta.value.length;$('#cc2').innerHTML=`<span class="${n<MIN_LEN||n>MAX_LEN?'bad':'good'}">${n} karakter</span> · butuh ${MIN_LEN}–${MAX_LEN}`});
+}
+
+/* ---------- round resolution ---------- */
+function endRound(mode){
+  const st=S.screen==='story'||S.screen==='write'?story():null;
+  if(!st){toast('Buka dulu cerita yang punya ronde aktif.');return}
+  if(st.solo){toast('Cerita ini mode solo, jadi tidak ada ronde.');return}
+  if(st.chapterEnd){toast('Cerita ini sedang voting akhir bab, bukan ronde paragraf.');return}
+  const r=st.round;
+  if(!r.cands.length){toast('Belum ada kandidat di ronde ini.');return}
+  const mineC=r.cands.find(c=>c.author===ME);
+  if(mode==='mine'&&!mineC){toast('Kamu belum mengirim kandidat di ronde ini. Tulis lanjutan dulu.');return}
+  r.cands.forEach(c=>{c.obj.forEach(o=>{o.res=(o.valid+o.invalid===0)?'sengketa':o.valid>o.invalid?'valid':'invalid'});c.dq=c.obj.some(o=>o.res==='valid')});
+  if(mode==='mine'&&mineC.dq){toast('Kandidatmu didiskualifikasi karena keberatan valid. Di versi asli kamu bisa revisi dan kirim ulang selama waktu ronde masih ada.');}
+  const lines=[];let note='';
+  r.cands.forEach(c=>c.obj.forEach(o=>{if(o.by!==ME)return;
+    if(o.res==='valid')lines.push([`Keberatan valid (Kandidat ${c.label})`,25]);
+    else if(o.res==='invalid')lines.push([`Keberatan tidak valid, taruhan diberikan ke penulis`,0]);
+    else lines.push([`Keberatanmu jadi sengketa, bisa diputus belakangan`,0]);
+  }));
+  const pool=r.cands.filter(c=>!c.dq);
+  if(!pool.length){toast('Semua kandidat didiskualifikasi. Ronde diperpanjang.');r.endsAt=Date.now()+24*H;render();return}
+  if(mode==='mine'&&!mineC.dq){mineC.votes+=3;note='Simulasi: 3 pembaca lain memilih kandidatmu.'}
+  const total=pool.reduce((a,c)=>a+c.votes,0);
+  let win;
+  if(total===0){
+    if(pool.length===1){win=pool[0];note='Tidak ada suara. Hanya ada satu kandidat, jadi otomatis diterima.'}
+    else{win=pool[Math.floor(Math.random()*pool.length)];note=r.extended?'Tetap tidak ada suara setelah ronde diperpanjang. Pemenang diundi.':'Tidak ada suara. Pemegang estafet tidak memilih, jadi pemenang diundi.'}
+  }else win=pool.reduce((b,c)=>c.votes>b.votes?c:b);
+  const newId=st.id+'p'+(st.paras.length+1)+'_'+Date.now().toString(36);
+  st.paras.push({id:newId,ch:curCh(st),author:win.author,at:Date.now(),q:[],text:win.text});
+  if(win.author===ME)S.read[newId]=1;
+  win.takes.forEach(tid=>{const t=st.threads.find(x=>x.id===tid);if(!t)return;
+    if(win.author===ME){const c=tcalc(st,t);lines.push([`Ambil thread: ${t.label}`,c.bonus])}
+    else if(t.by===ME&&t.kind==='normal')lines.push([`Thread usulanmu diambil: ${t.label}`,10]);
+    t.last=newId;
+    if(win.closes.includes(tid)){t.status='closed';if(win.author===ME&&t.kind!=='plothole')lines.push([`Tutup thread: ${t.label}`,10]);
+      if(t.kind==='plothole'){const wp=st.paras.find(p=>p.id===t.pid);if(wp&&wp.wound)wp.wound.patched=true}}
+  });
+  win.opens.forEach((ph,k)=>st.threads.push({id:'n'+Date.now().toString(36)+k,label:ph,pid:newId,phrase:ph,last:newId,status:'open',kind:'normal',by:win.author}));
+  win.answers.forEach(qid=>{st.paras.forEach(p=>p.q.forEach(q=>{if(q.id===qid){q.status='answered';if(win.author===ME)lines.push(['Menjawab utang cerita',10])}}))});
+  if(win.author===ME){const m=PRESETS[r.preset].mult;lines.unshift([`Kandidat menang (×${m})`,Math.round(30*m)])}
+  lines.forEach(([t,v])=>{if(v)addTinta(v,t)});
+  const data={n:r.n,label:win.label,author:win.author,note,lines,
+    rows:r.cands.map(c=>({label:c.label,author:c.author,votes:c.votes,dq:c.dq})),then:win.author===ME?'estafet':null};
+  st.round={n:r.n+1,endsAt:Date.now()+24*H,preset:'Normal',constraint:null,holder:win.author,extended:false,myVote:null,cands:[]};
+  S.tab='narasi';S.screen='story';S.scrollBottom=true;S.sheet={type:'result',data};
+  render();
+}
+
+/* ---------- actions ---------- */
+const A={
+  login(){S.screen='home';render()},
+  go(d){S.screen=d.to;S.sheet=null;render()},
+  back(){
+    if(S.screen==='story'){S.screen='home'}
+    else if(S.screen==='write'){S.screen='story';S.tab=story().solo?'narasi':'ronde'}
+    else S.screen='home';
+    S.sheet=null;render();
+  },
+  open(d){S.sid=d.sid;S.screen='story';S.tab='narasi';render();const sc=$('#storyScroll');if(sc)sc.scrollTop=0},
+  tab(d){S.tab=d.tab;render()},
+  demo(){S.sheet={type:'demo'};render()},
+  closeSheet(){S.sheet=null;render()},
+  veil(d,el,e){if(e.target===el){S.sheet=null;render()}},
+  thread(d){S.sheet={type:'thread',tid:d.tid,from:d.from};render()},
+  cardFromThread(d){const st=story();const t=st.threads.find(x=>x.id===d.tid);makeCard(st,t.pid,t.phrase);S.sheet=null;render()},
+  support(d){const st=story();const t=st.threads.find(x=>x.id===d.tid);if(t.supported)return;t.supported=true;t.support++;
+    if(t.support>=3){t.status='open';toast(`Thread “${t.label}” resmi dibuka. Pengusulnya dapat +10 kalau thread ini diambil.`)}else toast('Dukunganmu tercatat.');
+    if(S.sheet)S.sheet=null;render()},
+  ask(d){S.sheet={type:'ask',pid:d.pid};render()},
+  askSubmit(d){const v=$('#qText').value.trim();if(v.length<8){toast('Tulis pertanyaannya dulu, minimal satu kalimat pendek.');return}
+    const st=story();st.paras.find(p=>p.id===d.pid).q.push({id:'q'+Date.now().toString(36),by:ME,text:v,status:'open'});
+    S.sheet=null;toast('Pertanyaan ditempel sebagai utang cerita.');render()},
+  propose(){S.sheet={type:'propose'};render()},
+  proposeSubmit(){const id=(document.querySelector('input[name=pcard]:checked')||{}).value;const label=$('#pLabel').value.trim();
+    if(!label){toast('Beri nama thread-nya dulu.');return}if(S.tinta<3){toast('Tinta tidak cukup.');return}
+    const k=S.cards.find(c=>c.id===id);const st=story();
+    st.threads.push({id:'p'+Date.now().toString(36),label,pid:k.pid,phrase:k.text,last:k.pid,status:'proposed',kind:'normal',by:ME,support:1,supported:true});
+    addTinta(-3,'Usul thread');S.sheet=null;S.tab='threads';toast('Usulan masuk ke papan thread. Butuh 2 dukungan lagi.');render()},
+  vote(d){const st=story(),r=st.round;if(r.myVote)return;const c=r.cands.find(x=>x.id===d.cid);r.myVote=c.id;c.votes++;S.stats.voted++;addTinta(5,'Vote ronde');toast(`Suaramu masuk ke Kandidat ${c.label}.`);render()},
+  rule(d){const st=story();const c=st.round.cands.find(x=>x.id===d.cid);const o=c.obj.find(x=>x.id===d.oid);
+    if(o.mine===d.v)return;if(o.mine)o[o.mine]--;o.mine=d.v;o[d.v]++;render()},
+  objOpen(d){S.sheet={type:'objection',cid:d.cid};render()},
+  objSubmit(d){
+    const st=story(),c=st.round.cands.find(x=>x.id===d.cid);
+    const kind=(document.querySelector('input[name=okind]:checked')||{}).value||'kontinuitas';
+    const reason=$('#oReason').value.trim();
+    const ids=[...document.querySelectorAll('input[name=ocard]:checked')].map(x=>x.value);
+    if(!reason){toast('Tulis alasannya dalam satu kalimat.');return}
+    if(kind==='kontinuitas'&&!ids.length){toast('Keberatan kontinuitas butuh minimal 1 kartu sebagai bukti.');return}
+    if(S.tinta<10){toast('Tinta tidak cukup untuk taruhan.');return}
+    const o={id:'o'+Date.now().toString(36),by:ME,kind,reason,cards:ids.map(id=>{const k=S.cards.find(x=>x.id===id);return{pid:k.pid,text:k.text}}),def:null,valid:0,invalid:0,mine:null};
+    c.obj.push(o);addTinta(-10,'Taruhan keberatan');S.sheet=null;render();
+    toast('Keberatan diajukan. Menunggu putusan pembaca lain.');
+    setTimeout(()=>{
+      const ok=!!c.flaw&&(c.flaw===kind||(kind==='kontinuitas'&&c.flaw==='kontinuitas'));
+      if(ok){o.valid+=2;S.stats.objValid++;toast(`@bayu_r dan @senja menilai keberatanmu valid.`)}
+      else{o.invalid+=2;toast(`@nadiraa dan @ombak menilai keberatanmu tidak valid.`)}
+      save();if(S.screen==='story'&&!S.sheet)render();
+    },2600);
+  },
+  chapVote(d){const st=story();const e=st.chapterEnd;if(e.mine)return;e.mine=d.v;e[d.v]++;S.stats.voted++;addTinta(5,'Vote akhir bab');toast('Suaramu tercatat. Hasil diumumkan saat voting ditutup.');render()},
+  write(){
+    const st=story();
+    if(st.chapterEnd){toast('Bab ini sedang ditutup. Tunggu hasil voting akhir bab.');return}
+    if(!st.solo&&st.round.cands.some(c=>c.author===ME)){toast('Kamu sudah mengirim kandidat di ronde ini.');return}
+    if(!S.draft||S.draft.sid!==st.id||S.draft.round!==(st.round?st.round.n:0))S.draft={sid:st.id,round:st.round?st.round.n:0,start:Date.now(),typedStart:0,rev:0,text:'',takes:[],closes:[],answers:[],newThr:''};
+    S.screen='write';S.sheet=null;render();
+  },
+  submitDraft(){
+    const st=story(),d=S.draft,text=d.text.trim();
+    if(text.length<MIN_LEN){toast(`Paragrafnya masih ${text.length} karakter. Minimal ${MIN_LEN}.`);return}
+    if(text.length>MAX_LEN){toast(`Paragrafnya ${text.length} karakter. Maksimal ${MAX_LEN}.`);return}
+    const nt=d.newThr.trim();
+    if(nt&&!text.includes(nt)){toast('Frasa thread baru harus ada persis di paragrafmu.');return}
+    const proc={min:Math.max(1,Math.round(((d.typedStart?Date.now()-d.typedStart:0))/M)),rev:d.rev};
+    if(st.solo){
+      const newId=st.id+'p'+(st.paras.length+1)+'_'+Date.now().toString(36);
+      st.paras.push({id:newId,ch:curCh(st),author:ME,at:Date.now(),q:[],text});S.read[newId]=1;
+      d.takes.forEach(tid=>{const t=st.threads.find(x=>x.id===tid);t.last=newId;if(d.closes.includes(tid))t.status='closed'});
+      if(nt)st.threads.push({id:'n'+Date.now().toString(36),label:nt,pid:newId,phrase:nt,last:newId,status:'open',kind:'normal',by:ME});
+      d.answers.forEach(qid=>st.paras.forEach(p=>p.q.forEach(q=>{if(q.id===qid)q.status='answered'})));
+      S.draft=null;S.screen='story';S.tab='narasi';S.scrollBottom=true;toast('Paragrafmu ditambahkan ke cerita.');render();return;
+    }
+    if(S.tinta<15){toast('Tinta tidak cukup. Baca paragraf baru atau klaim tugas untuk menambah tinta.');return}
+    const r=st.round;
+    const c={id:'m'+Date.now().toString(36),label:String.fromCharCode(65+r.cands.length),author:ME,votes:0,flaw:null,takes:[...d.takes],closes:[...d.closes],opens:nt?[nt]:[],answers:[...d.answers],proc,obj:[],text};
+    r.cands.push(c);
+    addTinta(-15,'Kirim kandidat');
+    S.stats.submitted++;
+    if(d.takes.some(tid=>{const t=st.threads.find(x=>x.id===tid);const k=tcalc(st,t);return k.stale>=5||k.cross}))S.stats.stale++;
+    if(r.constraint)S.stats.cons++;
+    if(Date.now()-d.start<SPRINT_MS)addTinta(5,'Bonus sprint');
+    S.draft=null;S.screen='story';S.tab='ronde';toast(`Kandidat ${c.label} terkirim. Penulisnya disembunyikan sampai ronde selesai.`);render();
+  },
+  toEstafet(){S.sheet={type:'estafet'};render()},
+  estafetStart(){const st=story();const p=(document.querySelector('input[name=preset]:checked')||{}).value||'Normal';const cons=$('#cons').value;
+    st.round.preset=p;st.round.constraint=cons||null;st.round.endsAt=Date.now()+PRESETS[p].h*H;S.sheet=null;
+    toast(`Ronde ${st.round.n} dimulai · ${p}${cons?' · '+cons:''}.`);render()},
+  endRound(d){S.sheet=null;endRound(d.mode)},
+  claim(d){const t=TASKS.find(x=>x.id===d.id);if(S.claimed[t.id]||t.val()<t.goal)return;S.claimed[t.id]=1;addTinta(t.r,'Tugas: '+t.t);render()},
+  create(){S.screen='create';render()},
+  createSubmit(){
+    const title=$('#cTitle').value.trim(),open=$('#cOpen').value.trim(),solo=$('#cSolo').checked;
+    const genre=[...document.querySelectorAll('input[name=genre]:checked')].map(x=>x.value);
+    if(!title){toast('Isi judulnya dulu.');return}
+    if(!genre.length){toast('Pilih minimal satu genre.');return}
+    if(open.length<MIN_LEN){toast(`Paragraf pembuka masih ${open.length} karakter. Minimal ${MIN_LEN}.`);return}
+    if(open.length>MAX_LEN){toast(`Paragraf pembuka maksimal ${MAX_LEN} karakter.`);return}
+    if(S.tinta<40){toast('Tinta tidak cukup untuk membuat cerita baru.');return}
+    const id='s'+Date.now().toString(36);const pid=id+'p1';
+    S.stories.unshift({id,title,genre,solo,chapters:{1:'Bab Pertama'},quoted:{},paras:[{id:pid,ch:1,author:ME,at:Date.now(),q:[],text:open}],threads:[],
+      round:solo?null:{n:1,endsAt:Date.now()+24*H,preset:'Normal',constraint:null,holder:ME,extended:false,myVote:null,cands:[]}});
+    S.read[pid]=1;addTinta(-40,'Buat cerita baru');S.sid=id;S.screen='story';S.tab='narasi';toast('Cerita diterbitkan. Ronde 1 dibuka untuk semua penulis.');render();
+  },
+  rmCard(d){S.cards=S.cards.filter(c=>c.id!==d.id);render()},
+  addInk(){addTinta(50,'Simulasi: tambah tinta');S.sheet=null;render()},
+  reset(){
+    if(!A.reset._armed){A.reset._armed=true;toast('Ketuk “Reset prototipe” sekali lagi untuk menghapus semua progres simulasi.');setTimeout(()=>A.reset._armed=false,4000);return}
+    A.reset._armed=false;S=seed();save();render();toast('Prototipe direset.');
+  }
+};
+
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-a]');if(!el)return;
+  if(el.tagName==='LABEL')return;
+  const fn=A[el.dataset.a];if(!fn)return;
+  if(el.dataset.a==='veil'){fn(el.dataset,el,e);return}
+  e.preventDefault();fn(el.dataset,el,e);
+});
+
+/* ---------- quote cards from selection ---------- */
+let pendingCard=null;
+function makeCard(st,pid,text){
+  text=text.trim().replace(/\s+/g,' ');
+  if(S.cards.some(c=>c.sid===st.id&&c.pid===pid&&c.text===text)){toast('Kartu ini sudah ada di koleksimu.');return}
+  const v=cardValue(st,pid);
+  S.cards.unshift({id:'k'+Date.now().toString(36),sid:st.id,pid,text,value:v,at:Date.now()});
+  S.stats.cards++;st.quoted=st.quoted||{};st.quoted[pid]=(st.quoted[pid]||0)+1;
+  toast(`Kartu tersimpan dari ¶${pIndex(st,pid)+1} · nilai ${v}`);save();
+}
+function checkSel(){
+  const btn=$('#cardBtn');const sel=window.getSelection();
+  if(!sel||sel.isCollapsed||S.screen!=='story'||S.tab!=='narasi'||S.sheet){btn.hidden=true;pendingCard=null;return}
+  const node=n=>(n&&n.nodeType===3?n.parentElement:n);
+  const pa=node(sel.anchorNode)&&node(sel.anchorNode).closest('.ptext');
+  const pf=node(sel.focusNode)&&node(sel.focusNode).closest('.ptext');
+  if(!pa||pa!==pf){btn.hidden=true;pendingCard=null;return}
+  const text=sel.toString().trim();
+  if(text.length<3||text.length>240){btn.hidden=true;pendingCard=null;return}
+  const rect=sel.getRangeAt(0).getBoundingClientRect();
+  pendingCard={pid:pa.dataset.pid,text};
+  btn.hidden=false;
+  const bw=btn.offsetWidth||130;
+  let top=rect.bottom+10;if(top>window.innerHeight-60)top=rect.top-46;
+  btn.style.top=Math.max(8,top)+'px';
+  btn.style.left=Math.min(window.innerWidth-bw-8,Math.max(8,rect.left+rect.width/2-bw/2))+'px';
+}
+let selT;document.addEventListener('selectionchange',()=>{clearTimeout(selT);selT=setTimeout(checkSel,180)});
+const cb=$('#cardBtn');
+cb.addEventListener('pointerdown',e=>e.preventDefault());
+cb.addEventListener('click',()=>{if(!pendingCard)return;makeCard(story(),pendingCard.pid,pendingCard.text);window.getSelection().removeAllRanges();cb.hidden=true;pendingCard=null});
+document.addEventListener('copy',e=>{
+  const sel=window.getSelection();const n=sel&&sel.anchorNode;const el=n&&(n.nodeType===3?n.parentElement:n);
+  if(el&&el.closest&&(el.closest('.ptext')||el.closest('.prevpara'))){e.preventDefault();toast('Copy teks cerita dimatikan. Simpan sebagai kartu kutipan.')}
+});
+document.addEventListener('scroll',()=>{if(!cb.hidden)checkSel()},true);
+
+/* ---------- clocks ---------- */
+setInterval(()=>{document.querySelectorAll('[data-ends]').forEach(el=>el.textContent=left(+el.dataset.ends))},30000);
+setInterval(tickWriter,1000);
+
+render();
+})();
+</script>
