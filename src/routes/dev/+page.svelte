@@ -4,18 +4,20 @@
 	import { page } from '$app/state';
 	import { Tabs } from '#lib/components/index.ts';
 	import { WP_MAP, currentWp, doneCount, lastDoneWp, nextWp } from '#lib/dev/wp-map.ts';
+	import AccountSwitcher from './AccountSwitcher.svelte';
 	import ComponentGallery from './ComponentGallery.svelte';
 	import WpMap from './WpMap.svelte';
 	import type { DevTab } from './+page.server';
 	import type { PageProps } from './$types';
 
-	let { data }: PageProps = $props();
+	let { data, form }: PageProps = $props();
 
 	// svelte-ignore state_referenced_locally
 	let tab = $state<DevTab>(data.tab);
 
 	const tabs = [
 		{ value: 'peta' as const, label: 'Peta WP', count: WP_MAP.length },
+		{ value: 'akun' as const, label: 'Akun uji' },
 		{ value: 'komponen' as const, label: 'Komponen' }
 	];
 
@@ -49,6 +51,8 @@
 		{#snippet panel(value: DevTab)}
 			{#if value === 'peta'}
 				<WpMap map={WP_MAP} {lastDone} {now} {next} />
+			{:else if value === 'akun'}
+				<AccountSwitcher {...data.accounts} {form} />
 			{:else}
 				<ComponentGallery />
 			{/if}

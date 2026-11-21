@@ -1,0 +1,958 @@
+{
+	"id": "a54f52af-464b-40be-8af3-bc17da70e413",
+	"prevId": "981ff89a-cab3-4487-a224-2862e475a7cf",
+	"version": "7",
+	"dialect": "postgresql",
+	"tables": {
+		"auth.users": {
+			"name": "users",
+			"schema": "auth",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.candidates": {
+			"name": "candidates",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"round_id": {
+					"name": "round_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"author_id": {
+					"name": "author_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"body": {
+					"name": "body",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"process_json": {
+					"name": "process_json",
+					"type": "jsonb",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"thread_claims": {
+					"name": "thread_claims",
+					"type": "jsonb",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'[]'::jsonb"
+				},
+				"status": {
+					"name": "status",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'active'"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {
+				"candidates_round_created_idx": {
+					"name": "candidates_round_created_idx",
+					"columns": [
+						{
+							"expression": "round_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						},
+						{
+							"expression": "created_at",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"with": {},
+					"method": "btree",
+					"concurrently": false
+				},
+				"candidates_author_idx": {
+					"name": "candidates_author_idx",
+					"columns": [
+						{
+							"expression": "author_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"with": {},
+					"method": "btree",
+					"concurrently": false
+				}
+			},
+			"foreignKeys": {
+				"candidates_round_id_rounds_id_fk": {
+					"name": "candidates_round_id_rounds_id_fk",
+					"tableFrom": "candidates",
+					"columnsFrom": ["round_id"],
+					"tableTo": "rounds",
+					"columnsTo": ["id"],
+					"onUpdate": "no action",
+					"onDelete": "cascade"
+				},
+				"candidates_author_id_profiles_id_fk": {
+					"name": "candidates_author_id_profiles_id_fk",
+					"tableFrom": "candidates",
+					"columnsFrom": ["author_id"],
+					"tableTo": "profiles",
+					"columnsTo": ["id"],
+					"onUpdate": "no action",
+					"onDelete": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {
+				"candidates_select_all": {
+					"name": "candidates_select_all",
+					"as": "PERMISSIVE",
+					"for": "SELECT",
+					"to": ["anon", "authenticated"],
+					"using": "true"
+				}
+			},
+			"checkConstraints": {
+				"candidates_body_length": {
+					"name": "candidates_body_length",
+					"value": "char_length(\"candidates\".\"body\") between 1 and 2000"
+				},
+				"candidates_status_check": {
+					"name": "candidates_status_check",
+					"value": "\"candidates\".\"status\" in ('active', 'disqualified', 'won', 'lost')"
+				}
+			},
+			"isRLSEnabled": true
+		},
+		"public.chapters": {
+			"name": "chapters",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"story_id": {
+					"name": "story_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"number": {
+					"name": "number",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"status": {
+					"name": "status",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'open'"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {
+				"chapters_story_number_key": {
+					"name": "chapters_story_number_key",
+					"columns": [
+						{
+							"expression": "story_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						},
+						{
+							"expression": "number",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": true,
+					"with": {},
+					"method": "btree",
+					"concurrently": false
+				}
+			},
+			"foreignKeys": {
+				"chapters_story_id_stories_id_fk": {
+					"name": "chapters_story_id_stories_id_fk",
+					"tableFrom": "chapters",
+					"columnsFrom": ["story_id"],
+					"tableTo": "stories",
+					"columnsTo": ["id"],
+					"onUpdate": "no action",
+					"onDelete": "cascade"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {
+				"chapters_select_all": {
+					"name": "chapters_select_all",
+					"as": "PERMISSIVE",
+					"for": "SELECT",
+					"to": ["anon", "authenticated"],
+					"using": "true"
+				}
+			},
+			"checkConstraints": {
+				"chapters_status_check": {
+					"name": "chapters_status_check",
+					"value": "\"chapters\".\"status\" in ('open', 'voting', 'closed')"
+				}
+			},
+			"isRLSEnabled": true
+		},
+		"public.paragraphs": {
+			"name": "paragraphs",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"story_id": {
+					"name": "story_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"chapter_id": {
+					"name": "chapter_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"idx": {
+					"name": "idx",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"author_id": {
+					"name": "author_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"body": {
+					"name": "body",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"process_json": {
+					"name": "process_json",
+					"type": "jsonb",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"wound": {
+					"name": "wound",
+					"type": "boolean",
+					"primaryKey": false,
+					"notNull": true,
+					"default": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {
+				"paragraphs_story_idx_key": {
+					"name": "paragraphs_story_idx_key",
+					"columns": [
+						{
+							"expression": "story_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						},
+						{
+							"expression": "idx",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": true,
+					"with": {},
+					"method": "btree",
+					"concurrently": false
+				},
+				"paragraphs_chapter_idx": {
+					"name": "paragraphs_chapter_idx",
+					"columns": [
+						{
+							"expression": "chapter_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						},
+						{
+							"expression": "idx",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"with": {},
+					"method": "btree",
+					"concurrently": false
+				},
+				"paragraphs_author_idx": {
+					"name": "paragraphs_author_idx",
+					"columns": [
+						{
+							"expression": "author_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"with": {},
+					"method": "btree",
+					"concurrently": false
+				}
+			},
+			"foreignKeys": {
+				"paragraphs_story_id_stories_id_fk": {
+					"name": "paragraphs_story_id_stories_id_fk",
+					"tableFrom": "paragraphs",
+					"columnsFrom": ["story_id"],
+					"tableTo": "stories",
+					"columnsTo": ["id"],
+					"onUpdate": "no action",
+					"onDelete": "cascade"
+				},
+				"paragraphs_chapter_id_chapters_id_fk": {
+					"name": "paragraphs_chapter_id_chapters_id_fk",
+					"tableFrom": "paragraphs",
+					"columnsFrom": ["chapter_id"],
+					"tableTo": "chapters",
+					"columnsTo": ["id"],
+					"onUpdate": "no action",
+					"onDelete": "cascade"
+				},
+				"paragraphs_author_id_profiles_id_fk": {
+					"name": "paragraphs_author_id_profiles_id_fk",
+					"tableFrom": "paragraphs",
+					"columnsFrom": ["author_id"],
+					"tableTo": "profiles",
+					"columnsTo": ["id"],
+					"onUpdate": "no action",
+					"onDelete": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {
+				"paragraphs_select_all": {
+					"name": "paragraphs_select_all",
+					"as": "PERMISSIVE",
+					"for": "SELECT",
+					"to": ["anon", "authenticated"],
+					"using": "true"
+				}
+			},
+			"checkConstraints": {
+				"paragraphs_body_length": {
+					"name": "paragraphs_body_length",
+					"value": "char_length(\"paragraphs\".\"body\") between 1 and 2000"
+				}
+			},
+			"isRLSEnabled": true
+		},
+		"public.profiles": {
+			"name": "profiles",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"username": {
+					"name": "username",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {
+				"profiles_username_key": {
+					"name": "profiles_username_key",
+					"columns": [
+						{
+							"expression": "username",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": true,
+					"with": {},
+					"method": "btree",
+					"concurrently": false
+				}
+			},
+			"foreignKeys": {
+				"profiles_id_users_id_fk": {
+					"name": "profiles_id_users_id_fk",
+					"tableFrom": "profiles",
+					"columnsFrom": ["id"],
+					"tableTo": "users",
+					"schemaTo": "auth",
+					"columnsTo": ["id"],
+					"onUpdate": "no action",
+					"onDelete": "cascade"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {
+				"profiles_select_all": {
+					"name": "profiles_select_all",
+					"as": "PERMISSIVE",
+					"for": "SELECT",
+					"to": ["anon", "authenticated"],
+					"using": "true"
+				}
+			},
+			"checkConstraints": {
+				"profiles_username_format": {
+					"name": "profiles_username_format",
+					"value": "\"profiles\".\"username\" ~ '^[a-z0-9_]{3,20}$'"
+				}
+			},
+			"isRLSEnabled": true
+		},
+		"public.rounds": {
+			"name": "rounds",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"story_id": {
+					"name": "story_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"number": {
+					"name": "number",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"holder_id": {
+					"name": "holder_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"preset": {
+					"name": "preset",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'normal'"
+				},
+				"constraint_key": {
+					"name": "constraint_key",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"opens_at": {
+					"name": "opens_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"closes_at": {
+					"name": "closes_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"extended_count": {
+					"name": "extended_count",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"default": 0
+				},
+				"status": {
+					"name": "status",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'open'"
+				},
+				"candidate_count": {
+					"name": "candidate_count",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"default": 0
+				},
+				"winner_candidate_id": {
+					"name": "winner_candidate_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": false
+				}
+			},
+			"indexes": {
+				"rounds_story_number_key": {
+					"name": "rounds_story_number_key",
+					"columns": [
+						{
+							"expression": "story_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						},
+						{
+							"expression": "number",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": true,
+					"with": {},
+					"method": "btree",
+					"concurrently": false
+				},
+				"rounds_one_open_per_story": {
+					"name": "rounds_one_open_per_story",
+					"columns": [
+						{
+							"expression": "story_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": true,
+					"with": {},
+					"method": "btree",
+					"where": "\"rounds\".\"status\" = 'open'",
+					"concurrently": false
+				},
+				"rounds_open_closes_idx": {
+					"name": "rounds_open_closes_idx",
+					"columns": [
+						{
+							"expression": "closes_at",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"with": {},
+					"method": "btree",
+					"where": "\"rounds\".\"status\" = 'open'",
+					"concurrently": false
+				}
+			},
+			"foreignKeys": {
+				"rounds_story_id_stories_id_fk": {
+					"name": "rounds_story_id_stories_id_fk",
+					"tableFrom": "rounds",
+					"columnsFrom": ["story_id"],
+					"tableTo": "stories",
+					"columnsTo": ["id"],
+					"onUpdate": "no action",
+					"onDelete": "cascade"
+				},
+				"rounds_holder_id_profiles_id_fk": {
+					"name": "rounds_holder_id_profiles_id_fk",
+					"tableFrom": "rounds",
+					"columnsFrom": ["holder_id"],
+					"tableTo": "profiles",
+					"columnsTo": ["id"],
+					"onUpdate": "no action",
+					"onDelete": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {
+				"rounds_select_all": {
+					"name": "rounds_select_all",
+					"as": "PERMISSIVE",
+					"for": "SELECT",
+					"to": ["anon", "authenticated"],
+					"using": "true"
+				}
+			},
+			"checkConstraints": {
+				"rounds_preset_check": {
+					"name": "rounds_preset_check",
+					"value": "\"rounds\".\"preset\" in ('kilat', 'normal', 'panjang')"
+				},
+				"rounds_status_check": {
+					"name": "rounds_status_check",
+					"value": "\"rounds\".\"status\" in ('open', 'closed')"
+				}
+			},
+			"isRLSEnabled": true
+		},
+		"public.stories": {
+			"name": "stories",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"slug": {
+					"name": "slug",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"title": {
+					"name": "title",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"genre": {
+					"name": "genre",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"mode": {
+					"name": "mode",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"license": {
+					"name": "license",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"status": {
+					"name": "status",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'active'"
+				},
+				"chapter_size": {
+					"name": "chapter_size",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"default": 20
+				},
+				"paragraph_count": {
+					"name": "paragraph_count",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"default": 0
+				},
+				"created_by": {
+					"name": "created_by",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {
+				"stories_slug_key": {
+					"name": "stories_slug_key",
+					"columns": [
+						{
+							"expression": "slug",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": true,
+					"with": {},
+					"method": "btree",
+					"concurrently": false
+				},
+				"stories_status_updated_idx": {
+					"name": "stories_status_updated_idx",
+					"columns": [
+						{
+							"expression": "status",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						},
+						{
+							"expression": "updated_at",
+							"isExpression": false,
+							"asc": false,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"with": {},
+					"method": "btree",
+					"concurrently": false
+				}
+			},
+			"foreignKeys": {
+				"stories_created_by_profiles_id_fk": {
+					"name": "stories_created_by_profiles_id_fk",
+					"tableFrom": "stories",
+					"columnsFrom": ["created_by"],
+					"tableTo": "profiles",
+					"columnsTo": ["id"],
+					"onUpdate": "no action",
+					"onDelete": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {
+				"stories_select_all": {
+					"name": "stories_select_all",
+					"as": "PERMISSIVE",
+					"for": "SELECT",
+					"to": ["anon", "authenticated"],
+					"using": "true"
+				}
+			},
+			"checkConstraints": {
+				"stories_mode_check": {
+					"name": "stories_mode_check",
+					"value": "\"stories\".\"mode\" in ('solo', 'collab')"
+				},
+				"stories_status_check": {
+					"name": "stories_status_check",
+					"value": "\"stories\".\"status\" in ('active', 'sleeping', 'ended')"
+				},
+				"stories_chapter_size_check": {
+					"name": "stories_chapter_size_check",
+					"value": "\"stories\".\"chapter_size\" between 3 and 100"
+				}
+			},
+			"isRLSEnabled": true
+		},
+		"public.votes": {
+			"name": "votes",
+			"schema": "",
+			"columns": {
+				"round_id": {
+					"name": "round_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"voter_id": {
+					"name": "voter_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"candidate_id": {
+					"name": "candidate_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {
+				"votes_candidate_idx": {
+					"name": "votes_candidate_idx",
+					"columns": [
+						{
+							"expression": "candidate_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"with": {},
+					"method": "btree",
+					"concurrently": false
+				},
+				"votes_voter_idx": {
+					"name": "votes_voter_idx",
+					"columns": [
+						{
+							"expression": "voter_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"with": {},
+					"method": "btree",
+					"concurrently": false
+				}
+			},
+			"foreignKeys": {
+				"votes_round_id_rounds_id_fk": {
+					"name": "votes_round_id_rounds_id_fk",
+					"tableFrom": "votes",
+					"columnsFrom": ["round_id"],
+					"tableTo": "rounds",
+					"columnsTo": ["id"],
+					"onUpdate": "no action",
+					"onDelete": "cascade"
+				},
+				"votes_voter_id_profiles_id_fk": {
+					"name": "votes_voter_id_profiles_id_fk",
+					"tableFrom": "votes",
+					"columnsFrom": ["voter_id"],
+					"tableTo": "profiles",
+					"columnsTo": ["id"],
+					"onUpdate": "no action",
+					"onDelete": "no action"
+				},
+				"votes_candidate_id_candidates_id_fk": {
+					"name": "votes_candidate_id_candidates_id_fk",
+					"tableFrom": "votes",
+					"columnsFrom": ["candidate_id"],
+					"tableTo": "candidates",
+					"columnsTo": ["id"],
+					"onUpdate": "no action",
+					"onDelete": "cascade"
+				}
+			},
+			"compositePrimaryKeys": {
+				"votes_pkey": {
+					"name": "votes_pkey",
+					"columns": ["round_id", "voter_id"]
+				}
+			},
+			"uniqueConstraints": {},
+			"policies": {
+				"votes_select_own": {
+					"name": "votes_select_own",
+					"as": "PERMISSIVE",
+					"for": "SELECT",
+					"to": ["authenticated"],
+					"using": "\"votes\".\"voter_id\" = (select auth.uid())"
+				}
+			},
+			"checkConstraints": {},
+			"isRLSEnabled": true
+		}
+	},
+	"enums": {},
+	"schemas": {},
+	"views": {},
+	"sequences": {},
+	"roles": {},
+	"policies": {},
+	"_meta": {
+		"columns": {},
+		"schemas": {},
+		"tables": {}
+	}
+}
