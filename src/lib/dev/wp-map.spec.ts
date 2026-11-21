@@ -21,10 +21,10 @@ describe('peta WP', () => {
 		for (const w of WP_MAP) expect(w.checks.length).toBeGreaterThan(0);
 	});
 
-	it('WP-01 selesai, WP-02 berikutnya', () => {
+	it('WP-01 selesai, WP-02 berjalan, WP-03 berikutnya', () => {
 		expect(lastDoneWp(WP_MAP)?.id).toBe('WP-01');
-		expect(currentWp(WP_MAP)).toBeUndefined();
-		expect(nextWp(WP_MAP)?.id).toBe('WP-02');
+		expect(currentWp(WP_MAP)?.id).toBe('WP-02');
+		expect(nextWp(WP_MAP)?.id).toBe('WP-03');
 	});
 
 	it('berikutnya dicari setelah WP yang berjalan', () => {

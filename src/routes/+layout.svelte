@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '#lib/styles/index.css';
 	import { AppBar, Sheet, Toaster } from '#lib/components/index.ts';
-	import { HOME_DUMMY } from '#lib/dummy/home.ts';
+	import { ECONOMY_DUMMY } from '#lib/dummy/home.ts';
 	import { PROFILE_DUMMY } from '#lib/dummy/profile.ts';
 	import type { LayoutProps } from './$types';
 
@@ -14,9 +14,11 @@
 <a class="skip" href="#main">Lewati ke konten</a>
 
 <AppBar
-	tinta={HOME_DUMMY.tinta}
-	cards={HOME_DUMMY.cards}
-	profile={PROFILE_DUMMY}
+	tinta={ECONOMY_DUMMY.tinta}
+	cards={ECONOMY_DUMMY.cards}
+	username={data.viewer?.username ?? null}
+	streakDays={PROFILE_DUMMY.streakDays}
+	tasks={PROFILE_DUMMY.tasks}
 	devPanel={data.devPanel}
 	onTinta={() => (tintaOpen = true)}
 	onCards={() => (cardsOpen = true)}
@@ -26,7 +28,7 @@
 	{@render children()}
 </main>
 
-<Sheet bind:open={tintaOpen} title="Tinta kamu: {HOME_DUMMY.tinta}">
+<Sheet bind:open={tintaOpen} title="Tinta kamu: {ECONOMY_DUMMY.tinta}">
 	<p>
 		Tinta adalah bahan bakar untuk ikut ronde. Kamu mendapatkannya dengan membaca, memilih, dan
 		menang. Kamu memakainya untuk mengirim kandidat paragraf.

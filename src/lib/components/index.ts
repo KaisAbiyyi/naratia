@@ -10,3 +10,4 @@ export { default as ProfileMenu } from './ProfileMenu.svelte';
 export { default as ThemeSwitch } from './ThemeSwitch.svelte';
 export { default as Toaster } from './Toaster.svelte';
 export type { IconName } from './icons';
+export { default as TextField } from './TextField.svelte';

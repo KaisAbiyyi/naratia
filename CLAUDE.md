@@ -70,10 +70,12 @@ Butuh Node 24 (lihat `.nvmrc`) dan pnpm 10 (`corepack enable`). Salin `.env.exam
 | Unit test (Vitest) | `pnpm test:unit --run` |
 | E2E (Playwright) | `pnpm exec playwright install chromium` sekali, lalu `pnpm test:e2e` (build + preview di port 4173, HP 390 px dan desktop) |
 | Build produksi | `pnpm build` |
-| Migrasi & seed | Belum ada. Ditambahkan di WP-02. |
+| Migrasi & data contoh | Lihat `supabase/README.md`. Singkatnya: `pnpm db:generate` menulis migrasi dari `src/lib/server/db/schema.ts`, diterapkan lewat Supabase MCP atau SQL Editor. Akun uji dan data contoh dibuat oleh `private.seed_test_users` dan `private.seed_sample`, atau tombol di `/dev`. |
 
 Catatan struktur:
 - Import dari `src/lib` memakai alias `#lib/...` dengan ekstensi lengkap, misalnya `#lib/components/index.ts`, `#lib/toast.svelte.ts`.
 - Variabel env didaftarkan di `src/env.ts`, dibaca lewat `$app/env/private` atau `$app/env/public`.
+- Semua akses Supabase terjadi di server (`src/hooks.server.ts` membuat klien per request dan mengisi `locals.viewer`). Database hanya bisa ditulis lewat fungsi Postgres; jangan menambah `insert`/`update` langsung dari aplikasi.
+- Variabel rahasia untuk lokal ada di `.env` (lihat `.env.example`). `DEV_TEST_PASSWORD` tidak pernah di-commit.
 - Token gaya ada di `src/lib/styles/tokens.css`. Komponen dasar di `src/lib/components/`. Peta WP di `src/lib/dev/wp-map.ts`.
 - Di Windows tanpa Developer Mode, build lokal melewati adapter Vercel (lihat `vite.config.ts`). CI dan Vercel selalu memakainya.
