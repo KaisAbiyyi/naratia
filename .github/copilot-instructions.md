@@ -2,6 +2,8 @@
 
 > Isi file ini identik di `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, dan `.github/copilot-instructions.md`. Kalau mengubah satu, ubah semuanya dalam commit yang sama.
 > Jangan pernah menambahkan trailer `Co-Authored-By` (atau atribusi sejenis) di commit maupun PR.
+>
+> **Reviewer independen (keputusan owner, 26 November 2026):** Claude Sonnet 5.5 (effort High), menggantikan Antigravity · Gemini 4 Hydrogen (xhigh). Review dilakukan remote dan read-only; merge hanya setelah owner setuju untuk PR dan SHA yang direview. Sumber: halaman Notion "Projects".
 
 Naratia adalah game menulis cerita bersama yang dibuat sebagai gamifikasi besar. Proyek pribadi pemilik untuk membangun rutinitas menulis. Branch `v2` adalah rebuild dengan SvelteKit. `main` berisi versi lama Next.js dan tidak dipakai lagi.
 
