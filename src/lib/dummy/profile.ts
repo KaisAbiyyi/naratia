@@ -10,13 +10,12 @@ export interface DailyTask {
 }
 
 export interface ProfileSummary {
-	username: string;
 	streakDays: number;
 	tasks: DailyTask[];
 }
 
+/** Username sekarang dari database (WP-02). Streak dan tugas masih contoh sampai WP-10. */
 export const PROFILE_DUMMY: ProfileSummary = {
-	username: 'kamu_uji',
 	streakDays: 3,
 	tasks: [
 		{ label: 'Baca 5 paragraf baru', done: 0, target: 5 },

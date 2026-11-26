@@ -2,18 +2,30 @@
 	import { resolve } from '$app/paths';
 	import Chip from './Chip.svelte';
 	import ProfileMenu from './ProfileMenu.svelte';
-	import type { ProfileSummary } from '#lib/dummy/profile.ts';
+	import type { DailyTask } from '#lib/dummy/profile.ts';
 
 	interface Props {
 		tinta: number;
 		cards: number;
-		profile: ProfileSummary;
+		/** `null` = tamu. */
+		username: string | null;
+		streakDays: number;
+		tasks: DailyTask[];
 		devPanel?: boolean;
 		onTinta?: () => void;
 		onCards?: () => void;
 	}
 
-	let { tinta, cards, profile, devPanel = false, onTinta, onCards }: Props = $props();
+	let {
+		tinta,
+		cards,
+		username,
+		streakDays,
+		tasks,
+		devPanel = false,
+		onTinta,
+		onCards
+	}: Props = $props();
 </script>
 
 <header class="abar">
@@ -23,15 +35,17 @@
 			<a class="dev" href={resolve('/dev')}>dev</a>
 		{/if}
 		<span class="grow"></span>
-		<Chip
-			tone="tinta"
-			icon="drop"
-			value={tinta}
-			label="Tinta {tinta}, lihat penjelasan"
-			onclick={onTinta}
-		/>
-		<Chip icon="card" value={cards} label="{cards} kartu kutipan" onclick={onCards} />
-		<ProfileMenu {profile} />
+		{#if username}
+			<Chip
+				tone="tinta"
+				icon="drop"
+				value={tinta}
+				label="Tinta {tinta}, lihat penjelasan"
+				onclick={onTinta}
+			/>
+			<Chip icon="card" value={cards} label="{cards} kartu kutipan" onclick={onCards} />
+		{/if}
+		<ProfileMenu {username} {streakDays} {tasks} />
 	</div>
 </header>
 

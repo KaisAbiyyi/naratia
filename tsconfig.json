@@ -7,6 +7,7 @@
 	"include": [
 		"src",
 		"e2e",
+		"drizzle.config.ts",
 		"vite.config.ts",
 		"prettier.config.js",
 		"eslint.config.js",

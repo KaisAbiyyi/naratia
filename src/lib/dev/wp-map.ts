@@ -66,11 +66,24 @@ export const WP_MAP: readonly WorkPackage[] = [
 		id: 'WP-02',
 		title: 'Supabase, auth, skema inti & data contoh',
 		milestone: 'M0',
-		status: 'backlog',
+		status: 'review',
 		checks: [
-			{ text: 'Login dengan email atau Google, lalu pilih username.' },
-			{ text: 'Beranda menampilkan cerita contoh dari database, bukan dummy lagi.' },
-			{ text: 'Di /dev, masuk sebagai lentera. Nama di header ikut berubah.' }
+			{
+				text: 'Buka /masuk, isi emailmu, lalu ketuk tautan di email. Setelah itu pilih nama pena (login Google menyusul setelah diaktifkan).',
+				href: '/masuk'
+			},
+			{
+				text: 'Beranda menampilkan tiga cerita contoh dari database (Mercusuar Pulau Garam, Pasar Malam Terakhir, Kota yang Lupa Hujan), bukan data tiruan lagi.',
+				href: '/'
+			},
+			{
+				text: 'Di /dev tab Akun uji, masuk sebagai lentera. Ikon profil berganti jadi L dan menu profil menampilkan lentera.',
+				href: '/dev?tab=akun'
+			},
+			{
+				text: 'Ketuk ikon profil lalu Profil: nama dan email hanya terlihat oleh pemilik akun. Keluar mengembalikanmu jadi tamu.',
+				href: '/profil'
+			}
 		]
 	},
 	{

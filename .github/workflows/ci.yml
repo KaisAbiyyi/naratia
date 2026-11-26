@@ -17,6 +17,12 @@ jobs:
     name: Lint, typecheck, unit test, e2e
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      # Dua nilai pertama bersifat publik (juga dikirim ke setiap browser), aman ada di repo.
+      PUBLIC_SUPABASE_URL: https://mpufaqbuirilrhrhbcmo.supabase.co
+      PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_eDQTp1NmiCkojM13lGLsCg_3MUREyAx
+      # Rahasia. Kosong di PR dari fork atau kalau belum diisi: test yang butuh login dilewati.
+      DEV_TEST_PASSWORD: ${{ secrets.DEV_TEST_PASSWORD }}
     steps:
       - uses: actions/checkout@v7
 
