@@ -1,5 +1,7 @@
 # CLAUDE.md - Development Rules and Guidelines
 
+> **Merge (keputusan owner, 28 November 2026, semua project):** siapa pun yang diberi wewenang review oleh owner (reviewer independen tetap, atau sesi yang owner tunjuk sebagai reviewer untuk PR tertentu) punya otorisasi tetap dari owner untuk merge PR yang ia review, tanpa menunggu persetujuan per PR, asalkan: verdict ditulis di PR untuk **exact head SHA** tanpa temuan blocking; semua required check hijau di SHA itu, termasuk gate native atau owner yang memang disyaratkan sebelum merge (job yang skipped bukan PASS); review independen sudah ada bila disyaratkan; dan owner tidak menahan PR. Merge dipin ke SHA yang direview (`gh pr merge --match-head-commit <sha>`), lalu SHA merge dicatat di PR dan Notion; commit baru berarti review ulang. **Implementor tidak pernah merge:** sesi yang menulis atau mengubah commit apa pun di sebuah PR tidak boleh me-review atau merge PR itu, langsung maupun lewat sesi lain yang ia kendalikan. Ini menggantikan semua aturan lama di file ini yang membolehkan implementor merge atau yang menyisakan merge hanya untuk owner. Owner tetap bisa merge, veto, atau mencabut otorisasi ini. Auto-merge, merge queue, merge broker dan bypass actor tetap tidak diizinkan. Sumber: halaman Notion "Projects".
+
 ## Primary Task
 **ALWAYS** read all files in the `docs/` directory at the beginning of any development session to understand the project requirements and architecture.
 
